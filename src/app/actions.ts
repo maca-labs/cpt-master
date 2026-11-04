@@ -1,6 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useLearning } from './context';
-import { createSession, selectDiagnostic, selectPractice, uniqueGroups } from '../engines/learning';
+import {
+  createSession,
+  selectDiagnostic,
+  selectPractice,
+  prioritizeReview,
+} from '../engines/learning';
 import { questions } from '../content';
 import { db } from '../storage/db';
 export function useStartLearning() {
@@ -52,9 +57,7 @@ export function useStartLearning() {
     review: () =>
       run(async () => {
         const due = data.reviews.filter((r) => r.dueAt <= new Date().toISOString());
-        const selected = uniqueGroups(
-          questions.filter((q) => due.some((r) => r.questionId === q.id)),
-        ).slice(0, 10);
+        const selected = prioritizeReview(questions, due, data.attempts);
         const session = createSession('review', selected, data.exposures, data.attempts);
         await db.sessions.put(session);
         navigate(`/session/${session.id}`);

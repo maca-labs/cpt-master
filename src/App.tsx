@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import {
   ArrowUpRight,
+  BarChart3,
   BookOpen,
   ChevronRight,
   ClipboardCheck,
@@ -26,6 +27,9 @@ import { Diagnostic, Practice, Quiz, Results, Review } from './features/Practice
 import Settings, { Exam } from './features/Settings';
 import Videos from './features/Videos';
 import { Empty } from './components/Shared';
+import Analytics from './features/Analytics';
+import MockExamHome, { MockExamSession, MockExamResults } from './features/MockExam';
+import PwaStatus from './components/PwaStatus';
 const navigation = [
   { to: '/', label: 'ダッシュボード', icon: House, end: true },
   { to: '/learn', label: '学習テキスト', icon: BookOpen },
@@ -34,6 +38,7 @@ const navigation = [
   { to: '/review', label: '復習ノート', icon: RotateCcw },
   { to: '/videos', label: '動画ライブラリ', icon: Play },
   { to: '/exam', label: '模擬試験', icon: Trophy },
+  { to: '/analytics', label: '成績・弱点分析', icon: BarChart3 },
 ];
 function Shell() {
   const { data, settings, error, clearError, run } = useLearning(),
@@ -105,7 +110,6 @@ function Shell() {
               <n.icon size={19} />
               <span>{n.label}</span>
               {n.to === '/review' && due > 0 && <b className="nav-badge">{due}</b>}
-              {n.to === '/exam' && <small>準備中</small>}
             </NavLink>
           ))}
         </nav>
@@ -125,7 +129,7 @@ function Shell() {
             <SettingsIcon size={19} />
             設定・バックアップ
           </NavLink>
-          <small className="version">PERSONAL EDITION · v0.2</small>
+          <small className="version">PERSONAL EDITION · v0.3</small>
         </div>
       </aside>
       <div className="main-shell">
@@ -209,6 +213,7 @@ function Shell() {
               </button>
             </div>
           )}
+          <PwaStatus />
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/learn" element={<Catalog />} />
@@ -220,7 +225,11 @@ function Shell() {
             <Route path="/review" element={<Review />} />
             <Route path="/videos" element={<Videos />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/exam" element={<Exam />} />
+            <Route path="/exam" element={<MockExamHome />} />
+            <Route path="/exam/full" element={<Exam />} />
+            <Route path="/exam/:id" element={<MockExamSession />} />
+            <Route path="/exam-results/:id" element={<MockExamResults />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route
               path="*"
               element={

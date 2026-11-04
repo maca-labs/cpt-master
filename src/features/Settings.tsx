@@ -125,7 +125,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.2.0</small>
+          <small>教材版 {contentVersion} · アプリ 0.3.0</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>
@@ -243,7 +243,7 @@ export default function Settings() {
           個人学習用の非公式アプリです。NSCAの認定教材ではありません。動画視聴はCPR/AED実技講習や資格認定条件の代替にはなりません。
         </p>
         <p className="muted small-text">
-          高度な分析・模試運用・全範囲への展開・PWAの詳細な端末別検証は後続段階です。初回表示後に教材を保存する基本PWA機能は用意していますが、YouTubeの視聴には通信が必要です。
+          短縮模試・成績比較・PWA更新案内を利用できます。155問の本番形式模試、全範囲への教材展開、PWAの詳細な実端末検証は後続段階です。YouTubeの視聴には通信が必要です。
         </p>
       </section>
     </>
@@ -255,12 +255,12 @@ export function Exam() {
     <>
       <PageTitle
         eyebrow="MOCK EXAM"
-        title="模擬試験は、準備中です。"
+        title="155問の本番形式模試は、準備中です。"
         description="品質・問題数・題材の条件がそろってから提供します。"
       />
       <Empty
         title="155問模試の開始条件を満たしていません"
-        body="初期100問の使い回しで模試を成立させません。今は50問診断と確認問題で学習できます。"
+        body="初期100問の使い回しで155問模試を成立させません。50問診断・短縮模試・確認問題で学習できます。"
       />
       <section className="panel">
         <h2>公開前の確認事項</h2>

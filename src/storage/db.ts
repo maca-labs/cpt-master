@@ -154,7 +154,7 @@ const attempt = z
 const session = z
   .object({
     id,
-    mode: z.enum(['diagnostic', 'practice', 'review']),
+    mode: z.enum(['diagnostic', 'practice', 'review', 'mock']),
     questionIds: z.array(id).min(1).max(200),
     choiceOrders: z.record(id, z.array(id).min(2).max(4)),
     index: z.number().int().min(0).max(200),
@@ -162,6 +162,31 @@ const session = z
     startedAt: date,
     completedAt: date.optional(),
     firstSeenByQuestion: z.record(id, z.boolean()),
+    mock: z
+      .object({
+        format: z.literal('short'),
+        questionCount: z.union([z.literal(10), z.literal(20), z.literal(50)]),
+        timeMode: z.enum(['study', 'continuous']),
+        limitSeconds: z.number().int().min(1).max(21600),
+        remainingSeconds: z.number().int().min(0).max(21600),
+        deadlineAt: date.nullable(),
+        paused: z.boolean(),
+        flags: z.array(id).max(50),
+        draftAnswers: z.record(
+          id,
+          z
+            .object({
+              choiceId: id,
+              canExplain: z.boolean(),
+              elapsedMs: z.number().int().min(0).max(86400000),
+              answeredAt: date,
+            })
+            .strict(),
+        ),
+        finishedReason: z.enum(['submitted', 'timeout']).optional(),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 const dataSchema = z
@@ -335,12 +360,89 @@ export function validateBackup(text: string): Backup {
       throw new Error('解答履歴と教材の対応が不正です。');
   }
   for (const s of backup.data.sessions) {
+    if ((s.mode === 'mock') !== !!s.mock)
+      throw new Error('短縮模試の設定とセッション形式が一致しません。');
+    if (s.mock) {
+      const m = s.mock;
+      if (
+        m.questionCount !== s.questionIds.length ||
+        m.remainingSeconds > m.limitSeconds ||
+        new Set(m.flags).size !== m.flags.length ||
+        m.flags.some((qid) => !s.questionIds.includes(qid))
+      )
+        throw new Error('短縮模試の件数・時間・フラグが不正です。');
+      if (m.timeMode === 'continuous' && m.paused)
+        throw new Error('時間継続モードは停止できません。');
+      if (
+        s.status === 'active' &&
+        (s.completedAt !== undefined ||
+          m.finishedReason !== undefined ||
+          m.paused !== (m.deadlineAt === null))
+      )
+        throw new Error('進行中の短縮模試の時計が不正です。');
+      if (
+        s.status === 'completed' &&
+        (!s.completedAt ||
+          !m.finishedReason ||
+          m.deadlineAt !== null ||
+          m.paused ||
+          (m.finishedReason === 'timeout' && m.remainingSeconds !== 0))
+      )
+        throw new Error('完了した短縮模試の時計が不正です。');
+      if (
+        m.deadlineAt &&
+        (Date.parse(m.deadlineAt) < Date.parse(s.startedAt) ||
+          (m.timeMode === 'continuous' &&
+            Date.parse(m.deadlineAt) !== Date.parse(s.startedAt) + m.limitSeconds * 1000))
+      )
+        throw new Error('短縮模試の締切が不正です。');
+      for (const [qid, draft] of Object.entries(m.draftAnswers)) {
+        const q = qMap.get(qid);
+        if (
+          !s.questionIds.includes(qid) ||
+          !q?.choices.some((c) => c.id === draft.choiceId) ||
+          Date.parse(draft.answeredAt) < Date.parse(s.startedAt) ||
+          (s.completedAt && Date.parse(draft.answeredAt) > Date.parse(s.completedAt))
+        )
+          throw new Error('短縮模試の下書き回答が不正です。');
+      }
+      const records = backup.data.attempts.filter((a) => a.sessionId === s.id);
+      if (s.status === 'active' && records.length)
+        throw new Error('採点前の短縮模試に採点済み回答があります。');
+      if (
+        s.status === 'completed' &&
+        (new Set(records.map((a) => a.questionId)).size !== records.length ||
+          records.length !== Object.keys(m.draftAnswers).length ||
+          records.some((a) => {
+            const draft = m.draftAnswers[a.questionId];
+            return (
+              !draft ||
+              a.selectedChoiceId !== draft.choiceId ||
+              a.canExplain !== draft.canExplain ||
+              a.elapsedMs !== draft.elapsedMs ||
+              a.at !== draft.answeredAt
+            );
+          }))
+      )
+        throw new Error('短縮模試の下書きと採点履歴が一致しません。');
+    }
     if (s.index >= s.questionIds.length || new Set(s.questionIds).size !== s.questionIds.length)
       throw new Error('セッションの問題順が不正です。');
     const groups = new Set<string>();
     for (const qid of s.questionIds) {
       const q = qMap.get(qid);
       const order = s.choiceOrders[qid];
+      if (
+        s.mock &&
+        q &&
+        (q.pool === 'exam' ||
+          q.review.status === 'draft' ||
+          q.review.revision !== q.revision ||
+          q.sourceRefs.length === 0 ||
+          q.choices.length !== 3 ||
+          q.format !== 'single_choice')
+      )
+        throw new Error('短縮模試に照合済みの3択問題を使用してください。');
       if (
         !q ||
         groups.has(q.groupId) ||
@@ -355,7 +457,13 @@ export function validateBackup(text: string): Backup {
     }
   }
   for (const e of backup.data.exposures)
-    if (qMap.get(e.questionId)?.groupId !== e.groupId || !sessionIds.has(e.sessionId))
+    if (
+      qMap.get(e.questionId)?.groupId !== e.groupId ||
+      !sessionIds.has(e.sessionId) ||
+      backup.data.sessions.some(
+        (s) => s.id === e.sessionId && s.mode === 'mock' && !s.questionIds.includes(e.questionId),
+      )
+    )
       throw new Error('表示履歴の参照が不正です。');
   for (const r of [...backup.data.reviews, ...backup.data.favorites])
     if (!qMap.has(r.questionId)) throw new Error('問題IDが見つかりません。');
@@ -413,16 +521,46 @@ export async function exportBackup(database: LearningDB = db): Promise<Backup> {
 export async function restoreBackup(candidate: Backup, database: LearningDB = db) {
   const backup = validateBackup(JSON.stringify(candidate));
   await database.transaction('rw', database.tables, async () => {
+    const localSessions = new Map((await database.sessions.toArray()).map((s) => [s.id, s]));
+    // A mock session and its graded ledger form one record of a submission.
+    // Keeping a local draft while adding a remote completed ledger would make
+    // it impossible to resume or export. Preserve the local session as a unit.
+    const protectedIds = new Set(
+      backup.data.sessions
+        .filter(
+          (s) =>
+            localSessions.has(s.id) &&
+            (s.mode === 'mock' || localSessions.get(s.id)!.mode === 'mock'),
+        )
+        .map((s) => s.id),
+    );
+    const protectedQuestions = new Set(
+      backup.data.sessions
+        .filter((s) => protectedIds.has(s.id))
+        .flatMap((s) => [...s.questionIds, ...localSessions.get(s.id)!.questionIds]),
+    );
+    const canMerge = (name: (typeof tableNames)[number], record: Record<string, unknown>) => {
+      if (name === 'attempts' && protectedIds.has(record.sessionId as string)) return false;
+      // Reviews are a per-question projection with no originating session ID.
+      // Do not project a remote, skipped mock submission into a local draft.
+      if (name === 'reviews' && protectedQuestions.has(record.questionId as string)) return false;
+      if (name === 'exposures' && protectedIds.has(record.sessionId as string))
+        return localSessions
+          .get(record.sessionId as string)!
+          .questionIds.includes(record.questionId as string);
+      return true;
+    };
     for (const name of tableNames) {
       const table = database.table(name);
       const existing = new Set(await table.toCollection().primaryKeys());
       const key = (r: Record<string, unknown>) => r.id ?? r.questionId ?? r.videoId ?? r.unitId;
       const added = (backup.data[name] as unknown as Record<string, unknown>[]).filter(
-        (r) => !existing.has(key(r) as string),
+        (r) => !existing.has(key(r) as string) && canMerge(name, r),
       );
       await table.bulkAdd(added);
     }
     for (const exposure of backup.data.exposures) {
+      if (!canMerge('exposures', exposure as unknown as Record<string, unknown>)) continue;
       const existing = await database.exposures.get(exposure.id);
       if (existing && exposure.at < existing.at) await database.exposures.put(exposure);
     }
@@ -433,6 +571,10 @@ export async function restoreBackup(candidate: Backup, database: LearningDB = db
       if (ranks[imported.diagnosticStatus] > ranks[current.diagnosticStatus])
         await database.settings.update('main', { diagnosticStatus: imported.diagnosticStatus });
     }
+    // Source validity alone cannot detect cross-device primary-key conflicts.
+    // Validate the composed state before commit so every write rolls back if
+    // any ledger/reference becomes invalid during merging.
+    validateBackup(JSON.stringify(await exportBackup(database)));
   });
 }
 export function downloadJson(value: unknown, name: string) {

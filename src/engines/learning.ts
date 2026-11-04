@@ -137,6 +137,41 @@ export function nextReview(
     manual: previous?.manual ?? false,
   };
 }
+/** Orders due reviews from recorded difficulty and forgetting; not an exam prediction. */
+export function prioritizeReview(
+  bank: Question[],
+  items: ReviewItem[],
+  attempts: Attempt[],
+  now = new Date(),
+  limit = 10,
+): Question[] {
+  const last = new Map<string, Attempt>();
+  for (const a of attempts)
+    if (!last.has(a.groupId) || last.get(a.groupId)!.at < a.at) last.set(a.groupId, a);
+  const rows = items
+    .filter((item) => Date.parse(item.dueAt) <= now.getTime())
+    .flatMap((item) => {
+      const q = bank.find((q) => q.id === item.questionId);
+      if (!q) return [];
+      const a = last.get(q.groupId),
+        overdue = Math.max(0, (now.getTime() - Date.parse(item.dueAt)) / 86400000);
+      const score =
+        (item.manual ? 10 : 0) +
+        Math.min(30, overdue) * 2 +
+        item.wrongStreak * 4 +
+        (a && !a.correct ? 8 : 0) +
+        (a && !a.canExplain ? 5 : 0) +
+        (a ? Math.min(1, a.elapsedMs / 60000) : 0);
+      return [{ q, item, score }];
+    })
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        a.item.dueAt.localeCompare(b.item.dueAt) ||
+        a.q.id.localeCompare(b.q.id),
+    );
+  return uniqueGroups(rows.map((row) => row.q)).slice(0, limit);
+}
 export function rate(items: Attempt[]) {
   return items.length
     ? Math.round((items.filter((a) => a.correct).length / items.length) * 100)

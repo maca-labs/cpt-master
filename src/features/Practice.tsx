@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Flag, RotateCcw, Target } from 'lucide-react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useLearning } from '../app/context';
 import { useStartLearning } from '../app/actions';
@@ -97,7 +97,7 @@ export function Practice() {
   const { data, settings } = useLearning(),
     start = useStartLearning();
   const [unit, setUnit] = useState('');
-  const active = data.sessions.filter((s) => s.status === 'active');
+  const active = data.sessions.filter((s) => s.status === 'active' && s.mode !== 'mock');
   return (
     <>
       <PageTitle
@@ -168,7 +168,7 @@ export function Practice() {
       <section className="panel">
         <h2>演習の記録</h2>
         {data.sessions
-          .filter((s) => s.status === 'completed')
+          .filter((s) => s.status === 'completed' && s.mode !== 'mock')
           .reverse()
           .slice(0, 10)
           .map((s) => (
@@ -181,7 +181,7 @@ export function Practice() {
               <ChevronRight size={17} />
             </Link>
           ))}
-        {!data.sessions.some((s) => s.status === 'completed') && (
+        {!data.sessions.some((s) => s.status === 'completed' && s.mode !== 'mock') && (
           <p className="muted">完了した学習はここに表示されます。</p>
         )}
       </section>
@@ -207,7 +207,7 @@ export function Quiz() {
     setCanExplain(false);
     setPeek(false);
     began.current = Date.now();
-    if (session && q && session.status === 'active')
+    if (session && q && session.status === 'active' && session.mode !== 'mock')
       void run(() =>
         recordExposure({
           id: `${session.id}:${q.id}:question`,
@@ -219,6 +219,7 @@ export function Quiz() {
         }),
       );
   }, [q?.id, session?.id, session?.status]);
+  if (session?.mode === 'mock') return <Navigate to={`/exam/${session.id}`} replace />;
   if (!session || !q)
     return (
       <Empty title="学習セッションが見つかりません" body="問題演習から始めてください。">
@@ -491,6 +492,7 @@ export function Results() {
   const { data, run } = useLearning();
   const session = data.sessions.find((s) => s.id === id);
   const [opened, setOpened] = useState<string | null>(null);
+  if (session?.mode === 'mock') return <Navigate to={`/exam-results/${session.id}`} replace />;
   if (!session || session.status !== 'completed')
     return <Empty title="完了した結果がありません" body="学習を完了すると結果を確認できます。" />;
   const attempts = data.attempts.filter((a) => a.sessionId === id);
@@ -646,7 +648,7 @@ export function Review() {
         </button>
       </PageTitle>
       <div className="notice">
-        復習間隔は1・3・7・14・30日を基本に調整。誤答・根拠が曖昧なときは翌日へ戻します。手動登録はすぐに復習できます。
+        復習間隔は1・3・7・14・30日を基本に調整。誤答・根拠が曖昧なときは翌日へ戻します。期限超過・繰り返すつまずき・手動登録を優先し、回答時間を補助情報として順番を調整します。
       </div>
       {!data.reviews.length ? (
         <Empty

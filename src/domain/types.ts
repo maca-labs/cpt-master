@@ -127,7 +127,7 @@ export interface ReviewItem {
 }
 export interface Session {
   id: string;
-  mode: 'diagnostic' | 'practice' | 'review';
+  mode: 'diagnostic' | 'practice' | 'review' | 'mock';
   questionIds: string[];
   choiceOrders: Record<string, string[]>;
   index: number;
@@ -135,6 +135,26 @@ export interface Session {
   startedAt: string;
   completedAt?: string;
   firstSeenByQuestion: Record<string, boolean>;
+  mock?: {
+    format: 'short';
+    questionCount: 10 | 20 | 50;
+    timeMode: 'study' | 'continuous';
+    limitSeconds: number;
+    remainingSeconds: number;
+    deadlineAt: string | null;
+    paused: boolean;
+    flags: string[];
+    draftAnswers: Record<
+      string,
+      {
+        choiceId: string;
+        canExplain: boolean;
+        elapsedMs: number;
+        answeredAt: string;
+      }
+    >;
+    finishedReason?: 'submitted' | 'timeout';
+  };
 }
 export interface VideoProgress {
   videoId: string;

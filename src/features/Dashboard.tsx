@@ -23,7 +23,10 @@ export default function Dashboard() {
   const studied = new Set(data.attempts.map((a) => a.groupId)).size;
   const due = data.reviews.filter((r) => r.dueAt <= new Date().toISOString()).length;
   const days = streak(
-    data.studyEvents.map((e) => e.localDate),
+    [
+      ...data.studyEvents.map((e) => localDay(settings.timezone, new Date(e.at))),
+      ...data.attempts.map((a) => localDay(settings.timezone, new Date(a.at))),
+    ],
     localDay(settings.timezone),
   );
   const weak = domainIds

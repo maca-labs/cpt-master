@@ -299,7 +299,7 @@ test('personal video settings and notes survive reload and JSON restores only af
       .getByRole('button', { name: '復元前バックアップを保存してマージ', exact: true })
       .click();
     await preRestoreDownload;
-    await expect(restored.getByRole('status')).toContainText('復元しました。');
+    await expect(restored.getByRole('status').filter({ hasText: '復元しました。' })).toBeVisible();
     await ready(restored, '/videos');
     const restoredCard = restored
       .locator('article.video-card')

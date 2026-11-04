@@ -2579,3 +2579,26 @@ th {
 .video-status details a {
   color: var(--green);
 }
+.sidebar {
+  overflow-y: auto;
+}
+.quiz-top {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pwa-status .notice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.pwa-status details.notice {
+  margin-bottom: 20px;
+}
+.pwa-status p {
+  font-size: 11px;
+  margin: 7px 0;
+}
+.pwa-status summary {
+  cursor: pointer;
+  font-size: 11px;
+}
