@@ -85,7 +85,9 @@ export default function Dashboard() {
               教材から学ぶ <ArrowUpRight size={15} />
             </Link>
           </div>
-          <small>診断は学習開始位置の参考です。合格可能性の判定ではありません。</small>
+          <small>
+            診断は初版50問を用いた学習開始位置の参考です。追加200問を含む全範囲の習熟・合格可能性は判定しません。
+          </small>
         </div>
         <div className="hero-illustration" aria-hidden="true">
           <svg viewBox="0 0 350 270">
@@ -185,7 +187,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <p className="muted small-text">
-            各問題グループの最新回答で「正解し、根拠を説明できた」割合。
+            回答済みの各問題グループの最新回答で「正解し、根拠を説明できた」割合。未学習の目標の習熟は含みません。
           </p>
           {domainIds.map((id) => {
             const score = mastery(data.attempts, id),

@@ -2,7 +2,11 @@ import { ArrowLeft, ArrowRight, Check, ChevronRight, Flag, RotateCcw, Target } f
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useLearning } from '../app/context';
-import { useStartLearning } from '../app/actions';
+import {
+  recordPracticeResultsDisplay,
+  useStartLearning,
+  type PracticeResultsDisplay,
+} from '../app/actions';
 import { questions, units } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import {
@@ -17,6 +21,16 @@ import {
 import { db, recordExposure } from '../storage/db';
 import { Empty, FavoriteButton, PageTitle, Pill, SourceList } from '../components/Shared';
 import { QuestionMedia } from '../components/QuestionMedia';
+import { practiceBatchLabel, type PracticeBatch } from '../content/batches';
+import {
+  practiceInventory,
+  practiceSelectionLabel,
+  type PracticeSelection,
+  type PracticeOptions,
+} from '../engines/practice-selection';
+import { mergedVideos } from '../storage/db';
+import { seedVideos } from '../content';
+import { isRecommendedVideo } from '../engines/video-review';
 export function Diagnostic() {
   const { data, settings } = useLearning(),
     start = useStartLearning();
@@ -37,7 +51,7 @@ export function Diagnostic() {
         <Pill tone="green">3択・単一正答 / 中断・再開できます</Pill>
         <h2>経験を活かすための実力診断</h2>
         <p>
-          本番の難易度や合格可能性を示すテストではありません。初版の教材に基づく、学習開始位置の参考値です。診断には、設問・正答・解説を根拠資料とAIが照合した問題だけを使用します。人間の専門家レビューは未実施です。
+          本番の難易度や合格可能性を示すテストではありません。初版の100問から予約した50問による、学習開始位置の参考値です。追加200問や300問全体の理解度を示す成績ではありません。診断には、設問・正答・解説を根拠資料とAIが照合した問題だけを使用します。人間の専門家レビューは未実施です。
         </p>
         <div className="diagnostic-counts">
           {availability.map((d) => (
@@ -85,7 +99,7 @@ export function Diagnostic() {
           {previous.map((s) => (
             <Link className="list-row" key={s.id} to={`/results/${s.id}`}>
               <span>{new Date(s.startedAt).toLocaleString('ja-JP')}</span>
-              <b>{rate(data.attempts.filter((a) => a.sessionId === s.id))}%</b>
+              <b>{rate(data.attempts.filter((attempt) => attempt.sessionId === s.id)) ?? '—'}%</b>
               <ChevronRight size={17} />
             </Link>
           ))}
@@ -98,7 +112,32 @@ export function Practice() {
   const { data, settings } = useLearning(),
     start = useStartLearning();
   const [unit, setUnit] = useState('');
+  const [batch, setBatch] = useState<PracticeBatch>('all'),
+    [selection, setSelection] = useState<PracticeSelection>('unseen_first'),
+    [count, setCount] = useState<10 | 20 | 50>(10),
+    [starting, setStarting] = useState(false);
+  const options: PracticeOptions = { batch, selection, requestedCount: count };
+  const inventory = practiceInventory(
+    questions,
+    ['completed', 'skipped'].includes(settings.diagnosticStatus),
+    data,
+    { ...options, unitId: unit || undefined },
+  );
+  const startSelected = async (allowSmaller = false) => {
+    if (starting) return;
+    setStarting(true);
+    try {
+      await start.practice(unit || undefined, false, {
+        ...options,
+        allowSmaller,
+        ...(allowSmaller ? { expectedAvailableCount: inventory.available } : {}),
+      });
+    } finally {
+      setStarting(false);
+    }
+  };
   const active = data.sessions.filter((s) => s.status === 'active' && s.mode !== 'mock');
+  const firstAttempts = partitionAttempts(data.attempts, data.exposures).first;
   return (
     <>
       <PageTitle
@@ -111,6 +150,43 @@ export function Practice() {
           <Pill>3択・単一正答</Pill>
           <h2>確認問題に取り組む</h2>
           <label className="field-label">
+            教材の範囲
+            <select
+              aria-label="教材の範囲"
+              value={batch}
+              onChange={(event) => setBatch(event.target.value as PracticeBatch)}
+            >
+              <option value="all">すべての通常学習問題</option>
+              <option value="expansion-2026-11-04">今回追加された200問のみ</option>
+            </select>
+          </label>
+          <label className="field-label">
+            出題と評価の方法
+            <select
+              aria-label="出題と評価の方法"
+              value={selection}
+              onChange={(event) => setSelection(event.target.value as PracticeSelection)}
+            >
+              <option value="unseen_first">通常学習（未見を優先）</option>
+              <option value="strict_unseen">厳密な未見問題のみで評価</option>
+              <option value="review">復習・再演習（既出を含む）</option>
+            </select>
+          </label>
+          <label className="field-label">
+            問題数
+            <select
+              aria-label="演習の問題数"
+              value={count}
+              onChange={(event) => setCount(Number(event.target.value) as 10 | 20 | 50)}
+            >
+              {[10, 20, 50].map((n) => (
+                <option key={n} value={n}>
+                  {n}問
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="field-label">
             学習する単元
             <select value={unit} onChange={(e) => setUnit(e.target.value)}>
               <option value="">すべての単元から</option>
@@ -121,11 +197,56 @@ export function Practice() {
               ))}
             </select>
           </label>
-          <p>未回答の問題グループを優先し、1回につき最大10問を出題します。</p>
-          <button className="button primary" onClick={() => void start.practice(unit || undefined)}>
+          <p>
+            {selection === 'strict_unseen'
+              ? '問題・解説の表示履歴と全モードの回答履歴を問題グループ単位で除外します。'
+              : '通常学習は未見を優先。復習・再演習は未見と既出の両方から選びます。'}
+          </p>
+          <div className="inventory" aria-label="演習の在庫">
+            <span>この条件で利用可能</span>
+            <b>{inventory.available}問</b>
+            <span>厳密な未見（予約を除く）</span>
+            <b>{inventory.unseen}問</b>
+            <span>既出（予約を除く）</span>
+            <b>{inventory.seen}問</b>
+            <span>中断中の厳密評価で予約</span>
+            <b>{inventory.reserved}問</b>
+          </div>
+          <p className="muted small-text">
+            次回の配分：
+            {domainIds
+              .map((id) => `${domains[id].short} ${inventory.allocation[id]}問`)
+              .join(' / ')}
+            。残りの分野別在庫に合わせて調整します。
+          </p>
+          {inventory.missing > 0 && (
+            <p role="status" className="notice">
+              指定した{count}問に対して{inventory.missing}
+              問不足しています。既出問題や他の教材で自動補充しません。利用可能数で始めるか、条件を変更してください。
+            </p>
+          )}
+          <button
+            className="button primary"
+            disabled={starting || inventory.missing > 0}
+            onClick={() => void startSelected()}
+          >
             問題演習を始める
             <ArrowRight size={17} />
           </button>
+          {inventory.missing > 0 && inventory.available > 0 && (
+            <button
+              className="button secondary"
+              disabled={starting}
+              onClick={() => void startSelected(true)}
+            >
+              利用可能な{inventory.available}問で始める
+            </button>
+          )}
+          {inventory.reserved > 0 && (
+            <p className="muted small-text">
+              予約中の未表示問題も重複出題しません。下の「中断中の学習」から同じ演習を再開できます。
+            </p>
+          )}
           <p className="muted small-text">
             {['completed', 'skipped'].includes(settings.diagnosticStatus)
               ? '診断用問題も演習に利用できます。'
@@ -158,6 +279,12 @@ export function Practice() {
               <span>
                 {s.mode === 'diagnostic' ? '実力診断' : s.mode === 'review' ? '復習' : '問題演習'} ·{' '}
                 {s.index + 1} / {s.questionIds.length}問目
+                {s.practice && (
+                  <small>
+                    {practiceBatchLabel(s.practice.batch)} ·{' '}
+                    {practiceSelectionLabel(s.practice.selection)}
+                  </small>
+                )}
               </span>
               <span>
                 再開する <ArrowRight size={16} />
@@ -177,8 +304,27 @@ export function Practice() {
               <span>
                 {s.mode === 'diagnostic' ? '診断' : s.mode === 'review' ? '復習' : '演習'} ·{' '}
                 {new Date(s.startedAt).toLocaleDateString('ja-JP')}
+                {s.practice && (
+                  <small>
+                    {practiceBatchLabel(s.practice.batch)} ·{' '}
+                    {practiceSelectionLabel(s.practice.selection)}
+                  </small>
+                )}
               </span>
-              <b>{rate(data.attempts.filter((a) => a.sessionId === s.id))}%</b>
+              {s.practice?.selection === 'strict_unseen' ? (
+                <b>
+                  未見 {rate(firstAttempts.filter((attempt) => attempt.sessionId === s.id)) ?? '—'}%
+                  <small>
+                    評価対象 {firstAttempts.filter((attempt) => attempt.sessionId === s.id).length}
+                    問 / 除外{' '}
+                    {data.attempts.filter((attempt) => attempt.sessionId === s.id).length -
+                      firstAttempts.filter((attempt) => attempt.sessionId === s.id).length}
+                    問
+                  </small>
+                </b>
+              ) : (
+                <b>{rate(data.attempts.filter((attempt) => attempt.sessionId === s.id)) ?? '—'}%</b>
+              )}
               <ChevronRight size={17} />
             </Link>
           ))}
@@ -200,26 +346,56 @@ export function Quiz() {
   const [selected, setSelected] = useState(''),
     [canExplain, setCanExplain] = useState(false),
     [peek, setPeek] = useState(false),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [displayedKey, setDisplayedKey] = useState(''),
+    [blocked, setBlocked] = useState<{ questionKey: string; sessionId: string } | null>(null),
+    [displayRetry, setDisplayRetry] = useState(0);
   const began = useRef(Date.now());
   const attempt = data.attempts.find((a) => a.sessionId === id && a.questionId === q?.id);
   useEffect(() => {
+    let live = true;
     setSelected('');
     setCanExplain(false);
     setPeek(false);
-    began.current = Date.now();
     if (session && q && session.status === 'active' && session.mode !== 'mock')
-      void run(() =>
-        recordExposure({
-          id: `${session.id}:${q.id}:question`,
-          questionId: q.id,
-          groupId: q.groupId,
-          kind: 'question',
-          sessionId: session.id,
-          at: new Date().toISOString(),
-        }),
-      );
-  }, [q?.id, session?.id, session?.status]);
+      void run(async () => {
+        const reservation = await db.transaction('rw', [db.sessions, db.exposures], async () => {
+          const fresh = await db.sessions.toArray();
+          const owner = fresh.find(
+            (candidate) =>
+              candidate.id !== session.id &&
+              candidate.status === 'active' &&
+              candidate.mode === 'practice' &&
+              candidate.practice?.selection === 'strict_unseen' &&
+              candidate.questionIds.some(
+                (id) => questions.find((question) => question.id === id)?.groupId === q.groupId,
+              ),
+          );
+          if (owner) return owner.id;
+          await recordExposure({
+            id: `${session.id}:${q.id}:question`,
+            questionId: q.id,
+            groupId: q.groupId,
+            kind: 'question',
+            sessionId: session.id,
+            at: new Date().toISOString(),
+          });
+          return null;
+        });
+        if (live) {
+          if (reservation) {
+            setBlocked({ questionKey: `${session.id}:${q.id}`, sessionId: reservation });
+            return;
+          }
+          setBlocked(null);
+          began.current = Date.now();
+          setDisplayedKey(`${session.id}:${q.id}`);
+        }
+      });
+    return () => {
+      live = false;
+    };
+  }, [q?.id, session?.id, session?.status, displayRetry]);
   if (session?.mode === 'mock') return <Navigate to={`/exam/${session.id}`} replace />;
   if (!session || !q)
     return (
@@ -234,6 +410,33 @@ export function Quiz() {
           結果を見る
         </Link>
       </Empty>
+    );
+  if (blocked?.questionKey === `${session.id}:${q.id}`)
+    return (
+      <section className="panel">
+        <h2>別の厳密な未見評価で予約中です</h2>
+        <p>この問題は表示せず保留します。予約した評価を再開すると、未見の状態で取り組めます。</p>
+        <div className="hero-actions">
+          <Link className="button primary" to={`/session/${blocked.sessionId}`}>
+            予約中の評価を再開する
+          </Link>
+          <button
+            className="button secondary"
+            onClick={() => setDisplayRetry((value) => value + 1)}
+          >
+            予約状況を再確認する
+          </button>
+          <Link className="text-link" to="/practice">
+            問題演習へ
+          </Link>
+        </div>
+      </section>
+    );
+  if (displayedKey !== `${session.id}:${q.id}`)
+    return (
+      <div className="panel" role="status">
+        表示履歴を保存しています…
+      </div>
     );
   const diag = session.mode === 'diagnostic';
   const answer = async () => {
@@ -312,10 +515,30 @@ export function Quiz() {
           保存して中断
         </Link>
         <Pill>
-          {diag ? '実力診断' : session.mode === 'review' ? '復習' : '確認問題'} ·{' '}
-          {session.index + 1} / {session.questionIds.length}
+          {diag
+            ? '実力診断'
+            : session.practice?.selection === 'strict_unseen'
+              ? '厳密な未見評価'
+              : session.mode === 'review'
+                ? '復習'
+                : '確認問題'}{' '}
+          · {session.index + 1} / {session.questionIds.length}
         </Pill>
       </div>
+      {session.practice && (
+        <p className="muted small-text">
+          {practiceBatchLabel(session.practice.batch)} ·{' '}
+          {practiceSelectionLabel(session.practice.selection)} · 選出{session.questionIds.length}問
+          / 指定{session.practice.requestedCount}問
+        </p>
+      )}
+      {session.practice?.selection === 'strict_unseen' &&
+        !attempt &&
+        !isFirstSeen(q, session, data.exposures, data.attempts) && (
+          <div className="notice" role="status">
+            この問題は別の学習や解説の先読みによって既出となりました。回答は保存しますが、厳密な未見評価の正答率からは除外します。
+          </div>
+        )}
       <div className="quiz-progress">
         <span
           style={{
@@ -464,7 +687,17 @@ export function Explanation({
         <summary>根拠資料と該当箇所</summary>
         <SourceList refs={q.sourceRefs} />
       </details>
-      <small>学習目標：{q.objectiveIds.join(' / ')}</small>
+      <small>
+        学習目標：
+        {q.objectiveIds
+          .map(
+            (id) =>
+              units
+                .find((unit) => unit.id === q.unitId)
+                ?.objectives.find((objective) => objective.id === id)?.text ?? id,
+          )
+          .join(' / ')}
+      </small>
       <div className="hero-actions">
         <Link className="button small secondary" to={`/learn/${q.unitId}`}>
           関連単元・動画へ <ArrowRight size={15} />
@@ -505,15 +738,78 @@ export function Results() {
   const { data, run } = useLearning();
   const session = data.sessions.find((s) => s.id === id);
   const [opened, setOpened] = useState<string | null>(null);
+  const [displayedSession, setDisplayedSession] = useState('');
+  const [resultDisplay, setResultDisplay] = useState<PracticeResultsDisplay>({ status: 'stale' });
+  const [displayRetry, setDisplayRetry] = useState(0);
+  const reservations = data.sessions
+    .filter(
+      (session) => session.status === 'active' && session.practice?.selection === 'strict_unseen',
+    )
+    .map((session) => `${session.id}:${session.questionIds.join(',')}`)
+    .join('|');
+  useEffect(() => {
+    let live = true;
+    setResultDisplay({ status: 'stale' });
+    if (session?.status === 'completed' && session.mode !== 'mock')
+      void run(async () => {
+        const result = await recordPracticeResultsDisplay(session.id);
+        if (live) {
+          setResultDisplay(result);
+          if (result.status === 'ready') setDisplayedSession(session.id);
+        }
+      });
+    return () => {
+      live = false;
+    };
+  }, [session?.id, session?.status, session?.mode, reservations, displayRetry]);
   if (session?.mode === 'mock') return <Navigate to={`/exam-results/${session.id}`} replace />;
   if (!session || session.status !== 'completed')
     return <Empty title="完了した結果がありません" body="学習を完了すると結果を確認できます。" />;
+  if (resultDisplay.status === 'reserved')
+    return (
+      <section className="panel">
+        <h2>未見評価の予約を守るため、結果の問題一覧を保留しています</h2>
+        <p>
+          この結果に含まれる{resultDisplay.count}
+          問は、進行中の厳密な未見評価で予約されています。問題や解説を表示せず、予約中の評価を先に再開できます。
+        </p>
+        <div className="hero-actions">
+          {resultDisplay.sessionIds.map((id) => (
+            <Link className="button primary" key={id} to={`/session/${id}`}>
+              予約中の未見評価を再開する
+            </Link>
+          ))}
+          <button
+            className="button secondary"
+            onClick={() => setDisplayRetry((value) => value + 1)}
+          >
+            予約状況を再確認する
+          </button>
+          <Link className="text-link" to="/practice">
+            問題演習へ
+          </Link>
+        </div>
+      </section>
+    );
+  if (displayedSession !== session.id || resultDisplay.status !== 'ready')
+    return (
+      <div className="panel" role="status">
+        振り返りの表示履歴を保存しています…
+      </div>
+    );
   const attempts = data.attempts.filter((a) => a.sessionId === id);
   const partition = partitionAttempts(data.attempts, data.exposures);
   const first = partition.first.filter((a) => a.sessionId === id),
     repeated = partition.repeat.filter((a) => a.sessionId === id);
   const firstIds = new Set(first.map((a) => a.id));
-  const results = domainResults(attempts)
+  const strict = session.practice?.selection === 'strict_unseen';
+  const evaluated = strict ? first : attempts;
+  const needsReview = attempts.filter((attempt) => !attempt.correct || !attempt.canExplain);
+  const relatedUnits = units.filter((unit) =>
+    needsReview.some((attempt) => attempt.unitId === unit.id),
+  );
+  const videos = mergedVideos(seedVideos, data.videoOverrides);
+  const results = domainResults(evaluated)
     .filter((d) => d.count > 0)
     .sort((a, b) => a.rate! - b.rate!);
   return (
@@ -527,15 +823,29 @@ export function Results() {
         }
         description="この結果は学習の参考値です。公式換算スコア・合格確率は算出しません。"
       />
+      {session.practice && (
+        <p className="notice">
+          {practiceBatchLabel(session.practice.batch)} ·{' '}
+          {practiceSelectionLabel(session.practice.selection)}。選出{session.questionIds.length}問 /
+          指定{session.practice.requestedCount}問。
+          {strict &&
+            `厳密な未見評価は${first.length}問が対象です。先読みによる既出や他の学習で見た${repeated.length}問は分野別評価からも除外しています。`}
+        </p>
+      )}
+      {session.mode === 'diagnostic' && (
+        <p className="notice">
+          初版100問から予約した診断50問の結果です。追加200問や300問全体の習熟度を示す評価ではありません。
+        </p>
+      )}
       <div className="result-stats">
         <div>
-          <span>今回の正答率</span>
+          <span>{strict ? '厳密な未見評価の正答率' : '今回の正答率'}</span>
           <b>
-            {rate(attempts) ?? '—'}
-            <small>%</small>
+            {rate(evaluated) ?? '—'}
+            <small>{evaluated.length ? '%' : ''}</small>
           </b>
           <p>
-            {attempts.filter((a) => a.correct).length} / {attempts.length}問 正解
+            {evaluated.filter((a) => a.correct).length} / {evaluated.length}問 正解
           </p>
         </div>
         <div>
@@ -561,7 +871,9 @@ export function Results() {
         {results.map((r, i) => {
           const unitIds = [
             ...new Set(
-              attempts.filter((a) => a.domainId === r.id && !a.correct).map((a) => a.unitId),
+              attempts
+                .filter((a) => a.domainId === r.id && (!a.correct || !a.canExplain))
+                .map((a) => a.unitId),
             ),
           ];
           const recommended = units.filter(
@@ -591,6 +903,61 @@ export function Results() {
           );
         })}
       </section>
+      {relatedUnits.length > 0 && (
+        <section className="panel">
+          <h2>誤答・根拠が曖昧だった学習目標へ</h2>
+          {relatedUnits.map((unit) => {
+            const objectiveIds = new Set(
+              needsReview
+                .filter((attempt) => attempt.unitId === unit.id)
+                .flatMap(
+                  (attempt) =>
+                    questions.find((question) => question.id === attempt.questionId)!.objectiveIds,
+                ),
+            );
+            const recommended = videos.filter(
+              (video) =>
+                isRecommendedVideo(video, unit.id) &&
+                video.content.review!.objectiveIds.some((id) => objectiveIds.has(id)),
+            );
+            return (
+              <div className="result-question" key={unit.id}>
+                <h3>{unit.title}</h3>
+                <ul>
+                  {unit.objectives
+                    .filter((objective) => objectiveIds.has(objective.id))
+                    .map((objective) => (
+                      <li key={objective.id}>{objective.text}</li>
+                    ))}
+                </ul>
+                <Link className="text-link" to={`/learn/${unit.id}`}>
+                  本文・確認問題へ <ArrowRight size={15} />
+                </Link>
+                {recommended.length > 0 ? (
+                  <>
+                    <p className="muted small-text">この目標に対応する内容確認済み動画</p>
+                    {recommended.map((video) => (
+                      <a
+                        className="text-link"
+                        key={video.id}
+                        href={video.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {video.title} · YouTubeで開く <ArrowRight size={15} />
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  <p className="muted small-text">
+                    この目標に対応する内容確認済み動画はありません。単元ページでは候補も区別して確認できます。
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </section>
+      )}
       <section className="panel">
         <h2>解答を振り返る</h2>
         {attempts.map((a) => {
@@ -661,7 +1028,7 @@ export function Review() {
         </button>
       </PageTitle>
       <div className="notice">
-        復習間隔は1・3・7・14・30日を基本に調整。誤答・根拠が曖昧なときは翌日へ戻します。期限超過・繰り返すつまずき・手動登録を優先し、回答時間を補助情報として順番を調整します。
+        復習は既出問題への再回答であり、厳密な未見評価とは別に記録します。復習間隔は1・3・7・14・30日を基本に調整。誤答・根拠が曖昧なときは翌日へ戻します。期限超過・繰り返すつまずき・手動登録を優先し、回答時間を補助情報として順番を調整します。
       </div>
       {!data.reviews.length ? (
         <Empty
@@ -686,7 +1053,9 @@ export function Review() {
                         ? '復習できます'
                         : `${new Date(r.dueAt).toLocaleDateString('ja-JP')} 予定`}
                     </Pill>
-                    <h3>{q.prompt}</h3>
+                    <h3>
+                      {units.find((unit) => unit.id === q.unitId)?.title} · {q.id}
+                    </h3>
                     <small>
                       {domains[q.domainId].short} · 連続つまずき {r.wrongStreak}回
                       {r.manual ? ' · 手動登録' : ''}

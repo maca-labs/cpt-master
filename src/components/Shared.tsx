@@ -204,17 +204,28 @@ export function VideoCard({ video, unitId }: { video: Video; unitId?: string }) 
           {
             {
               unconfirmed: '未確認',
-              playable: '通常ページで一部確認',
+              playable: '一部確認（方法を参照）',
               embed_blocked: '埋め込み不可',
               unavailable: '利用不可',
             }[video.playback.status]
           }
+          {' ／ 埋め込み：'}
+          {video.embed?.status === 'embeddable'
+            ? '一部再生確認'
+            : video.embed?.status === 'blocked' || video.playback.status === 'embed_blocked'
+              ? '不可の記録あり'
+              : '未確認'}
           <br />
           確認日 {video.metadata.checkedAt}
           <details>
             <summary>確認方法と内容審査の状態</summary>
             <p>{video.metadata.method}</p>
             {video.playback.method && <p>再生確認：{video.playback.method}</p>}
+            {video.embed?.method && (
+              <p>
+                埋め込み確認：{video.embed.method}（{video.embed.checkedAt}）
+              </p>
+            )}
             {review ? (
               <>
                 <p>

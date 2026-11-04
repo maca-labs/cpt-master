@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { isRecommendedVideo } from '../engines/video-review';
 import { eligible } from '../engines/learning';
+import { reservedStrictGroups } from '../engines/practice-selection';
 import { units, questions, seedVideos } from '../content';
 import { domains, domainIds } from '../content/blueprints';
 import { useLearning } from '../app/context';
@@ -91,11 +92,28 @@ export function Lesson() {
   const allCount = questions.filter(
     (q) => eligible(q) && q.unitId === unit.id && q.pool !== 'exam',
   ).length;
+  const reserved = reservedStrictGroups(data.sessions, questions);
+  const diagnosticHeld = questions.filter(
+    (q) =>
+      eligible(q) &&
+      q.unitId === unit.id &&
+      q.pool === 'diagnostic' &&
+      !['completed', 'skipped'].includes(settings.diagnosticStatus),
+  ).length;
+  const strictHeld = questions.filter(
+    (q) =>
+      eligible(q) &&
+      q.unitId === unit.id &&
+      q.pool !== 'exam' &&
+      reserved.has(q.groupId) &&
+      (['completed', 'skipped'].includes(settings.diagnosticStatus) || q.pool !== 'diagnostic'),
+  ).length;
   const available = questions.filter(
     (q) =>
       eligible(q) &&
       q.unitId === unit.id &&
       q.pool !== 'exam' &&
+      !reserved.has(q.groupId) &&
       (['completed', 'skipped'].includes(settings.diagnosticStatus) || q.pool !== 'diagnostic'),
   ).length;
   return (
@@ -282,11 +300,17 @@ export function Lesson() {
               確認問題を解く（{Math.min(10, available)}問）
               <ArrowRight size={17} />
             </button>
-            {available < allCount && (
+            {diagnosticHeld > 0 && (
               <small>
-                診断前のため、初回診断用の{allCount - available}
+                診断前のため、初回診断用の{diagnosticHeld}
                 問は保留中です。診断完了またはスキップ後に利用できます。
               </small>
+            )}
+            {strictHeld > 0 && (
+              <p className="muted small-text">
+                {strictHeld}問は中断中の厳密未見演習で予約しています。
+                <Link to="/practice">問題演習から再開する</Link>
+              </p>
             )}
             <p className="muted small-text">
               解答後に正答・誤答理由・関連する学習目標と出典を表示します。

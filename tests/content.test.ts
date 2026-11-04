@@ -27,11 +27,15 @@ describe('initial content publishing checks', () => {
     expect(report.summary).toMatchObject({
       units: 36,
       questions: 300,
-      videos: 10,
+      videos: seedContent.videos.length,
       byDomain: { assessment: 69, planning: 96, technique: 93, safety: 42 },
       diagnosticByDomain: { assessment: 12, planning: 16, technique: 15, safety: 7 },
-      videoReviewDeclarations: { unreviewed: 8, source_checked: 2, expert_reviewed: 0 },
-      recommendedVideos: 2,
+      videoReviewDeclarations: {
+        unreviewed: 8,
+        source_checked: seedContent.videos.length - 8,
+        expert_reviewed: 0,
+      },
+      recommendedVideos: seedContent.videos.length - 8,
       candidateVideos: 8,
       examEligible: 0,
     });
@@ -145,6 +149,9 @@ describe('initial content publishing checks', () => {
     const noPlaybackEvidence = copy();
     noPlaybackEvidence.videos[0].playback.status = 'playable';
     expect(codes(noPlaybackEvidence)).toContain('video.playback-record');
+    const noEmbedEvidence = copy();
+    noEmbedEvidence.videos[0].embed = { status: 'embeddable', checkedAt: null, method: null };
+    expect(codes(noEmbedEvidence)).toContain('video.embed-record');
     expect(validateContent().warnings.some((issue) => issue.code === 'scope.video-metadata')).toBe(
       true,
     );
@@ -153,10 +160,9 @@ describe('initial content publishing checks', () => {
   it('retains distinct transcript and visual recommendations and eight candidates without re-reviewing their content', () => {
     const input = copy();
     const recommended = input.videos.filter((video) => isRecommendedVideo(video));
-    expect(recommended.map((video) => video.youtubeId).sort()).toEqual([
-      'XBkaAAwyS4s',
-      'fIvDJoyVgRQ',
-    ]);
+    expect(recommended.map((video) => video.youtubeId)).toEqual(
+      expect.arrayContaining(['XBkaAAwyS4s', 'fIvDJoyVgRQ']),
+    );
     expect(
       recommended.find((video) => video.youtubeId === 'XBkaAAwyS4s')!.content.review,
     ).toMatchObject({
@@ -258,7 +264,7 @@ describe('initial content publishing checks', () => {
     const report = validateContent(input);
     expect(report.errors).toEqual([]);
     expect(report.summary.recommendedVideos).toBe(0);
-    expect(report.summary.candidateVideos).toBe(10);
+    expect(report.summary.candidateVideos).toBe(input.videos.length);
     expect(report.verificationScope).toContain('審査状態を変更しません');
   });
 

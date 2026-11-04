@@ -183,7 +183,14 @@ export function partitionAttempts(
   exposures: Exposure[],
 ): { first: Attempt[]; repeat: Attempt[] } {
   const earliest = new Map<string, Attempt>();
-  for (const a of [...items].sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id)))
+  // Atomic answer transactions decide firstSeen. Within one clock millisecond,
+  // a later repeat must not displace the recorded first answer by its random ID.
+  for (const a of [...items].sort(
+    (a, b) =>
+      Date.parse(a.at) - Date.parse(b.at) ||
+      Number(b.firstSeen) - Number(a.firstSeen) ||
+      a.id.localeCompare(b.id),
+  ))
     if (!earliest.has(a.groupId)) earliest.set(a.groupId, a);
   const first = [...earliest.values()].filter(
     (a) =>
@@ -191,7 +198,7 @@ export function partitionAttempts(
       !exposures.some(
         (e) =>
           e.groupId === a.groupId &&
-          e.at < a.at &&
+          Date.parse(e.at) < Date.parse(a.at) &&
           (e.sessionId !== a.sessionId || e.kind === 'explanation'),
       ),
   );

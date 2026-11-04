@@ -1,4 +1,5 @@
 import type { Video } from '../domain/types';
+import { videoV05Additions } from './video-additions-v05';
 import {
   videoReviews,
   videoContentSourceRefs,
@@ -129,7 +130,7 @@ const candidates: Candidate[] = [
   },
 ];
 
-export const seedVideos: Video[] = candidates.map(({ discoveryUrl, ...candidate }) => ({
+const reviewedCandidates: Video[] = candidates.map(({ discoveryUrl, ...candidate }) => ({
   ...candidate,
   id: `yt-${candidate.youtubeId}`,
   url: `https://www.youtube.com/watch?v=${candidate.youtubeId}`,
@@ -164,3 +165,5 @@ export const seedVideos: Video[] = candidates.map(({ discoveryUrl, ...candidate 
     review: videoReviews[candidate.youtubeId],
   },
 }));
+
+export const seedVideos: Video[] = [...reviewedCandidates, ...videoV05Additions];

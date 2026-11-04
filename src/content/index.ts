@@ -2,6 +2,7 @@ import { foundationUnits, foundationQuestions, foundationSources } from './found
 import { appliedUnits, appliedQuestions, appliedSources } from './applied';
 import { blueprintSources } from './blueprints';
 import { videoReviewSources } from './video-reviews';
+import { videoV05Sources } from './video-additions-v05';
 import {
   assessmentExpansionUnits,
   assessmentExpansionQuestions,
@@ -53,6 +54,7 @@ export const sources = [
   ...foundationSources,
   ...appliedSources,
   ...videoReviewSources,
+  ...videoV05Sources,
   ...assessmentExpansionSources,
   ...planningExpansionSources,
   ...techniqueExpansionSources,

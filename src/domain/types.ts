@@ -91,6 +91,11 @@ export interface Video {
     checkedAt: string | null;
     method: string | null;
   };
+  embed?: {
+    status: 'unconfirmed' | 'embeddable' | 'blocked';
+    checkedAt: string | null;
+    method: string | null;
+  };
   content: {
     status: 'unreviewed' | 'source_checked' | 'expert_reviewed';
     checkedAt: string | null;
@@ -141,9 +146,14 @@ export interface Session {
   startedAt: string;
   completedAt?: string;
   firstSeenByQuestion: Record<string, boolean>;
+  practice?: {
+    batch: 'all' | 'expansion-2026-11-04';
+    selection: 'unseen_first' | 'strict_unseen' | 'review';
+    requestedCount: 10 | 20 | 50;
+  };
   mock?: {
-    format: 'short';
-    questionCount: 10 | 20 | 50;
+    format: 'short' | 'through';
+    questionCount: 10 | 20 | 50 | 155;
     timeMode: 'study' | 'continuous';
     limitSeconds: number;
     remainingSeconds: number;

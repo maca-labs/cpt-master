@@ -336,6 +336,40 @@ describe('record-based learning analytics', () => {
     expect(sessionDifference(latest, undefined)).toBeNull();
   });
 
+  it('does not compare different practice batches or strict evaluation with seen review', () => {
+    const practice = {
+      batch: 'expansion-2026-11-04',
+      selection: 'strict_unseen',
+      requestedCount: 50,
+    } as const;
+    const result = buildAnalytics(
+      input({
+        sessions: [
+          session({
+            id: 'strict-latest',
+            startedAt: '2026-11-05T01:00:00Z',
+            completedAt: '2026-11-05T02:00:00Z',
+            practice,
+          }),
+          session({ id: 'strict-before', practice }),
+          session({ id: 'review', practice: { ...practice, selection: 'review' } }),
+          session({ id: 'all', practice: { ...practice, batch: 'all' } }),
+          session({ id: 'legacy' }),
+        ],
+      }),
+    );
+    expect(comparableSessions(result.sessions, 'practice').map((s) => s.id)).toEqual([
+      'strict-latest',
+      'strict-before',
+    ]);
+    expect(
+      sessionDifference(
+        result.sessions[0],
+        result.sessions.find((s) => s.id === 'review'),
+      ),
+    ).toBeNull();
+  });
+
   it('does not mutate persisted records while sorting and deriving statistics', () => {
     const data = input({
       attempts: [attempt({ at: '2026-11-02T12:00:00Z' }), attempt({ id: 'earlier' })],
@@ -344,5 +378,53 @@ describe('record-based learning analytics', () => {
     const before = structuredClone(data);
     buildAnalytics(data);
     expect(data).toEqual(before);
+  });
+  it('keeps the atomically recorded first answer when a same-millisecond repeat has a smaller ID', () => {
+    const result = buildAnalytics(
+      input({
+        attempts: [
+          attempt({ id: 'z-first', firstSeen: true }),
+          attempt({
+            id: 'a-repeat',
+            firstSeen: false,
+            sessionId: 'repeat',
+            at: '2026-11-01T12:00:00.000Z',
+          }),
+        ],
+      }),
+    );
+    expect(result.overall).toMatchObject({ firstCount: 1, repeatCount: 1, independentGroups: 1 });
+  });
+  it('excludes contaminated answers from strict session history and comparisons as well as the result screen', () => {
+    const result = buildAnalytics(
+      input({
+        sessions: [
+          session({
+            questionIds: ['q1', 'q2'],
+            practice: { batch: 'all', selection: 'strict_unseen', requestedCount: 10 },
+          }),
+        ],
+        attempts: [
+          attempt({ correct: false }),
+          attempt({
+            id: 'repeat',
+            questionId: 'q2',
+            groupId: 'g2',
+            correct: true,
+            firstSeen: false,
+          }),
+        ],
+      }),
+    );
+    expect(result.sessions[0]).toMatchObject({
+      total: 2,
+      answered: 2,
+      correct: 0,
+      accuracy: 0,
+      evaluatedTotal: 1,
+      excludedCount: 1,
+      firstCount: 1,
+      repeatCount: 1,
+    });
   });
 });

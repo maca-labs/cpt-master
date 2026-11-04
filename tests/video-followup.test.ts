@@ -1,24 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import { questions, seedVideos, sources, units } from '../src/content';
 import { isRecommendedVideo } from '../src/engines/video-review';
+import { videoReviews } from '../src/content/video-reviews';
 
 const video = (youtubeId: string) => seedVideos.find((item) => item.youtubeId === youtubeId)!;
+const originalVideos = seedVideos.filter((item) => Object.hasOwn(videoReviews, item.youtubeId));
 
 describe('follow-up video review scope', () => {
   it('distinguishes seven transcript reads, one visual review and two unavailable transcripts', () => {
     expect(
-      seedVideos.filter((item) =>
+      originalVideos.filter((item) =>
         ['transcript', 'transcript_and_visual'].includes(item.content.review!.method),
       ),
     ).toHaveLength(7);
-    expect(seedVideos.filter((item) => item.content.review!.method === 'visual')).toHaveLength(1);
+    expect(originalVideos.filter((item) => item.content.review!.method === 'visual')).toHaveLength(
+      1,
+    );
     expect(
-      seedVideos
+      originalVideos
         .filter((item) => item.content.review!.method === 'unavailable')
         .map((item) => item.youtubeId)
         .sort(),
     ).toEqual(['0VT-7KAtOxw', 'vfyowlhlRlA']);
-    expect(seedVideos.filter((item) => isRecommendedVideo(item))).toHaveLength(2);
+    expect(originalVideos.filter((item) => isRecommendedVideo(item))).toHaveLength(2);
   });
 
   it('limits the squat recommendation to its observed frames and technique objective', () => {

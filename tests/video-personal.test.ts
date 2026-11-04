@@ -132,7 +132,12 @@ describe('personal video settings and bundled content reviews', () => {
       sourceRefs: [],
     });
     expect(isRecommendedVideo(result)).toBe(false);
-    expect(seedVideos.filter((video) => isRecommendedVideo(video))).toHaveLength(2);
+    expect(
+      seedVideos.filter(
+        (video) =>
+          ['XBkaAAwyS4s', 'fIvDJoyVgRQ'].includes(video.youtubeId) && isRecommendedVideo(video),
+      ),
+    ).toHaveLength(2);
   });
 
   it('ignores a forged personal review and rejects it in imported backup data', async () => {

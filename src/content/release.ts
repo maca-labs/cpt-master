@@ -9,6 +9,7 @@ export const finalDevelopmentTargets = {
   regularQuestions: 600,
   diagnosticIncluded: 50,
   exclusiveMockSets: 3,
+  firstExclusiveMockSets: 1,
   questionsPerMock: 155,
 } as const;
 export const currentContentVersion = '2026-11-04.2';

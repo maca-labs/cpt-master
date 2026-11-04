@@ -2,9 +2,165 @@ import type { Attempt, DomainId, Exposure, Question, Session } from '../domain/t
 import { questions } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import { createSession, eligible, isFirstSeen, nextReview, shuffle } from './learning';
-import { db, type LearningDB } from '../storage/db';
+import { db, recordExposure, type LearningDB } from '../storage/db';
+import { reservedStrictGroups } from './practice-selection';
 
 export type MockState = NonNullable<Session['mock']>;
+export const THROUGH_QUESTION_COUNT = 155;
+export const THROUGH_LIMIT_SECONDS = 180 * 60;
+
+/** Strict practice reservations are not silently consumed by timed exercises. */
+export function availableMockBank(bank: Question[], sessions: readonly Session[]) {
+  const reserved = reservedStrictGroups(sessions, bank);
+  return bank.filter((q) => !reserved.has(q.groupId));
+}
+
+export type MockDisplay =
+  | { status: 'ready' }
+  | { status: 'stale' }
+  | { status: 'reserved'; sessionIds: string[]; count: number };
+
+/** Older sessions must also respect reservations made after they were created.
+ * The sessions lock serializes this check with strict-practice selection. */
+export async function recordMockDisplay(
+  sessionId: string,
+  questionIds: string[],
+  database: LearningDB = db,
+  now = new Date(),
+): Promise<MockDisplay> {
+  return database.transaction('rw', [database.sessions, database.exposures], async () => {
+    const session = await database.sessions.get(sessionId);
+    if (!session?.mock || session.mode !== 'mock') throw new Error('学習用演習が見つかりません。');
+    if (
+      !questionIds.length ||
+      questionIds.some((id) => !session.questionIds.includes(id)) ||
+      (session.status === 'active' &&
+        (session.mock.paused ||
+          questionIds.length !== 1 ||
+          session.questionIds[session.index] !== questionIds[0]))
+    )
+      return { status: 'stale' };
+    const selected = questionIds.map((id) => questions.find((q) => q.id === id)!);
+    const groups = new Set(selected.map((q) => q.groupId));
+    const blockers = (await database.sessions.toArray()).filter(
+      (other) =>
+        other.status === 'active' &&
+        other.mode === 'practice' &&
+        other.practice?.selection === 'strict_unseen' &&
+        other.questionIds.some((id) => groups.has(questions.find((q) => q.id === id)!.groupId)),
+    );
+    if (blockers.length) {
+      const reserved = reservedStrictGroups(blockers, questions);
+      return {
+        status: 'reserved',
+        sessionIds: blockers.map((other) => other.id),
+        count: selected.filter((q) => reserved.has(q.groupId)).length,
+      };
+    }
+    for (const question of selected)
+      await recordExposure(
+        {
+          id: `${session.id}:${question.id}:question`,
+          questionId: question.id,
+          groupId: question.groupId,
+          kind: 'question',
+          sessionId: session.id,
+          at: now.toISOString(),
+        },
+        database,
+      );
+    return { status: 'ready' };
+  });
+}
+
+export function mockComposition(
+  selected: Question[],
+  firstSeenByQuestion: Record<string, boolean>,
+) {
+  const unseen = selected.filter((q) => firstSeenByQuestion[q.id] === true).length;
+  return {
+    total: selected.length,
+    unseen,
+    seen: selected.length - unseen,
+    diagrams: selected.filter((q) => q.media?.kind === 'diagram').length,
+    animations: selected.filter((q) => q.media?.kind === 'sequence').length,
+    realImages: selected.filter((q) => q.context === 'image' && !q.media).length,
+    realVideos: selected.filter((q) => q.context === 'video' && !q.media).length,
+    sourceChecked: selected.filter(
+      (q) => q.review.status === 'source_checked' && q.review.reviewerType === 'ai',
+    ).length,
+    expertReviewed: selected.filter(
+      (q) => q.review.status === 'expert_reviewed' && q.review.reviewerType === 'human_expert',
+    ).length,
+  };
+}
+
+export function previewComposition(
+  selected: Question[],
+  exposures: Exposure[],
+  attempts: Attempt[],
+) {
+  const seen = new Set([...exposures.map((e) => e.groupId), ...attempts.map((a) => a.groupId)]);
+  return mockComposition(
+    selected,
+    Object.fromEntries(selected.map((q) => [q.id, !seen.has(q.groupId)])),
+  );
+}
+
+export function selectThrough(
+  bank: Question[],
+  unlocked: boolean,
+  sessions: readonly Session[] = [],
+  rng: () => number = Math.random,
+) {
+  return selectMock(availableMockBank(bank, sessions), THROUGH_QUESTION_COUNT, unlocked, rng);
+}
+
+/** A separate learning format; this does not grant exclusive-exam eligibility. */
+export function createThroughSession(
+  bank: Question[],
+  unlocked: boolean,
+  exposures: Exposure[],
+  attempts: Attempt[],
+  sessions: readonly Session[] = [],
+  now = new Date(),
+  rng: () => number = Math.random,
+  previewIds?: string[],
+): Session {
+  const available = availableMockBank(bank, sessions).filter(
+    (q) => eligible(q) && q.pool !== 'exam' && (unlocked || q.pool !== 'diagnostic'),
+  );
+  const selected = previewIds
+    ? previewIds.map((id) => available.find((q) => q.id === id))
+    : selectThrough(bank, unlocked, sessions, rng);
+  if (
+    selected.length !== THROUGH_QUESTION_COUNT ||
+    selected.some((q) => !q) ||
+    new Set(selected.map((q) => q?.groupId)).size !== THROUGH_QUESTION_COUNT
+  )
+    throw new Error(
+      '候補の在庫または未見演習の予約が変わりました。通し演習の出題構成を再確認してください。',
+    );
+  const checked = selected as Question[];
+  const allocation = mockAllocation(THROUGH_QUESTION_COUNT);
+  if (domainIds.some((id) => checked.filter((q) => q.domainId === id).length !== allocation[id]))
+    throw new Error('学習用通し演習の分野配分が不正です。');
+  return {
+    ...createSession('mock', checked, exposures, attempts, rng),
+    startedAt: now.toISOString(),
+    mock: {
+      format: 'through',
+      questionCount: THROUGH_QUESTION_COUNT,
+      timeMode: 'continuous',
+      limitSeconds: THROUGH_LIMIT_SECONDS,
+      remainingSeconds: THROUGH_LIMIT_SECONDS,
+      deadlineAt: new Date(now.getTime() + THROUGH_LIMIT_SECONDS * 1000).toISOString(),
+      paused: false,
+      flags: [],
+      draftAnswers: {},
+    },
+  };
+}
 export function mockAllocation(count: number): Record<DomainId, number> {
   if (!Number.isInteger(count) || count < 1 || count > 155) throw new Error('問題数が不正です。');
   const total = domainIds.reduce((sum, id) => sum + domains[id].scored, 0);
@@ -74,7 +230,7 @@ export function selectMock(
 ) {
   const result = plan(bank, count, unlocked, rng);
   if (result.entries.length !== count)
-    throw new Error(`照合済みの短縮模試用問題が${count - result.entries.length}問不足しています。`);
+    throw new Error(`照合済みの学習用問題が${count - result.entries.length}問不足しています。`);
   return shuffle(
     result.entries.map(
       ({ group, domainId }) =>
@@ -131,7 +287,8 @@ export function remainingMockSeconds(session: Session, now = new Date()) {
 export function pauseMock(session: Session, now = new Date()): Session {
   if (!session.mock || session.mode !== 'mock' || session.status !== 'active')
     throw new Error('進行中の短縮模試ではありません。');
-  if (session.mock.timeMode !== 'study') throw new Error('時間継続モードでは停止できません。');
+  if (session.mock.format === 'through' || session.mock.timeMode !== 'study')
+    throw new Error('時間継続モードでは停止できません。');
   return {
     ...session,
     mock: {
@@ -143,7 +300,12 @@ export function pauseMock(session: Session, now = new Date()): Session {
   };
 }
 export function resumeMock(session: Session, now = new Date()): Session {
-  if (!session.mock || session.status !== 'active' || !session.mock.paused)
+  if (
+    !session.mock ||
+    session.mock.format === 'through' ||
+    session.status !== 'active' ||
+    !session.mock.paused
+  )
     throw new Error('停止中の短縮模試ではありません。');
   return {
     ...session,

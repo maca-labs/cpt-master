@@ -1,0 +1,314 @@
+{
+  "app": "cpt-master",
+  "formatVersion": 1,
+  "contentVersion": "2026-11-04.2",
+  "createdAt": "2026-11-04T15:07:16.122Z",
+  "data": {
+    "attempts": [
+      {
+        "id": "v04-answer",
+        "sessionId": "v04-practice",
+        "questionId": "ex-plan-load-01",
+        "questionRevision": 1,
+        "groupId": "ex-plan-load-percent-rounding",
+        "domainId": "planning",
+        "unitId": "ex-plan-load",
+        "selectedChoiceId": "b",
+        "correctChoiceId": "b",
+        "correct": true,
+        "firstSeen": true,
+        "canExplain": false,
+        "elapsedMs": 20000,
+        "choiceOrder": [
+          "a",
+          "c",
+          "b"
+        ],
+        "at": "2026-11-04T12:00:20Z"
+      }
+    ],
+    "exposures": [
+      {
+        "id": "v04-display",
+        "sessionId": "v04-practice",
+        "questionId": "ex-plan-load-01",
+        "groupId": "ex-plan-load-percent-rounding",
+        "kind": "question",
+        "at": "2026-11-04T12:00:00.000Z"
+      }
+    ],
+    "reviews": [
+      {
+        "questionId": "ex-plan-load-01",
+        "dueAt": "2026-11-05T12:00:00Z",
+        "intervalDays": 1,
+        "wrongStreak": 0,
+        "manual": true
+      }
+    ],
+    "sessions": [
+      {
+        "id": "v04-active-short",
+        "mode": "mock",
+        "questionIds": [
+          "ex-plan-pregnancy-01",
+          "ex-assess-health-04",
+          "ex-safe-009",
+          "assessment-d-01",
+          "anatomy-d-01",
+          "anatomy-d-02",
+          "ex-assess-bodycomp-04",
+          "ex-safe-004",
+          "assessment-d-02",
+          "ex-plan-metabolic-05",
+          "ex-tech-024",
+          "ex-assess-quality-07",
+          "ex-tech-012",
+          "ex-plan-progression-07",
+          "ex-tech-042",
+          "ex-tech-054",
+          "physiology-d-01",
+          "safety-01",
+          "ex-plan-cardio-03",
+          "physiology-d-02"
+        ],
+        "choiceOrders": {
+          "ex-plan-pregnancy-01": [
+            "c",
+            "a",
+            "b"
+          ],
+          "ex-assess-health-04": [
+            "ex-assess-health-04-c1",
+            "ex-assess-health-04-c2",
+            "ex-assess-health-04-c3"
+          ],
+          "ex-safe-009": [
+            "c",
+            "a",
+            "b"
+          ],
+          "assessment-d-01": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "anatomy-d-01": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "anatomy-d-02": [
+            "c2",
+            "c3",
+            "c1"
+          ],
+          "ex-assess-bodycomp-04": [
+            "ex-assess-bodycomp-04-c1",
+            "ex-assess-bodycomp-04-c2",
+            "ex-assess-bodycomp-04-c3"
+          ],
+          "ex-safe-004": [
+            "c",
+            "a",
+            "b"
+          ],
+          "assessment-d-02": [
+            "c2",
+            "c3",
+            "c1"
+          ],
+          "ex-plan-metabolic-05": [
+            "c",
+            "a",
+            "b"
+          ],
+          "ex-tech-024": [
+            "ex-tech-024-c",
+            "ex-tech-024-a",
+            "ex-tech-024-b"
+          ],
+          "ex-assess-quality-07": [
+            "ex-assess-quality-07-c1",
+            "ex-assess-quality-07-c2",
+            "ex-assess-quality-07-c3"
+          ],
+          "ex-tech-012": [
+            "ex-tech-012-c",
+            "ex-tech-012-a",
+            "ex-tech-012-b"
+          ],
+          "ex-plan-progression-07": [
+            "c",
+            "a",
+            "b"
+          ],
+          "ex-tech-042": [
+            "ex-tech-042-c",
+            "ex-tech-042-a",
+            "ex-tech-042-b"
+          ],
+          "ex-tech-054": [
+            "ex-tech-054-c",
+            "ex-tech-054-a",
+            "ex-tech-054-b"
+          ],
+          "physiology-d-01": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "safety-01": [
+            "safety-01-c0",
+            "safety-01-c1",
+            "safety-01-c2"
+          ],
+          "ex-plan-cardio-03": [
+            "c",
+            "a",
+            "b"
+          ],
+          "physiology-d-02": [
+            "c2",
+            "c3",
+            "c1"
+          ]
+        },
+        "firstSeenByQuestion": {
+          "ex-plan-pregnancy-01": true,
+          "ex-assess-health-04": true,
+          "ex-safe-009": true,
+          "assessment-d-01": true,
+          "anatomy-d-01": true,
+          "anatomy-d-02": true,
+          "ex-assess-bodycomp-04": true,
+          "ex-safe-004": true,
+          "assessment-d-02": true,
+          "ex-plan-metabolic-05": true,
+          "ex-tech-024": true,
+          "ex-assess-quality-07": true,
+          "ex-tech-012": true,
+          "ex-plan-progression-07": true,
+          "ex-tech-042": true,
+          "ex-tech-054": true,
+          "physiology-d-01": true,
+          "safety-01": true,
+          "ex-plan-cardio-03": true,
+          "physiology-d-02": true
+        },
+        "index": 0,
+        "status": "active",
+        "startedAt": "2026-11-04T12:00:00.000Z",
+        "mock": {
+          "format": "short",
+          "questionCount": 20,
+          "timeMode": "study",
+          "limitSeconds": 1400,
+          "remainingSeconds": 1395,
+          "deadlineAt": "2026-11-04T12:23:20.000Z",
+          "paused": false,
+          "flags": [
+            "ex-plan-pregnancy-01"
+          ],
+          "draftAnswers": {
+            "ex-plan-pregnancy-01": {
+              "choiceId": "b",
+              "canExplain": true,
+              "elapsedMs": 5000,
+              "answeredAt": "2026-11-04T12:00:05.000Z"
+            }
+          }
+        }
+      },
+      {
+        "id": "v04-practice",
+        "mode": "practice",
+        "questionIds": [
+          "ex-plan-load-01"
+        ],
+        "choiceOrders": {
+          "ex-plan-load-01": [
+            "a",
+            "c",
+            "b"
+          ]
+        },
+        "firstSeenByQuestion": {
+          "ex-plan-load-01": true
+        },
+        "index": 0,
+        "status": "completed",
+        "startedAt": "2026-11-04T12:00:00.000Z",
+        "completedAt": "2026-11-04T12:00:20Z"
+      }
+    ],
+    "videoProgress": [
+      {
+        "videoId": "yt-fIvDJoyVgRQ",
+        "watched": true,
+        "note": "v0.4の動画メモ",
+        "updatedAt": "2026-11-04T12:00:00.000Z"
+      }
+    ],
+    "unitProgress": [
+      {
+        "unitId": "ex-plan-load",
+        "rating": 3,
+        "note": "v0.4の追加単元メモ",
+        "updatedAt": "2026-11-04T12:00:00.000Z"
+      }
+    ],
+    "videoOverrides": [
+      {
+        "id": "yt-fIvDJoyVgRQ",
+        "video": {
+          "youtubeId": "fIvDJoyVgRQ",
+          "title": "バックスクワット",
+          "channel": "NSCA Japan",
+          "unitIds": [
+            "technique"
+          ],
+          "difficulty": "基礎",
+          "order": 88,
+          "reason": "開始姿勢・下降・上昇を観察する限定的なおすすめ。主要画面とテロップをNSCA公式資料とAIが照合しました。音声・全フレームは未確認です。深さは個人に合わせ、安全設定と補助の条件を確認してください。",
+          "id": "yt-fIvDJoyVgRQ",
+          "url": "https://www.youtube.com/watch?v=fIvDJoyVgRQ",
+          "objectiveIds": [
+            "technique-o4"
+          ],
+          "metadata": {
+            "status": "confirmed",
+            "checkedAt": "2026-11-04",
+            "method": "Web検索で候補を発見し、YouTube公式oEmbedへHTTPS GETを実行。JSON応答のtitle・author_nameを確認。掲載元: https://park.nsca-japan.or.jp/category-13/post-1106/。これはメタデータの確認記録で、内容の照合は別に記録。",
+            "evidenceUrl": "https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DfIvDJoyVgRQ&format=json"
+          },
+          "playback": {
+            "status": "playable",
+            "checkedAt": "2026-11-04",
+            "method": "通常のYouTubeプレーヤーで一部実再生し、0:05–1:05の主要時点へシークした画面を確認。全編の連続再生・音声の実聴・アプリ内の埋め込み可否は未確認。"
+          },
+          "content": {
+            "status": "unreviewed",
+            "checkedAt": null,
+            "method": null,
+            "sourceRefs": []
+          }
+        }
+      }
+    ],
+    "settings": [
+      {
+        "id": "main",
+        "theme": "dark",
+        "diagnosticStatus": "completed",
+        "timezone": "Asia/Tokyo"
+      }
+    ],
+    "favorites": [
+      {
+        "questionId": "ex-plan-load-01"
+      }
+    ],
+    "studyEvents": []
+  }
+}

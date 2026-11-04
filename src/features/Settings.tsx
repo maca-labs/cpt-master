@@ -126,7 +126,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.4.0</small>
+          <small>教材版 {contentVersion} · アプリ 0.5.0</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>
@@ -252,14 +252,15 @@ export default function Settings() {
           個人学習用の非公式アプリです。NSCAの認定教材ではありません。動画視聴はCPR/AED実技講習や資格認定条件の代替にはなりません。
         </p>
         <p className="muted small-text">
-          短縮模試・成績比較・PWA更新案内を利用できます。155問の本番形式模試、全範囲への教材展開、PWAの詳細な実端末検証は後続段階です。YouTubeの視聴には通信が必要です。
+          追加200問の選択・厳密未見演習・155問180分の学習用通し演習・短縮模試を利用できます。通し演習は既存問題を使う時間配分練習です。専用問題による本番形式模試、全範囲への教材展開、PWAの詳細な実端末検証は後続段階です。YouTubeの視聴には通信が必要です。
         </p>
         <p className="muted small-text">
           独自の最終開発目標：小単元{finalDevelopmentTargets.units.join('〜')}、通常
           {finalDevelopmentTargets.regularQuestions}問（診断
           {finalDevelopmentTargets.diagnosticIncluded}問を含む）、通常学習とは別の模試専用
           {finalDevelopmentTargets.questionsPerMock}問×{finalDevelopmentTargets.exclusiveMockSets}
-          セット。公式の合格条件ではありません。
+          セット。まず専用155問×{finalDevelopmentTargets.firstExclusiveMockSets}
+          セットから整備します。公式の合格条件ではありません。
         </p>
       </section>
     </>
@@ -276,7 +277,7 @@ export function Exam() {
       />
       <Empty
         title="155問模試の開始条件を満たしていません"
-        body="本番形式の155問模試は準備中です。専用問題・専門家審査・画像映像等の必要条件が揃うまで公開しません。50問診断・短縮模試・確認問題を利用できます。"
+        body="本番形式の155問模試は準備中です。専用問題・専門家審査・画像映像等の必要条件が揃うまで公開しません。既存300問を使う学習用通し演習は、別の時間配分練習として利用できます。"
       />
       <section className="panel">
         <h2>公開前の確認事項</h2>
@@ -305,7 +306,9 @@ export function Exam() {
         <ul className="plain-list">
           <li>採点対象外の参考15問も別に必要です。</li>
           <li>画像・映像問題25〜35問の内容検証と利用権確認が必要です。</li>
-          <li>将来は問題順・選択肢順・回答・フラグ・残り時間を保存します。</li>
+          <li>
+            専用の初見問題は通常演習へ出さず、まず155問1セットから別枠で整備します（現在0問）。
+          </li>
           <li>正答率から公式換算スコア・合格保証を表示しません。</li>
         </ul>
       </section>

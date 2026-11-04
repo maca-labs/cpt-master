@@ -21,6 +21,7 @@ import {
   legacyUnitIds,
 } from '../content';
 import { legacyContentVersion } from '../content/release';
+import { expansionQuestionIds } from '../content/batches';
 export interface Favorite {
   questionId: string;
 }
@@ -130,6 +131,14 @@ const videoSchema = z
         method: z.string().max(3000).nullable(),
       })
       .strict(),
+    embed: z
+      .object({
+        status: z.enum(['unconfirmed', 'embeddable', 'blocked']),
+        checkedAt: z.string().max(80).nullable(),
+        method: z.string().max(3000).nullable(),
+      })
+      .strict()
+      .optional(),
     content: z
       .object({
         status: z.enum(['unreviewed', 'source_checked', 'expert_reviewed']),
@@ -170,16 +179,24 @@ const session = z
     startedAt: date,
     completedAt: date.optional(),
     firstSeenByQuestion: z.record(id, z.boolean()),
+    practice: z
+      .object({
+        batch: z.enum(['all', 'expansion-2026-11-04']),
+        selection: z.enum(['unseen_first', 'strict_unseen', 'review']),
+        requestedCount: z.union([z.literal(10), z.literal(20), z.literal(50)]),
+      })
+      .strict()
+      .optional(),
     mock: z
       .object({
-        format: z.literal('short'),
-        questionCount: z.union([z.literal(10), z.literal(20), z.literal(50)]),
+        format: z.enum(['short', 'through']),
+        questionCount: z.union([z.literal(10), z.literal(20), z.literal(50), z.literal(155)]),
         timeMode: z.enum(['study', 'continuous']),
         limitSeconds: z.number().int().min(1).max(21600),
         remainingSeconds: z.number().int().min(0).max(21600),
         deadlineAt: date.nullable(),
         paused: z.boolean(),
-        flags: z.array(id).max(50),
+        flags: z.array(id).max(155),
         draftAnswers: z.record(
           id,
           z
@@ -359,6 +376,7 @@ export function validateBackup(text: string): Backup {
   }
   const sessionIds = new Set(backup.data.sessions.map((s) => s.id));
   const sessionsById = new Map(backup.data.sessions.map((s) => [s.id, s]));
+  const activeStrictGroups = new Set<string>();
   const answeredPairs = new Set<string>();
   for (const a of backup.data.attempts) {
     const q = qMap.get(a.questionId);
@@ -388,6 +406,26 @@ export function validateBackup(text: string): Backup {
       throw new Error('解答履歴と教材の対応が不正です。');
   }
   for (const s of backup.data.sessions) {
+    if (s.practice) {
+      if (s.mode !== 'practice' || s.questionIds.length > s.practice.requestedCount)
+        throw new Error('演習条件とセッションの形式・件数が一致しません。');
+      for (const qid of s.questionIds) {
+        const q = qMap.get(qid);
+        if (
+          !q ||
+          q.pool === 'exam' ||
+          (s.practice.batch === 'expansion-2026-11-04' && !expansionQuestionIds.has(qid))
+        )
+          throw new Error('演習バッチと問題の対応が不正です。');
+        if (s.practice.selection === 'strict_unseen' && s.firstSeenByQuestion[qid] !== true)
+          throw new Error('厳密な未見演習の開始時記録が不正です。');
+        if (s.practice.selection === 'strict_unseen' && s.status === 'active') {
+          if (activeStrictGroups.has(q.groupId))
+            throw new Error('進行中の厳密未見演習で、同じ問題グループが重複予約されています。');
+          activeStrictGroups.add(q.groupId);
+        }
+      }
+    }
     for (const record of [s.choiceOrders, s.firstSeenByQuestion]) {
       const keys = Object.keys(record);
       if (keys.length !== s.questionIds.length || keys.some((key) => !s.questionIds.includes(key)))
@@ -397,6 +435,22 @@ export function validateBackup(text: string): Backup {
       throw new Error('短縮模試の設定とセッション形式が一致しません。');
     if (s.mock) {
       const m = s.mock;
+      if (
+        (m.format === 'short' && ![10, 20, 50].includes(m.questionCount)) ||
+        (m.format === 'through' &&
+          (m.questionCount !== 155 || m.timeMode !== 'continuous' || m.limitSeconds !== 10800))
+      )
+        throw new Error('学習用演習の形式・問題数・時間の設定が不正です。');
+      if (m.format === 'through') {
+        const expected = { assessment: 35, planning: 50, technique: 48, safety: 22 } as const;
+        if (
+          (Object.keys(expected) as (keyof typeof expected)[]).some(
+            (id) =>
+              s.questionIds.filter((qid) => qMap.get(qid)?.domainId === id).length !== expected[id],
+          )
+        )
+          throw new Error('学習用通し演習の分野配分が不正です。');
+      }
       if (
         m.questionCount !== s.questionIds.length ||
         m.remainingSeconds > m.limitSeconds ||

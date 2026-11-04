@@ -43,6 +43,10 @@ export interface SessionPerformance {
   independentGroups: number;
   medianResponseMs: number | null;
   mockTimeMode: 'study' | 'continuous' | null;
+  mockFormat?: 'short' | 'through' | null;
+  practice?: Session['practice'];
+  evaluatedTotal?: number;
+  excludedCount?: number;
 }
 
 export interface DayActivity {
@@ -154,8 +158,13 @@ export function completedSessionPerformance(
       for (const attempt of attempts.filter((a) => a.sessionId === session.id).sort(byTime))
         if (assigned.has(attempt.questionId)) answers.set(attempt.questionId, attempt);
       const responses = [...answers.values()];
-      const correct = responses.filter((attempt) => attempt.correct).length;
       const firstCount = responses.filter((attempt) => firstIds.has(attempt.id)).length;
+      const strict = session.practice?.selection === 'strict_unseen';
+      const evaluated = strict
+        ? responses.filter((attempt) => firstIds.has(attempt.id))
+        : responses;
+      const correct = evaluated.filter((attempt) => attempt.correct).length;
+      const evaluatedTotal = strict ? evaluated.length : assigned.size;
       return {
         id: session.id,
         mode: session.mode,
@@ -165,12 +174,16 @@ export function completedSessionPerformance(
         answered: responses.length,
         unanswered: Math.max(0, assigned.size - responses.length),
         correct,
-        accuracy: percentage(correct, assigned.size),
+        accuracy: percentage(correct, evaluatedTotal),
         firstCount,
         repeatCount: responses.length - firstCount,
         independentGroups: new Set(responses.map((attempt) => attempt.groupId)).size,
         medianResponseMs: median(responses.map((attempt) => attempt.elapsedMs)),
         mockTimeMode: session.mode === 'mock' ? (session.mock?.timeMode ?? null) : null,
+        mockFormat: session.mode === 'mock' ? (session.mock?.format ?? 'short') : null,
+        practice: session.practice,
+        evaluatedTotal,
+        excludedCount: strict ? responses.length - evaluated.length : 0,
       };
     })
     .sort(sessionOrder);
@@ -183,14 +196,29 @@ function sessionOrder(a: SessionPerformance, b: SessionPerformance) {
   );
 }
 
-/** Compare only one learning mode. Short mocks also require the same size and timer mode. */
+function sameFormat(a: SessionPerformance, b: SessionPerformance): boolean {
+  if (a.mode !== b.mode) return false;
+  if (a.mode === 'mock')
+    return (
+      a.total === b.total &&
+      a.mockTimeMode === b.mockTimeMode &&
+      (a.mockFormat ?? 'short') === (b.mockFormat ?? 'short')
+    );
+  if (a.mode === 'practice')
+    return (
+      a.total === b.total &&
+      (a.practice?.batch ?? 'all') === (b.practice?.batch ?? 'all') &&
+      (a.practice?.selection ?? 'unseen_first') === (b.practice?.selection ?? 'unseen_first')
+    );
+  return true;
+}
+
+/** Different batches, exposure rules, sizes and timer formats are not interchangeable. */
 export function comparableSessions(sessions: readonly SessionPerformance[], mode: LearningMode) {
   const matching = sessions.filter((session) => session.mode === mode).sort(sessionOrder);
   const latest = matching[0];
-  if (!latest || mode !== 'mock') return matching;
-  return matching.filter(
-    (session) => session.total === latest.total && session.mockTimeMode === latest.mockTimeMode,
-  );
+  if (!latest) return matching;
+  return matching.filter((session) => sameFormat(session, latest));
 }
 
 export function sessionDifference(
@@ -201,14 +229,9 @@ export function sessionDifference(
     !latest ||
     !previous ||
     latest.id === previous.id ||
-    latest.mode !== previous.mode ||
+    !sameFormat(latest, previous) ||
     latest.accuracy === null ||
     previous.accuracy === null
-  )
-    return null;
-  if (
-    latest.mode === 'mock' &&
-    (latest.total !== previous.total || latest.mockTimeMode !== previous.mockTimeMode)
   )
     return null;
   return latest.accuracy - previous.accuracy;

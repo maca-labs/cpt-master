@@ -131,9 +131,7 @@ test('50-question diagnosis leads through a weak unit, external video link, prac
   await page.getByRole('button', { name: '復習に登録', exact: true }).click();
   await expect(page.getByRole('button', { name: '復習登録済み', exact: true })).toBeVisible();
   await ready(page, '/review');
-  const row = page
-    .locator('.review-row')
-    .filter({ has: page.getByRole('heading', { name: practiceQuestion.prompt, exact: true }) });
+  const row = page.locator('.review-row').filter({ hasText: practiceQuestion.id });
   await expect(row).toContainText('手動登録');
   await page.reload();
   await expect(row).toContainText('手動登録');
@@ -154,7 +152,8 @@ test('diagnostic reservations stay hidden until skip and previewing an explanati
     }),
   ).toBeVisible();
   await page.getByLabel(/^学習する単元/).selectOption('safety');
-  await page.getByRole('button', { name: '問題演習を始める', exact: true }).click();
+  await expect(page.getByRole('button', { name: '問題演習を始める', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: '利用可能な3問で始める', exact: true }).click();
   await expect(page).toHaveURL(/#\/session\//);
   await expect(page.locator('.quiz-card h1')).toBeVisible();
   const sessions = await store<Session>(page, 'sessions');
@@ -181,7 +180,7 @@ test('diagnostic reservations stay hidden until skip and previewing an explanati
   await ready(page, '/practice');
   await expect(page.getByText('診断用問題も演習に利用できます。', { exact: true })).toBeVisible();
   await page.getByLabel(/^学習する単元/).selectOption('safety');
-  await page.getByRole('button', { name: '問題演習を始める', exact: true }).click();
+  await page.getByRole('button', { name: '利用可能な7問で始める', exact: true }).click();
   await expect(page).toHaveURL(/#\/session\//);
   await expect(page.locator('.quiz-card h1')).toBeVisible();
   const sessionId = page.url().split('/session/')[1];

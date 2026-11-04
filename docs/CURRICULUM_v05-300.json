@@ -1,0 +1,2966 @@
+{
+  "snapshotDate": "2026-11-05",
+  "officialScopeCheckedAt": "2026-11-04",
+  "contentVersion": "2026-11-04.2",
+  "rows": [
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o1",
+        "text": "解剖学的肢位と位置・運動面の用語で身体を説明できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-01",
+        "anatomy-d-02",
+        "anatomy-p-01",
+        "anatomy-p-02",
+        "anatomy-p-03"
+      ],
+      "groups": [
+        "anatomy-reference-position",
+        "anatomy-sagittal-elbow",
+        "anatomy-proximal-distal",
+        "anatomy-medial-lateral",
+        "anatomy-supine-posture"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o2",
+        "text": "関節の動きを屈曲・伸展・外転などに区別できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-03",
+        "anatomy-d-04",
+        "anatomy-d-05",
+        "anatomy-d-06",
+        "anatomy-p-04",
+        "anatomy-p-05",
+        "anatomy-p-06"
+      ],
+      "groups": [
+        "anatomy-elbow-flexion",
+        "anatomy-shoulder-abduction",
+        "anatomy-ankle-dorsiflexion",
+        "anatomy-forearm-supination",
+        "anatomy-trunk-lateral-flexion",
+        "anatomy-hip-internal-rotation",
+        "anatomy-foot-eversion"
+      ],
+      "videos": [
+        {
+          "youtubeId": "eXl-2JuEYpk",
+          "title": "関節の種類の覚え方",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o3",
+        "text": "腱・主働筋・拮抗筋・固定筋の役割を説明できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-07",
+        "anatomy-d-08",
+        "anatomy-p-07",
+        "anatomy-p-08"
+      ],
+      "groups": [
+        "anatomy-tendon-transmission",
+        "anatomy-quadriceps-prime-mover",
+        "anatomy-fixator-function",
+        "anatomy-epimysium-structure"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o1",
+        "text": "ATP再合成の基本経路と筋収縮の仕組みを説明できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-d-01",
+        "physiology-d-02",
+        "physiology-d-03",
+        "physiology-d-04",
+        "physiology-p-03",
+        "physiology-p-04",
+        "physiology-p-05"
+      ],
+      "groups": [
+        "physiology-atp-direct-energy",
+        "physiology-phosphocreatine-reaction",
+        "physiology-glycolysis-oxygen",
+        "physiology-aerobic-mitochondria",
+        "physiology-calcium-troponin",
+        "physiology-neuromuscular-acetylcholine",
+        "physiology-relaxation-calcium-pump"
+      ],
+      "videos": [
+        {
+          "youtubeId": "to4SW3kqm9Y",
+          "title": "【ゴロ覚えあり】超絶わかりやすい！！筋収縮の生理【解剖生理学25】",
+          "recommended": false
+        },
+        {
+          "youtubeId": "e_OrhETNKio",
+          "title": "【運動生理学】ATP CP系をわかりやすく解説！",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o2",
+        "text": "運動単位・筋線維・収縮様式を区別できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-d-05",
+        "physiology-d-06",
+        "physiology-d-07",
+        "physiology-d-08",
+        "physiology-p-01",
+        "physiology-p-02"
+      ],
+      "groups": [
+        "physiology-motor-unit-definition",
+        "physiology-motor-unit-recruitment",
+        "physiology-slow-oxidative-fatigue",
+        "physiology-concentric-action",
+        "physiology-eccentric-control",
+        "physiology-isometric-hold"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o3",
+        "text": "筋肥大・持久性適応・心拍出量の基本を説明できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-p-06",
+        "physiology-p-07",
+        "physiology-p-08"
+      ],
+      "groups": [
+        "physiology-hypertrophy-fiber-size",
+        "physiology-endurance-capillaries",
+        "physiology-cardiac-output-equation"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o1",
+        "text": "目標・準備性・期待を面談で整理できる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-01",
+        "assessment-p-01",
+        "assessment-p-02"
+      ],
+      "groups": [
+        "assessment-active-listening-goal",
+        "assessment-participation-readiness",
+        "assessment-relationship-expectations"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o2",
+        "text": "健康情報を確認し、指導範囲に応じて専門職と連携できる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-02",
+        "assessment-d-03",
+        "assessment-p-04"
+      ],
+      "groups": [
+        "assessment-comprehensive-health-history",
+        "assessment-scope-referral-decision",
+        "assessment-required-medical-release"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o3",
+        "text": "測定項目と手順・記録条件を区別し、評価結果を再評価につなげられる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-04",
+        "assessment-d-05",
+        "assessment-d-06",
+        "assessment-p-03",
+        "assessment-p-05",
+        "assessment-p-06"
+      ],
+      "groups": [
+        "assessment-grip-measurement-handling",
+        "assessment-sit-reach-starting-reference",
+        "assessment-reevaluation-schedule",
+        "assessment-evaluation-goal-indicators",
+        "assessment-shuttle-estimation-versus-direct",
+        "assessment-reassessment-program-change"
+      ],
+      "videos": [
+        {
+          "youtubeId": "dOlSdv_YyuI",
+          "title": "握力",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o1",
+        "text": "糖質・脂質・タンパク質とエネルギー収支を説明できる"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-01",
+        "nutrition-d-02",
+        "nutrition-d-03",
+        "nutrition-d-04"
+      ],
+      "groups": [
+        "nutrition-carbohydrate-fuel",
+        "nutrition-protein-building-block",
+        "nutrition-fat-energy-use",
+        "nutrition-energy-surplus-storage"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o2",
+        "text": "多様な食品・食物繊維・食品表示を一般的な食習慣の確認に使える"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-05",
+        "nutrition-p-01",
+        "nutrition-p-02"
+      ],
+      "groups": [
+        "nutrition-food-variety",
+        "nutrition-fiber-digestive-transit",
+        "nutrition-label-reference-amount"
+      ],
+      "videos": [
+        {
+          "youtubeId": "0VT-7KAtOxw",
+          "title": "スポーツと栄養",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o3",
+        "text": "水分とサプリメントの情報を整理し、必要な専門職へつなげる"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-06",
+        "nutrition-p-03",
+        "nutrition-p-04",
+        "nutrition-p-05"
+      ],
+      "groups": [
+        "nutrition-supplement-food-foundation",
+        "nutrition-adequate-fluid",
+        "nutrition-supplement-medication-interaction",
+        "nutrition-therapeutic-nutrition-referral"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o1",
+        "text": "特異性・個別性・漸進性・変化の原則を計画に結び付ける"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-01",
+        "program-02",
+        "program-04"
+      ],
+      "groups": [
+        "applied-program-01",
+        "applied-program-02",
+        "applied-program-04"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o2",
+        "text": "負荷と休息を、実施能力や当日の状態に合わせて調整する"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-03",
+        "program-06",
+        "program-07",
+        "program-10",
+        "program-11",
+        "program-12",
+        "program-15",
+        "program-16"
+      ],
+      "groups": [
+        "applied-program-03",
+        "applied-program-06",
+        "applied-program-07",
+        "applied-program-10",
+        "applied-program-11",
+        "applied-program-12",
+        "applied-program-15",
+        "applied-program-16"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o3",
+        "text": "目標・設備・時間に応じて運動様式と優先順位を選ぶ"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-05",
+        "program-08",
+        "program-09",
+        "program-13",
+        "program-14"
+      ],
+      "groups": [
+        "applied-program-05",
+        "applied-program-08",
+        "applied-program-09",
+        "applied-program-13",
+        "applied-program-14"
+      ],
+      "videos": [
+        {
+          "youtubeId": "hdtWEM3Oqwc",
+          "title": "How to design a complete training program",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o1",
+        "text": "安定した開始姿勢と、ベンチプレスで修正したい動作を説明する"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-01",
+        "technique-08",
+        "technique-15"
+      ],
+      "groups": [
+        "applied-technique-01",
+        "applied-technique-08",
+        "applied-technique-15"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o2",
+        "text": "RDLとローイングの基本動作を観察し、修正点を選ぶ"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-02",
+        "technique-03",
+        "technique-04",
+        "technique-09",
+        "technique-10",
+        "technique-11"
+      ],
+      "groups": [
+        "applied-technique-02",
+        "applied-technique-03",
+        "applied-technique-04",
+        "applied-technique-09",
+        "applied-technique-10",
+        "applied-technique-11"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o3",
+        "text": "準備運動・呼吸・補助者との意思疎通を指導に組み込む"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-05",
+        "technique-06",
+        "technique-07",
+        "technique-12",
+        "technique-13",
+        "technique-14"
+      ],
+      "groups": [
+        "applied-technique-05",
+        "applied-technique-06",
+        "applied-technique-07",
+        "applied-technique-12",
+        "applied-technique-13",
+        "applied-technique-14"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o4",
+        "text": "ハイバーバックスクワットの開始姿勢と動作制御を説明し、個人に合う可動域と安全設定・補助の条件を確認する"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [],
+      "groups": [],
+      "videos": [
+        {
+          "youtubeId": "fIvDJoyVgRQ",
+          "title": "バックスクワット",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o1",
+        "text": "施設に合う緊急対応計画と日常点検の要点を説明する"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-01",
+        "safety-02",
+        "safety-05",
+        "safety-07"
+      ],
+      "groups": [
+        "applied-safety-01",
+        "applied-safety-02",
+        "applied-safety-05",
+        "applied-safety-07"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o2",
+        "text": "成人の心停止が疑われる場面で、通報・CPR・AEDを遅らせない原則を説明する"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-03",
+        "safety-04"
+      ],
+      "groups": [
+        "applied-safety-03",
+        "applied-safety-04"
+      ],
+      "videos": [
+        {
+          "youtubeId": "NGNaD_UY-A4",
+          "title": "【日本赤十字社】心肺蘇生とAEDの使い方 ～JRC蘇生ガイドライン2020対応～",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o3",
+        "text": "知識学習と実技講習を区別し、技能維持の計画を立てる"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-06"
+      ],
+      "groups": [
+        "applied-safety-06"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o1",
+        "text": "個人情報と記録の扱いを、専門職としての守秘原則から判断する"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-01",
+        "professional-07"
+      ],
+      "groups": [
+        "applied-professional-01",
+        "applied-professional-07"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o2",
+        "text": "自分の提供範囲を認識し、適切な専門家への紹介を選ぶ"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-02",
+        "professional-05"
+      ],
+      "groups": [
+        "applied-professional-02",
+        "applied-professional-05"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o3",
+        "text": "資格表示・継続学習・著作物の利用を誠実に行う"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-03",
+        "professional-04",
+        "professional-06"
+      ],
+      "groups": [
+        "applied-professional-03",
+        "applied-professional-04",
+        "applied-professional-06"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o4",
+        "text": "ハラスメントが起こりやすい力関係や環境を説明し、相手が拒否しにくい状況に配慮する"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [],
+      "groups": [],
+      "videos": [
+        {
+          "youtubeId": "XBkaAAwyS4s",
+          "title": "※字幕あり【スポーツ現場におけるハラスメント防止動画】ch1.ハラスメントの考え方",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-quality",
+      "unit": "測定の品質を見分ける",
+      "objective": {
+        "id": "ex-assess-quality-o1",
+        "text": "妥当性と信頼性を区別し、結果を一般化できる範囲を説明する"
+      },
+      "explanations": [
+        "繰り返せることと、目的に合うこと",
+        "本人にも検者にも準備が必要",
+        "条件と疲労を記録する",
+        "変化を、誤差と切り分ける",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-quality-01",
+        "ex-assess-quality-08"
+      ],
+      "groups": [
+        "ex-assess-reliability-not-validity",
+        "ex-assess-population-generalization"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-quality",
+      "unit": "測定の品質を見分ける",
+      "objective": {
+        "id": "ex-assess-quality-o2",
+        "text": "検者・器具・手順・実施順序による測定のばらつきを減らす"
+      },
+      "explanations": [
+        "繰り返せることと、目的に合うこと",
+        "本人にも検者にも準備が必要",
+        "条件と疲労を記録する",
+        "変化を、誤差と切り分ける",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-quality-02",
+        "ex-assess-quality-03",
+        "ex-assess-quality-04",
+        "ex-assess-quality-05",
+        "ex-assess-quality-07"
+      ],
+      "groups": [
+        "ex-assess-interrater-agreement",
+        "ex-assess-test-familiarization",
+        "ex-assess-agility-protocol-standardization",
+        "ex-assess-device-versus-biological-error",
+        "ex-assess-test-battery-fatigue-order"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-quality",
+      "unit": "測定の品質を見分ける",
+      "objective": {
+        "id": "ex-assess-quality-o3",
+        "text": "通常のばらつきを踏まえ、小さな記録差の解釈を保留できる"
+      },
+      "explanations": [
+        "繰り返せることと、目的に合うこと",
+        "本人にも検者にも準備が必要",
+        "条件と疲労を記録する",
+        "変化を、誤差と切り分ける",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-quality-06"
+      ],
+      "groups": [
+        "ex-assess-change-versus-typical-error"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-adult-tests",
+      "unit": "成人テストの手順と記録",
+      "objective": {
+        "id": "ex-assess-adult-tests-o1",
+        "text": "握力の調整と左右の記録の集計を、成人要項に従って行う"
+      },
+      "explanations": [
+        "対象者と採用する要項を先に決める",
+        "握力は、四つの記録をそのまま平均しない",
+        "有効な動作だけを数える",
+        "時間・終了・距離にも固有の規則がある",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-adult-tests-01",
+        "ex-assess-adult-tests-02"
+      ],
+      "groups": [
+        "ex-assess-adult-grip-span-adjustment",
+        "ex-assess-adult-grip-best-side-average"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-adult-tests",
+      "unit": "成人テストの手順と記録",
+      "objective": {
+        "id": "ex-assess-adult-tests-o2",
+        "text": "上体起こし・長座体前屈・反復横とびの有効な実施と記録を区別する"
+      },
+      "explanations": [
+        "対象者と採用する要項を先に決める",
+        "握力は、四つの記録をそのまま平均しない",
+        "有効な動作だけを数える",
+        "時間・終了・距離にも固有の規則がある",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-adult-tests-03",
+        "ex-assess-adult-tests-04",
+        "ex-assess-adult-tests-05"
+      ],
+      "groups": [
+        "ex-assess-adult-sit-up-return-contact",
+        "ex-assess-adult-sit-reach-knee-control",
+        "ex-assess-adult-side-step-scoring-unit"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-adult-tests",
+      "unit": "成人テストの手順と記録",
+      "objective": {
+        "id": "ex-assess-adult-tests-o3",
+        "text": "急歩・シャトルラン・立ち幅とびで固有の終了・測定条件を適用する"
+      },
+      "explanations": [
+        "対象者と採用する要項を先に決める",
+        "握力は、四つの記録をそのまま平均しない",
+        "有効な動作だけを数える",
+        "時間・終了・距離にも固有の規則がある",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-adult-tests-06",
+        "ex-assess-adult-tests-07",
+        "ex-assess-adult-tests-08"
+      ],
+      "groups": [
+        "ex-assess-adult-fast-walk-finish-timing",
+        "ex-assess-adult-shuttle-consecutive-miss",
+        "ex-assess-adult-standing-jump-nearest-contact"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-bodycomp",
+      "unit": "体格と体組成を区別する",
+      "objective": {
+        "id": "ex-assess-bodycomp-o1",
+        "text": "単位をそろえてBMI・脂肪量・除脂肪量を計算する"
+      },
+      "explanations": [
+        "BMIは身長と体重から求める",
+        "割合を量へ戻す",
+        "測定原理と、その日の条件",
+        "位置の違う周径を混ぜない",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-bodycomp-01",
+        "ex-assess-bodycomp-03"
+      ],
+      "groups": [
+        "ex-assess-bmi-unit-calculation",
+        "ex-assess-fat-and-fat-free-mass-calculation"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-bodycomp",
+      "unit": "体格と体組成を区別する",
+      "objective": {
+        "id": "ex-assess-bodycomp-o2",
+        "text": "BMIと体組成の違い、BIAや皮下脂肪厚の測定原理の限界を説明する"
+      },
+      "explanations": [
+        "BMIは身長と体重から求める",
+        "割合を量へ戻す",
+        "測定原理と、その日の条件",
+        "位置の違う周径を混ぜない",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-bodycomp-02",
+        "ex-assess-bodycomp-04",
+        "ex-assess-bodycomp-05"
+      ],
+      "groups": [
+        "ex-assess-bmi-cannot-separate-components",
+        "ex-assess-bia-hydration-influence",
+        "ex-assess-skinfold-not-visceral-imaging"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-bodycomp",
+      "unit": "体格と体組成を区別する",
+      "objective": {
+        "id": "ex-assess-bodycomp-o3",
+        "text": "指定した腹囲測定法の位置・姿勢をそろえて比較する"
+      },
+      "explanations": [
+        "BMIは身長と体重から求める",
+        "割合を量へ戻す",
+        "測定原理と、その日の条件",
+        "位置の違う周径を混ぜない",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-bodycomp-06"
+      ],
+      "groups": [
+        "ex-assess-waist-protocol-location"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-behavior",
+      "unit": "継続を支える行動の面談",
+      "objective": {
+        "id": "ex-assess-behavior-o1",
+        "text": "実行前の準備状態に合わせ、具体的な行動目標を作る"
+      },
+      "explanations": [
+        "決心と実行を分けて聞く",
+        "結果だけでなく、行うことを決める",
+        "記録を、採点ではなく調整に使う",
+        "中断への代案と、望む支援",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-behavior-01",
+        "ex-assess-behavior-02"
+      ],
+      "groups": [
+        "ex-assess-preparation-before-action",
+        "ex-assess-specific-action-goal"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-behavior",
+      "unit": "継続を支える行動の面談",
+      "objective": {
+        "id": "ex-assess-behavior-o2",
+        "text": "活動と気持ちの記録から、継続を妨げる条件を見つける"
+      },
+      "explanations": [
+        "決心と実行を分けて聞く",
+        "結果だけでなく、行うことを決める",
+        "記録を、採点ではなく調整に使う",
+        "中断への代案と、望む支援",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-behavior-03"
+      ],
+      "groups": [
+        "ex-assess-self-monitoring-feelings"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-behavior",
+      "unit": "継続を支える行動の面談",
+      "objective": {
+        "id": "ex-assess-behavior-o3",
+        "text": "中断・障壁・周囲の支援に対し、再開できる計画を本人と作る"
+      },
+      "explanations": [
+        "決心と実行を分けて聞く",
+        "結果だけでなく、行うことを決める",
+        "記録を、採点ではなく調整に使う",
+        "中断への代案と、望む支援",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-behavior-04",
+        "ex-assess-behavior-05",
+        "ex-assess-behavior-06"
+      ],
+      "groups": [
+        "ex-assess-barrier-contingency-plan",
+        "ex-assess-setback-restart",
+        "ex-assess-chosen-social-support"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-health",
+      "unit": "健康情報を評価の条件に変える",
+      "objective": {
+        "id": "ex-assess-health-o1",
+        "text": "生活活動を含む現状を聞き、健康情報の不足と更新を扱う"
+      },
+      "explanations": [
+        "運動していない、だけで活動量を決めない",
+        "空欄と、以前の回答をそのまま使わない",
+        "目的と内容に合う環境で評価する",
+        "測定値と判断の役割を分ける",
+        "家庭血圧は、測る前と集計をそろえる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-health-01",
+        "ex-assess-health-02",
+        "ex-assess-health-03"
+      ],
+      "groups": [
+        "ex-assess-daily-activity-versus-exercise",
+        "ex-assess-update-history-over-time",
+        "ex-assess-missing-history-not-negative"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-health",
+      "unit": "健康情報を評価の条件に変える",
+      "objective": {
+        "id": "ex-assess-health-o2",
+        "text": "健康状態と目的・強度から、評価に必要な環境条件を選ぶ"
+      },
+      "explanations": [
+        "運動していない、だけで活動量を決めない",
+        "空欄と、以前の回答をそのまま使わない",
+        "目的と内容に合う環境で評価する",
+        "測定値と判断の役割を分ける",
+        "家庭血圧は、測る前と集計をそろえる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-health-04"
+      ],
+      "groups": [
+        "ex-assess-appraisal-environment-fit"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-health",
+      "unit": "健康情報を評価の条件に変える",
+      "objective": {
+        "id": "ex-assess-health-o3",
+        "text": "血圧などの評価記録で測定条件と集計法を区別し、診断へ飛躍しない"
+      },
+      "explanations": [
+        "運動していない、だけで活動量を決めない",
+        "空欄と、以前の回答をそのまま使わない",
+        "目的と内容に合う環境で評価する",
+        "測定値と判断の役割を分ける",
+        "家庭血圧は、測る前と集計をそろえる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-health-05",
+        "ex-assess-health-06"
+      ],
+      "groups": [
+        "ex-assess-home-bp-seated-preparation",
+        "ex-assess-home-bp-occasion-average"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-food-label",
+      "unit": "日本の食品表示を計算して読む",
+      "objective": {
+        "id": "ex-assess-food-label-o1",
+        "text": "表示の基準量から摂取量へ換算し、ナトリウムから食塩相当量を計算する"
+      },
+      "explanations": [
+        "基準量から、食べた量へ",
+        "ナトリウムと食塩相当量",
+        "炭水化物の内訳と、表示の有無",
+        "強調されている成分と条件だけを読む",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-food-label-01",
+        "ex-assess-food-label-02"
+      ],
+      "groups": [
+        "ex-assess-label-portion-conversion",
+        "ex-assess-sodium-salt-unit-conversion"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-food-label",
+      "unit": "日本の食品表示を計算して読む",
+      "objective": {
+        "id": "ex-assess-food-label-o2",
+        "text": "炭水化物の内訳と、任意表示がない場合の解釈を区別する"
+      },
+      "explanations": [
+        "基準量から、食べた量へ",
+        "ナトリウムと食塩相当量",
+        "炭水化物の内訳と、表示の有無",
+        "強調されている成分と条件だけを読む",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-food-label-03",
+        "ex-assess-food-label-07"
+      ],
+      "groups": [
+        "ex-assess-carbohydrate-fiber-breakdown",
+        "ex-assess-optional-label-missing-not-zero"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-food-label",
+      "unit": "日本の食品表示を計算して読む",
+      "objective": {
+        "id": "ex-assess-food-label-o3",
+        "text": "無添加・ゼロ・低減の表示が、何を述べているかを限定して読む"
+      },
+      "explanations": [
+        "基準量から、食べた量へ",
+        "ナトリウムと食塩相当量",
+        "炭水化物の内訳と、表示の有無",
+        "強調されている成分と条件だけを読む",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-food-label-04",
+        "ex-assess-food-label-05",
+        "ex-assess-food-label-06"
+      ],
+      "groups": [
+        "ex-assess-no-added-not-sugar-free",
+        "ex-assess-zero-claim-not-absolute-zero",
+        "ex-assess-component-reduction-not-total-energy"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-hydration",
+      "unit": "水分と食事の記録を読み取る",
+      "objective": {
+        "id": "ex-assess-hydration-o1",
+        "text": "飲み水・飲料・食品を区別し、食事と水分の量を記録する"
+      },
+      "explanations": [
+        "何を、どれだけ記録したか",
+        "一つの日を、普段全体の代表にしない",
+        "記録すること自体も、行動を変え得る",
+        "発汗量の概算には、飲水と尿も入れる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-hydration-01",
+        "ex-assess-hydration-02"
+      ],
+      "groups": [
+        "ex-assess-total-water-versus-plain-water",
+        "ex-assess-food-record-real-time-detail"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-hydration",
+      "unit": "水分と食事の記録を読み取る",
+      "objective": {
+        "id": "ex-assess-hydration-o2",
+        "text": "曜日差と記録による行動変化から、普段の食事と同じとは限らない理由を説明する"
+      },
+      "explanations": [
+        "何を、どれだけ記録したか",
+        "一つの日を、普段全体の代表にしない",
+        "記録すること自体も、行動を変え得る",
+        "発汗量の概算には、飲水と尿も入れる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-hydration-03",
+        "ex-assess-hydration-04"
+      ],
+      "groups": [
+        "ex-assess-weekday-weekend-representativeness",
+        "ex-assess-diet-record-reactivity"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "ex-assess-hydration",
+      "unit": "水分と食事の記録を読み取る",
+      "objective": {
+        "id": "ex-assess-hydration-o3",
+        "text": "前後の体重・飲水・尿量と時間を用い、設問の前提内で発汗量を概算する"
+      },
+      "explanations": [
+        "何を、どれだけ記録したか",
+        "一つの日を、普段全体の代表にしない",
+        "記録すること自体も、行動を変え得る",
+        "発汗量の概算には、飲水と尿も入れる",
+        "関連動画"
+      ],
+      "questions": [
+        "ex-assess-hydration-05"
+      ],
+      "groups": [
+        "ex-assess-sweat-loss-rate-balance"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-load",
+      "unit": "抵抗運動の負荷・量を計算して読む",
+      "objective": {
+        "id": "ex-plan-load-o1",
+        "text": "1RM割合・増量率を条件と単位付きで計算し、絶対負荷と相対負荷を区別する"
+      },
+      "explanations": [
+        "負荷のkgと1RM割合",
+        "反復数とvolume loadは別の記録",
+        "休息の回数を数えて見積もる",
+        "外から加えた量と本人の反応"
+      ],
+      "questions": [
+        "ex-plan-load-01",
+        "ex-plan-load-04",
+        "ex-plan-load-06"
+      ],
+      "groups": [
+        "ex-plan-load-percent-rounding",
+        "ex-plan-load-between-client-relative",
+        "ex-plan-load-percentage-change-base"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-load",
+      "unit": "抵抗運動の負荷・量を計算して読む",
+      "objective": {
+        "id": "ex-plan-load-o2",
+        "text": "反復総数・volume load・内的負荷を計算し、指標だけでは示せない違いを説明する"
+      },
+      "explanations": [
+        "負荷のkgと1RM割合",
+        "反復数とvolume loadは別の記録",
+        "休息の回数を数えて見積もる",
+        "外から加えた量と本人の反応"
+      ],
+      "questions": [
+        "ex-plan-load-02",
+        "ex-plan-load-03",
+        "ex-plan-load-07",
+        "ex-plan-load-08"
+      ],
+      "groups": [
+        "ex-plan-load-variable-set-sum",
+        "ex-plan-load-repetition-volume-ranking",
+        "ex-plan-load-equal-tonnage-not-equivalent",
+        "ex-plan-load-session-rpe-arbitrary-units"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-load",
+      "unit": "抵抗運動の負荷・量を計算して読む",
+      "objective": {
+        "id": "ex-plan-load-o3",
+        "text": "セット間休息の回数を含めて所要時間を見積もり、記録から計画を比較する"
+      },
+      "explanations": [
+        "負荷のkgと1RM割合",
+        "反復数とvolume loadは別の記録",
+        "休息の回数を数えて見積もる",
+        "外から加えた量と本人の反応"
+      ],
+      "questions": [
+        "ex-plan-load-05"
+      ],
+      "groups": [
+        "ex-plan-load-between-set-time-budget"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-cardio",
+      "unit": "有酸素運動の強度と活動量",
+      "objective": {
+        "id": "ex-plan-cardio-o1",
+        "text": "与えられた最大・安静心拍からHRR法を計算し、最大心拍割合と区別する"
+      },
+      "explanations": [
+        "HRRの割合は最大心拍の割合ではない",
+        "同じ歩行でも、きつさは人により違う",
+        "服薬があるときの指標",
+        "活動の強度と時間を合計する"
+      ],
+      "questions": [
+        "ex-plan-cardio-01",
+        "ex-plan-cardio-02"
+      ],
+      "groups": [
+        "ex-plan-cardio-hrr-forward",
+        "ex-plan-cardio-methods-not-interchangeable"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-cardio",
+      "unit": "有酸素運動の強度と活動量",
+      "objective": {
+        "id": "ex-plan-cardio-o2",
+        "text": "相対強度・絶対強度・服薬の影響を区別し、RPEや会話も強度調整に使う"
+      },
+      "explanations": [
+        "HRRの割合は最大心拍の割合ではない",
+        "同じ歩行でも、きつさは人により違う",
+        "服薬があるときの指標",
+        "活動の強度と時間を合計する"
+      ],
+      "questions": [
+        "ex-plan-cardio-03",
+        "ex-plan-cardio-04",
+        "ex-plan-cardio-07"
+      ],
+      "groups": [
+        "ex-plan-cardio-relative-versus-absolute",
+        "ex-plan-cardio-talk-test-interpretation",
+        "ex-plan-cardio-medication-heart-response"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-cardio",
+      "unit": "有酸素運動の強度と活動量",
+      "objective": {
+        "id": "ex-plan-cardio-o3",
+        "text": "対象を明示した有酸素活動の時間配分・換算とMET・時を計算する"
+      },
+      "explanations": [
+        "HRRの割合は最大心拍の割合ではない",
+        "同じ歩行でも、きつさは人により違う",
+        "服薬があるときの指標",
+        "活動の強度と時間を合計する"
+      ],
+      "questions": [
+        "ex-plan-cardio-05",
+        "ex-plan-cardio-06",
+        "ex-plan-cardio-08"
+      ],
+      "groups": [
+        "ex-plan-cardio-mixed-week-equivalence",
+        "ex-plan-cardio-short-bouts-count",
+        "ex-plan-cardio-met-hours-conversion"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-progression",
+      "unit": "周期化・ピーキングと並行トレーニング",
+      "objective": {
+        "id": "ex-plan-progression-o1",
+        "text": "年間・マクロ・メゾ・マイクロの階層と各期の目的を計画例へ対応づける"
+      },
+      "explanations": [
+        "大きな目標を日々の練習へつなぐ",
+        "期が変われば役割も変わる",
+        "直前に疲労を積み増さない",
+        "二つの様式を別勘定にしない"
+      ],
+      "questions": [
+        "ex-plan-progression-01",
+        "ex-plan-progression-02",
+        "ex-plan-progression-03",
+        "ex-plan-progression-04"
+      ],
+      "groups": [
+        "ex-plan-period-nested-blocks",
+        "ex-plan-period-multiple-seasons",
+        "ex-plan-period-general-to-specific",
+        "ex-plan-period-transition-link"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-progression",
+      "unit": "周期化・ピーキングと並行トレーニング",
+      "objective": {
+        "id": "ex-plan-progression-o2",
+        "text": "テーパリングを競技へ向けた疲労軽減と能力維持の調整として説明する"
+      },
+      "explanations": [
+        "大きな目標を日々の練習へつなぐ",
+        "期が変われば役割も変わる",
+        "直前に疲労を積み増さない",
+        "二つの様式を別勘定にしない"
+      ],
+      "questions": [
+        "ex-plan-progression-05"
+      ],
+      "groups": [
+        "ex-plan-period-taper-stimulus-fatigue"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-progression",
+      "unit": "周期化・ピーキングと並行トレーニング",
+      "objective": {
+        "id": "ex-plan-progression-o3",
+        "text": "並行トレーニングで目的・回復時間・両様式の総負荷を調整する"
+      },
+      "explanations": [
+        "大きな目標を日々の練習へつなぐ",
+        "期が変われば役割も変わる",
+        "直前に疲労を積み増さない",
+        "二つの様式を別勘定にしない"
+      ],
+      "questions": [
+        "ex-plan-progression-06",
+        "ex-plan-progression-07",
+        "ex-plan-progression-08"
+      ],
+      "groups": [
+        "ex-plan-period-concurrent-recovery-placement",
+        "ex-plan-period-concurrent-outcome-inference",
+        "ex-plan-period-added-mode-total-workload"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-power",
+      "unit": "プライオメトリクスとスピード練習",
+      "objective": {
+        "id": "ex-plan-power-o1",
+        "text": "ジャンプの支持脚・複雑さ・高さ・反応課題を段階的に選ぶ"
+      },
+      "explanations": [
+        "複雑さは習得状況へ合わせる",
+        "接地回数と強度を別に記録する",
+        "全力スプリントを持久走へ変えない",
+        "最初の一本から遅い場合"
+      ],
+      "questions": [
+        "ex-plan-power-01",
+        "ex-plan-power-04",
+        "ex-plan-power-08"
+      ],
+      "groups": [
+        "ex-plan-power-support-complexity",
+        "ex-plan-power-reactive-direction-cue",
+        "ex-plan-power-box-height-individual-load"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-power",
+      "unit": "プライオメトリクスとスピード練習",
+      "objective": {
+        "id": "ex-plan-power-o2",
+        "text": "接地回数の集計と、高強度時の量の調整を区別する"
+      },
+      "explanations": [
+        "複雑さは習得状況へ合わせる",
+        "接地回数と強度を別に記録する",
+        "全力スプリントを持久走へ変えない",
+        "最初の一本から遅い場合"
+      ],
+      "questions": [
+        "ex-plan-power-02",
+        "ex-plan-power-03"
+      ],
+      "groups": [
+        "ex-plan-power-unilateral-contact-count",
+        "ex-plan-power-new-intense-volume"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-power",
+      "unit": "プライオメトリクスとスピード練習",
+      "objective": {
+        "id": "ex-plan-power-o3",
+        "text": "スプリントの質から各試行間とセッション間の回復を計画する"
+      },
+      "explanations": [
+        "複雑さは習得状況へ合わせる",
+        "接地回数と強度を別に記録する",
+        "全力スプリントを持久走へ変えない",
+        "最初の一本から遅い場合"
+      ],
+      "questions": [
+        "ex-plan-power-05",
+        "ex-plan-power-06",
+        "ex-plan-power-07"
+      ],
+      "groups": [
+        "ex-plan-power-sprint-between-repetitions",
+        "ex-plan-power-short-duration-neural-stress",
+        "ex-plan-power-between-session-quality"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-age",
+      "unit": "若年者と高齢者の計画",
+      "objective": {
+        "id": "ex-plan-age-o1",
+        "text": "若年者の安全な監督、参加準備、学習を支える環境を選ぶ"
+      },
+      "explanations": [
+        "若年者は監督と学習環境から",
+        "技能と継続する気持ちを育てる",
+        "高齢者の目標は生活につなげる",
+        "できる姿勢から必要な速さへ"
+      ],
+      "questions": [
+        "ex-plan-age-01",
+        "ex-plan-age-02",
+        "ex-plan-age-03",
+        "ex-plan-age-04"
+      ],
+      "groups": [
+        "ex-plan-age-youth-supervision-resource",
+        "ex-plan-age-youth-instruction-readiness",
+        "ex-plan-age-youth-session-warmup",
+        "ex-plan-age-youth-autonomy-pressure"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-age",
+      "unit": "若年者と高齢者の計画",
+      "objective": {
+        "id": "ex-plan-age-o2",
+        "text": "高齢者のバランス・筋力・生活動作を組み合わせて計画する"
+      },
+      "explanations": [
+        "若年者は監督と学習環境から",
+        "技能と継続する気持ちを育てる",
+        "高齢者の目標は生活につなげる",
+        "できる姿勢から必要な速さへ"
+      ],
+      "questions": [
+        "ex-plan-age-05",
+        "ex-plan-age-08"
+      ],
+      "groups": [
+        "ex-plan-age-older-multicomponent-frequency",
+        "ex-plan-age-older-task-transfer"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-age",
+      "unit": "若年者と高齢者の計画",
+      "objective": {
+        "id": "ex-plan-age-o3",
+        "text": "座位での適応やパワー練習を、能力と習得状況に合わせる"
+      },
+      "explanations": [
+        "若年者は監督と学習環境から",
+        "技能と継続する気持ちを育てる",
+        "高齢者の目標は生活につなげる",
+        "できる姿勢から必要な速さへ"
+      ],
+      "questions": [
+        "ex-plan-age-06",
+        "ex-plan-age-07"
+      ],
+      "groups": [
+        "ex-plan-age-older-chair-adaptation",
+        "ex-plan-age-older-power-not-maxload"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-pregnancy",
+      "unit": "妊娠期・産後の運動計画",
+      "objective": {
+        "id": "ex-plan-pregnancy-o1",
+        "text": "正常な妊娠での活動継続・開始を、既往の活動と医療者の条件から考える"
+      },
+      "explanations": [
+        "一般推奨と個別の許可を分ける",
+        "経験から出発点を決める",
+        "種目と姿勢、環境を変える",
+        "症状と産後の再開"
+      ],
+      "questions": [
+        "ex-plan-pregnancy-01",
+        "ex-plan-pregnancy-02",
+        "ex-plan-pregnancy-03"
+      ],
+      "groups": [
+        "ex-plan-pregnancy-uncomplicated-activity",
+        "ex-plan-pregnancy-new-exerciser-progression",
+        "ex-plan-pregnancy-experienced-continuation"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-pregnancy",
+      "unit": "妊娠期・産後の運動計画",
+      "objective": {
+        "id": "ex-plan-pregnancy-o2",
+        "text": "転倒、暑熱、長い仰臥位のリスクに合わせて種目と環境を調整する"
+      },
+      "explanations": [
+        "一般推奨と個別の許可を分ける",
+        "経験から出発点を決める",
+        "種目と姿勢、環境を変える",
+        "症状と産後の再開"
+      ],
+      "questions": [
+        "ex-plan-pregnancy-04",
+        "ex-plan-pregnancy-05",
+        "ex-plan-pregnancy-06"
+      ],
+      "groups": [
+        "ex-plan-pregnancy-fall-risk-modality",
+        "ex-plan-pregnancy-heat-environment",
+        "ex-plan-pregnancy-prolonged-supine"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-pregnancy",
+      "unit": "妊娠期・産後の運動計画",
+      "objective": {
+        "id": "ex-plan-pregnancy-o3",
+        "text": "中止徴候と産後再開の個別条件を区別し、必要な医療連携を選ぶ"
+      },
+      "explanations": [
+        "一般推奨と個別の許可を分ける",
+        "経験から出発点を決める",
+        "種目と姿勢、環境を変える",
+        "症状と産後の再開"
+      ],
+      "questions": [
+        "ex-plan-pregnancy-07",
+        "ex-plan-pregnancy-08"
+      ],
+      "groups": [
+        "ex-plan-pregnancy-warning-bleeding",
+        "ex-plan-pregnancy-postpartum-delivery-context"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-metabolic",
+      "unit": "糖尿病・高血圧と運動計画",
+      "objective": {
+        "id": "ex-plan-metabolic-o1",
+        "text": "糖尿病の治療と運動後の反応を、医療チームの管理計画へつなぐ"
+      },
+      "explanations": [
+        "治療と一緒に活動を考える",
+        "運動すれば必ず血糖が下がるわけではない",
+        "眼と足の条件を運動へ反映する",
+        "当日と一日全体の計画"
+      ],
+      "questions": [
+        "ex-plan-metabolic-01",
+        "ex-plan-metabolic-05"
+      ],
+      "groups": [
+        "ex-plan-metabolic-delayed-hypoglycemia-plan",
+        "ex-plan-metabolic-glucose-response-not-uniform"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-metabolic",
+      "unit": "糖尿病・高血圧と運動計画",
+      "objective": {
+        "id": "ex-plan-metabolic-o2",
+        "text": "眼・足の合併症に応じて強度や荷重の条件を確認する"
+      },
+      "explanations": [
+        "治療と一緒に活動を考える",
+        "運動すれば必ず血糖が下がるわけではない",
+        "眼と足の条件を運動へ反映する",
+        "当日と一日全体の計画"
+      ],
+      "questions": [
+        "ex-plan-metabolic-02",
+        "ex-plan-metabolic-03",
+        "ex-plan-metabolic-04"
+      ],
+      "groups": [
+        "ex-plan-metabolic-retinopathy-intense-clearance",
+        "ex-plan-metabolic-neuropathy-foot-protection",
+        "ex-plan-metabolic-open-foot-wound-loading"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-metabolic",
+      "unit": "糖尿病・高血圧と運動計画",
+      "objective": {
+        "id": "ex-plan-metabolic-o3",
+        "text": "高血圧等の安定状態と当日の条件、整理運動、座位中断を計画へ反映する"
+      },
+      "explanations": [
+        "治療と一緒に活動を考える",
+        "運動すれば必ず血糖が下がるわけではない",
+        "眼と足の条件を運動へ反映する",
+        "当日と一日全体の計画"
+      ],
+      "questions": [
+        "ex-plan-metabolic-06",
+        "ex-plan-metabolic-07",
+        "ex-plan-metabolic-08"
+      ],
+      "groups": [
+        "ex-plan-metabolic-written-bp-hold-condition",
+        "ex-plan-metabolic-cooldown-transition",
+        "ex-plan-metabolic-sedentary-breaks-workday"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-orthopedic",
+      "unit": "整形外科的制約と医療連携",
+      "objective": {
+        "id": "ex-plan-orthopedic-o1",
+        "text": "安定した関節症で、衝撃や提供環境を調整して活動を計画する"
+      },
+      "explanations": [
+        "疾患名だけで休止か高負荷かを決めない",
+        "術後と骨折では個別条件が先",
+        "骨の脆弱性に合わせて動作を調整する",
+        "変化を評価へ戻す"
+      ],
+      "questions": [
+        "ex-plan-orthopedic-01",
+        "ex-plan-orthopedic-02"
+      ],
+      "groups": [
+        "ex-plan-ortho-oa-impact-modality",
+        "ex-plan-ortho-oa-delivery-continuity"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-orthopedic",
+      "unit": "整形外科的制約と医療連携",
+      "objective": {
+        "id": "ex-plan-orthopedic-o2",
+        "text": "術後・骨折・骨粗鬆症の個別条件を運動の姿勢・荷重へ反映する"
+      },
+      "explanations": [
+        "疾患名だけで休止か高負荷かを決めない",
+        "術後と骨折では個別条件が先",
+        "骨の脆弱性に合わせて動作を調整する",
+        "変化を評価へ戻す"
+      ],
+      "questions": [
+        "ex-plan-orthopedic-03",
+        "ex-plan-orthopedic-04",
+        "ex-plan-orthopedic-05"
+      ],
+      "groups": [
+        "ex-plan-ortho-hip-individual-precautions",
+        "ex-plan-ortho-osteoporosis-loaded-flexion",
+        "ex-plan-ortho-fracture-loading-permission"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "ex-plan-orthopedic",
+      "unit": "整形外科的制約と医療連携",
+      "objective": {
+        "id": "ex-plan-orthopedic-o3",
+        "text": "痛みや状態の変化、慢性腰痛の多面的支援で専門職と連携する"
+      },
+      "explanations": [
+        "疾患名だけで休止か高負荷かを決めない",
+        "術後と骨折では個別条件が先",
+        "骨の脆弱性に合わせて動作を調整する",
+        "変化を評価へ戻す"
+      ],
+      "questions": [
+        "ex-plan-orthopedic-06",
+        "ex-plan-orthopedic-07",
+        "ex-plan-orthopedic-08"
+      ],
+      "groups": [
+        "ex-plan-ortho-shoulder-pain-program-boundary",
+        "ex-plan-ortho-back-person-centred-coordination",
+        "ex-plan-ortho-new-deformity-reevaluation"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-squat",
+      "unit": "スクワットとランジの観察・調整",
+      "objective": {
+        "id": "ex-tech-squat-o1",
+        "text": "スクワットの接地・膝方向・脊柱の変化を観察し、修正項目を選ぶ"
+      },
+      "explanations": [
+        "見たい項目を先に決める",
+        "パラレルは全員共通の到達義務ではない",
+        "ランジの難しさは重量だけで決まらない",
+        "進行は、保てた条件を残しながら行う"
+      ],
+      "questions": [
+        "ex-tech-001",
+        "ex-tech-002",
+        "ex-tech-003",
+        "ex-tech-007"
+      ],
+      "groups": [
+        "ex-tech-001-g1",
+        "ex-tech-002-g1",
+        "ex-tech-003-g1",
+        "ex-tech-007-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-squat",
+      "unit": "スクワットとランジの観察・調整",
+      "objective": {
+        "id": "ex-tech-squat-o2",
+        "text": "ランジの支持・足位置・可動域を実施能力に合わせて調整する"
+      },
+      "explanations": [
+        "見たい項目を先に決める",
+        "パラレルは全員共通の到達義務ではない",
+        "ランジの難しさは重量だけで決まらない",
+        "進行は、保てた条件を残しながら行う"
+      ],
+      "questions": [
+        "ex-tech-004",
+        "ex-tech-005"
+      ],
+      "groups": [
+        "ex-tech-004-g1",
+        "ex-tech-005-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "IZEN9zAMjqA",
+          "title": "フォワードランジ",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-squat",
+      "unit": "スクワットとランジの観察・調整",
+      "objective": {
+        "id": "ex-tech-squat-o3",
+        "text": "制御を維持する進行条件と、負荷の位置による難度変化を説明する"
+      },
+      "explanations": [
+        "見たい項目を先に決める",
+        "パラレルは全員共通の到達義務ではない",
+        "ランジの難しさは重量だけで決まらない",
+        "進行は、保てた条件を残しながら行う"
+      ],
+      "questions": [
+        "ex-tech-006",
+        "ex-tech-008"
+      ],
+      "groups": [
+        "ex-tech-006-g1",
+        "ex-tech-008-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-hinge",
+      "unit": "ヒンジと床からの持ち上げ",
+      "objective": {
+        "id": "ex-tech-hinge-o1",
+        "text": "床からのデッドリフトの開始位置と上昇の局面を説明する"
+      },
+      "explanations": [
+        "床から引く前の位置関係",
+        "上体を起こす局面を見分ける",
+        "RDLの反復は立位から",
+        "練習条件を言葉と観察でそろえる"
+      ],
+      "questions": [
+        "ex-tech-009",
+        "ex-tech-010"
+      ],
+      "groups": [
+        "ex-tech-009-g1",
+        "ex-tech-010-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "K0aNKaCKBsE",
+          "title": "デッドリフト",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-hinge",
+      "unit": "ヒンジと床からの持ち上げ",
+      "objective": {
+        "id": "ex-tech-hinge-o2",
+        "text": "RDLのグリップ、腕・股関節・肩の動きと反復の開始位置を区別する"
+      },
+      "explanations": [
+        "床から引く前の位置関係",
+        "上体を起こす局面を見分ける",
+        "RDLの反復は立位から",
+        "練習条件を言葉と観察でそろえる"
+      ],
+      "questions": [
+        "ex-tech-011",
+        "ex-tech-012",
+        "ex-tech-014",
+        "ex-tech-015"
+      ],
+      "groups": [
+        "ex-tech-011-g1",
+        "ex-tech-012-g1",
+        "ex-tech-014-g1",
+        "ex-tech-015-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-hinge",
+      "unit": "ヒンジと床からの持ち上げ",
+      "objective": {
+        "id": "ex-tech-hinge-o3",
+        "text": "下降や観察条件を含めて、目的に合った反復を選ぶ"
+      },
+      "explanations": [
+        "床から引く前の位置関係",
+        "上体を起こす局面を見分ける",
+        "RDLの反復は立位から",
+        "練習条件を言葉と観察でそろえる"
+      ],
+      "questions": [
+        "ex-tech-013",
+        "ex-tech-016"
+      ],
+      "groups": [
+        "ex-tech-013-g1",
+        "ex-tech-016-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-upper",
+      "unit": "プレスとプルの支持・軌道",
+      "objective": {
+        "id": "ex-tech-upper-o1",
+        "text": "プレス動作の保持・支持とラックへ戻すまでの制御を確認する"
+      },
+      "explanations": [
+        "バーと前腕の位置関係",
+        "座ったプレスでも体幹を観察する",
+        "ラットプルダウンは設定から",
+        "肩甲帯と復帰局面も見る"
+      ],
+      "questions": [
+        "ex-tech-017",
+        "ex-tech-018",
+        "ex-tech-019"
+      ],
+      "groups": [
+        "ex-tech-017-g1",
+        "ex-tech-018-g1",
+        "ex-tech-019-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "hSTnDmUm3MY",
+          "title": "ベンチプレス",
+          "recommended": true
+        },
+        {
+          "youtubeId": "tRk3t97VBLs",
+          "title": "ダンベルショルダープレス",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-upper",
+      "unit": "プレスとプルの支持・軌道",
+      "objective": {
+        "id": "ex-tech-upper-o2",
+        "text": "ラットプルダウンの設定・軌道・肩甲帯の動きを説明する"
+      },
+      "explanations": [
+        "バーと前腕の位置関係",
+        "座ったプレスでも体幹を観察する",
+        "ラットプルダウンは設定から",
+        "肩甲帯と復帰局面も見る"
+      ],
+      "questions": [
+        "ex-tech-020",
+        "ex-tech-021",
+        "ex-tech-023"
+      ],
+      "groups": [
+        "ex-tech-020-g1",
+        "ex-tech-021-g1",
+        "ex-tech-023-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "QB-r-j_lciA",
+          "title": "ラットプルダウン",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-upper",
+      "unit": "プレスとプルの支持・軌道",
+      "objective": {
+        "id": "ex-tech-upper-o3",
+        "text": "引く動作の共同作用と下降・復帰局面の制御を評価する"
+      },
+      "explanations": [
+        "バーと前腕の位置関係",
+        "座ったプレスでも体幹を観察する",
+        "ラットプルダウンは設定から",
+        "肩甲帯と復帰局面も見る"
+      ],
+      "questions": [
+        "ex-tech-022",
+        "ex-tech-024"
+      ],
+      "groups": [
+        "ex-tech-022-g1",
+        "ex-tech-024-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-core",
+      "unit": "体幹と自重動作の制御",
+      "objective": {
+        "id": "ex-tech-core-o1",
+        "text": "バードドッグで四肢の運動と体幹の制御を区別する"
+      },
+      "explanations": [
+        "四肢は動かし、体幹は制御する",
+        "プランクは秒数だけで評価しない",
+        "プッシュアップは身体全体の移動",
+        "自重でも支持条件で要求は変わる"
+      ],
+      "questions": [
+        "ex-tech-025",
+        "ex-tech-026",
+        "ex-tech-027"
+      ],
+      "groups": [
+        "ex-tech-025-g1",
+        "ex-tech-026-g1",
+        "ex-tech-027-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-core",
+      "unit": "体幹と自重動作の制御",
+      "objective": {
+        "id": "ex-tech-core-o2",
+        "text": "プランクの姿勢・呼吸・症状を確認し、保持条件を選ぶ"
+      },
+      "explanations": [
+        "四肢は動かし、体幹は制御する",
+        "プランクは秒数だけで評価しない",
+        "プッシュアップは身体全体の移動",
+        "自重でも支持条件で要求は変わる"
+      ],
+      "questions": [
+        "ex-tech-028",
+        "ex-tech-029",
+        "ex-tech-030"
+      ],
+      "groups": [
+        "ex-tech-028-g1",
+        "ex-tech-029-g1",
+        "ex-tech-030-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-core",
+      "unit": "体幹と自重動作の制御",
+      "objective": {
+        "id": "ex-tech-core-o3",
+        "text": "自重プッシュとサスペンションの支持・角度による要求を説明する"
+      },
+      "explanations": [
+        "四肢は動かし、体幹は制御する",
+        "プランクは秒数だけで評価しない",
+        "プッシュアップは身体全体の移動",
+        "自重でも支持条件で要求は変わる"
+      ],
+      "questions": [
+        "ex-tech-031",
+        "ex-tech-032"
+      ],
+      "groups": [
+        "ex-tech-031-g1",
+        "ex-tech-032-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "UlUjS6_A0Qc",
+          "title": "【NSCAジャパン】12ウォールプッシュアップ",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-flex",
+      "unit": "柔軟性と準備運動の使い分け",
+      "objective": {
+        "id": "ex-tech-flex-o1",
+        "text": "運動直前の準備と、長期的な柔軟性練習を目的別に組み合わせる"
+      },
+      "explanations": [
+        "準備運動とストレッチは同じではない",
+        "静的ストレッチを一律に禁止しない",
+        "動いたというだけで方法は決まらない",
+        "出せる範囲と動かされる範囲を分ける"
+      ],
+      "questions": [
+        "ex-tech-033",
+        "ex-tech-034",
+        "ex-tech-035",
+        "ex-tech-036"
+      ],
+      "groups": [
+        "ex-tech-033-g1",
+        "ex-tech-034-g1",
+        "ex-tech-035-g1",
+        "ex-tech-036-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-flex",
+      "unit": "柔軟性と準備運動の使い分け",
+      "objective": {
+        "id": "ex-tech-flex-o2",
+        "text": "静的・動的・バリスティック・PNFの実施方法を区別する"
+      },
+      "explanations": [
+        "準備運動とストレッチは同じではない",
+        "静的ストレッチを一律に禁止しない",
+        "動いたというだけで方法は決まらない",
+        "出せる範囲と動かされる範囲を分ける"
+      ],
+      "questions": [
+        "ex-tech-037",
+        "ex-tech-038"
+      ],
+      "groups": [
+        "ex-tech-037-g1",
+        "ex-tech-038-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-flex",
+      "unit": "柔軟性と準備運動の使い分け",
+      "objective": {
+        "id": "ex-tech-flex-o3",
+        "text": "能動と他動の可動域、関節構造と制御の情報を分けて解釈する"
+      },
+      "explanations": [
+        "準備運動とストレッチは同じではない",
+        "静的ストレッチを一律に禁止しない",
+        "動いたというだけで方法は決まらない",
+        "出せる範囲と動かされる範囲を分ける"
+      ],
+      "questions": [
+        "ex-tech-039",
+        "ex-tech-040"
+      ],
+      "groups": [
+        "ex-tech-039-g1",
+        "ex-tech-040-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-cardio",
+      "unit": "有酸素機器の設定と動作",
+      "objective": {
+        "id": "ex-tech-cardio-o1",
+        "text": "ローイングの駆動と復帰の順序、ダンパーと運動強度の違いを説明する"
+      },
+      "explanations": [
+        "ローイングは動作の順序を整える",
+        "ダンパーの数字は強度そのものではない",
+        "バイクは姿勢を見てから微調整する",
+        "停止機構と表示の限界"
+      ],
+      "questions": [
+        "ex-tech-041",
+        "ex-tech-042",
+        "ex-tech-043",
+        "ex-tech-044"
+      ],
+      "groups": [
+        "ex-tech-041-g1",
+        "ex-tech-042-g1",
+        "ex-tech-043-g1",
+        "ex-tech-044-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "4zWu1yuJ0_g",
+          "title": "Correct Rowing Machine Technique, Improve Your Rowing  | Concept2",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-cardio",
+      "unit": "有酸素機器の設定と動作",
+      "objective": {
+        "id": "ex-tech-cardio-o2",
+        "text": "バイクの姿勢と、機種の手順に沿った調整を確認する"
+      },
+      "explanations": [
+        "ローイングは動作の順序を整える",
+        "ダンパーの数字は強度そのものではない",
+        "バイクは姿勢を見てから微調整する",
+        "停止機構と表示の限界"
+      ],
+      "questions": [
+        "ex-tech-045",
+        "ex-tech-046"
+      ],
+      "groups": [
+        "ex-tech-045-g1",
+        "ex-tech-046-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-cardio",
+      "unit": "有酸素機器の設定と動作",
+      "objective": {
+        "id": "ex-tech-cardio-o3",
+        "text": "トレッドミルの停止機構と機器表示の限界を説明する"
+      },
+      "explanations": [
+        "ローイングは動作の順序を整える",
+        "ダンパーの数字は強度そのものではない",
+        "バイクは姿勢を見てから微調整する",
+        "停止機構と表示の限界"
+      ],
+      "questions": [
+        "ex-tech-047",
+        "ex-tech-048"
+      ],
+      "groups": [
+        "ex-tech-047-g1",
+        "ex-tech-048-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-power",
+      "unit": "着地・減速・スピードの技術",
+      "objective": {
+        "id": "ex-tech-power-o1",
+        "text": "着地の関節運動と、質を基準にした難度調整を説明する"
+      },
+      "explanations": [
+        "高さより先に着地の質を確かめる",
+        "吸収して次の動作へつなぐ",
+        "減速の深さは次の動作に合わせる",
+        "速さと加速度を区別する"
+      ],
+      "questions": [
+        "ex-tech-049",
+        "ex-tech-051"
+      ],
+      "groups": [
+        "ex-tech-049-g1",
+        "ex-tech-051-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-power",
+      "unit": "着地・減速・スピードの技術",
+      "objective": {
+        "id": "ex-tech-power-o2",
+        "text": "減速とSSC、次動作に合う屈曲・体幹姿勢、腕による制御の役割を説明する"
+      },
+      "explanations": [
+        "高さより先に着地の質を確かめる",
+        "吸収して次の動作へつなぐ",
+        "減速の深さは次の動作に合わせる",
+        "速さと加速度を区別する"
+      ],
+      "questions": [
+        "ex-tech-050",
+        "ex-tech-052",
+        "ex-tech-053",
+        "ex-tech-054"
+      ],
+      "groups": [
+        "ex-tech-050-g1",
+        "ex-tech-052-g1",
+        "ex-tech-053-g1",
+        "ex-tech-054-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-power",
+      "unit": "着地・減速・スピードの技術",
+      "objective": {
+        "id": "ex-tech-power-o3",
+        "text": "加速度と最高速度、予定・反応課題の違いを解釈する"
+      },
+      "explanations": [
+        "高さより先に着地の質を確かめる",
+        "吸収して次の動作へつなぐ",
+        "減速の深さは次の動作に合わせる",
+        "速さと加速度を区別する"
+      ],
+      "questions": [
+        "ex-tech-055",
+        "ex-tech-056"
+      ],
+      "groups": [
+        "ex-tech-055-g1",
+        "ex-tech-056-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-mechanics",
+      "unit": "力の腕・仕事・パワーの使い分け",
+      "objective": {
+        "id": "ex-tech-mechanics-o1",
+        "text": "力の作用線への垂直距離を使い、モーメントとつり合いを計算する"
+      },
+      "explanations": [
+        "力の腕は作用線までの垂直距離",
+        "つり合いは向きと対象をそろえる",
+        "仕事では力と変位の方向を見る",
+        "パワーの比較と静止の解釈"
+      ],
+      "questions": [
+        "ex-tech-057",
+        "ex-tech-058",
+        "ex-tech-059"
+      ],
+      "groups": [
+        "ex-tech-057-g1",
+        "ex-tech-058-g1",
+        "ex-tech-059-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-mechanics",
+      "unit": "力の腕・仕事・パワーの使い分け",
+      "objective": {
+        "id": "ex-tech-mechanics-o2",
+        "text": "対象物への仕事と、その平均パワーを条件に合わせて求める"
+      },
+      "explanations": [
+        "力の腕は作用線までの垂直距離",
+        "つり合いは向きと対象をそろえる",
+        "仕事では力と変位の方向を見る",
+        "パワーの比較と静止の解釈"
+      ],
+      "questions": [
+        "ex-tech-060",
+        "ex-tech-061"
+      ],
+      "groups": [
+        "ex-tech-060-g1",
+        "ex-tech-061-g1"
+      ],
+      "videos": [
+        {
+          "youtubeId": "RpbxIG5HTf4",
+          "title": "Power | Work and energy | Physics | Khan Academy",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "ex-tech-mechanics",
+      "unit": "力の腕・仕事・パワーの使い分け",
+      "objective": {
+        "id": "ex-tech-mechanics-o3",
+        "text": "外部への機械的な出力と、筋の努力・代謝を区別する"
+      },
+      "explanations": [
+        "力の腕は作用線までの垂直距離",
+        "つり合いは向きと対象をそろえる",
+        "仕事では力と変位の方向を見る",
+        "パワーの比較と静止の解釈"
+      ],
+      "questions": [
+        "ex-tech-062"
+      ],
+      "groups": [
+        "ex-tech-062-g1"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-eap",
+      "unit": "緊急計画を現場で使える形にする",
+      "objective": {
+        "id": "ex-safe-eap-o1",
+        "text": "人員とアクセス条件を踏まえてEAPを点検する"
+      },
+      "explanations": [
+        "計画の穴を現場で探す",
+        "訓練の結果で改訂する",
+        "導入と定期保守",
+        "事故に関わった器具の扱い"
+      ],
+      "questions": [
+        "ex-safe-001",
+        "ex-safe-002"
+      ],
+      "groups": [
+        "ex-safe-eap-locked-access",
+        "ex-safe-eap-role-collision"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-eap",
+      "unit": "緊急計画を現場で使える形にする",
+      "objective": {
+        "id": "ex-safe-eap-o2",
+        "text": "設備の導入・保守と事故時の記録を判断する"
+      },
+      "explanations": [
+        "計画の穴を現場で探す",
+        "訓練の結果で改訂する",
+        "導入と定期保守",
+        "事故に関わった器具の扱い"
+      ],
+      "questions": [
+        "ex-safe-004",
+        "ex-safe-005",
+        "ex-safe-006"
+      ],
+      "groups": [
+        "ex-safe-equipment-incident-preserve",
+        "ex-safe-equipment-first-service",
+        "ex-safe-equipment-maintenance-manufacturer"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-eap",
+      "unit": "緊急計画を現場で使える形にする",
+      "objective": {
+        "id": "ex-safe-eap-o3",
+        "text": "海外の専門職指針と日本の法的義務を区別する"
+      },
+      "explanations": [
+        "計画の穴を現場で探す",
+        "訓練の結果で改訂する",
+        "導入と定期保守",
+        "事故に関わった器具の扱い"
+      ],
+      "questions": [
+        "ex-safe-003"
+      ],
+      "groups": [
+        "ex-safe-eap-guideline-jurisdiction"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-cpr",
+      "unit": "成人のCPR・AEDを条件から判断する",
+      "objective": {
+        "id": "ex-safe-cpr-o1",
+        "text": "成人の圧迫のテンポと質の条件を説明する"
+      },
+      "explanations": [
+        "テンポだけでは質を保証しない",
+        "ショック不要でも処置は続く",
+        "肌への密着と衣服への配慮",
+        "役割を交代して継続する"
+      ],
+      "questions": [
+        "ex-safe-007",
+        "ex-safe-008",
+        "ex-safe-012"
+      ],
+      "groups": [
+        "ex-safe-cpr-rate-quality",
+        "ex-safe-cpr-recoil-feedback",
+        "ex-safe-cpr-fatigue-switch"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-cpr",
+      "unit": "成人のCPR・AEDを条件から判断する",
+      "objective": {
+        "id": "ex-safe-cpr-o2",
+        "text": "AEDの案内と胸部の状態に応じて行動を選ぶ"
+      },
+      "explanations": [
+        "テンポだけでは質を保証しない",
+        "ショック不要でも処置は続く",
+        "肌への密着と衣服への配慮",
+        "役割を交代して継続する"
+      ],
+      "questions": [
+        "ex-safe-009",
+        "ex-safe-010",
+        "ex-safe-011"
+      ],
+      "groups": [
+        "ex-safe-aed-no-shock-resume",
+        "ex-safe-aed-wet-pad-site",
+        "ex-safe-aed-bra-conditional"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-cpr",
+      "unit": "成人のCPR・AEDを条件から判断する",
+      "objective": {
+        "id": "ex-safe-cpr-o3",
+        "text": "知識問題と実技技能を区別する"
+      },
+      "explanations": [
+        "テンポだけでは質を保証しない",
+        "ショック不要でも処置は続く",
+        "肌への密着と衣服への配慮",
+        "役割を交代して継続する"
+      ],
+      "questions": [],
+      "groups": [],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-conditions",
+      "unit": "熱中症・頭部衝撃・窒息の初動",
+      "objective": {
+        "id": "ex-safe-conditions-o1",
+        "text": "熱中症が疑われる状態で救急要請と冷却の優先順位を判断する"
+      },
+      "explanations": [
+        "飲めるか、反応は正常か",
+        "意識消失がなくても頭部損傷を疑う",
+        "緊急性を高める変化",
+        "誰が復帰を判断するか",
+        "窒息が疑われても強い咳ができるとき"
+      ],
+      "questions": [
+        "ex-safe-013"
+      ],
+      "groups": [
+        "ex-safe-heat-unable-drink"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-conditions",
+      "unit": "熱中症・頭部衝撃・窒息の初動",
+      "objective": {
+        "id": "ex-safe-conditions-o2",
+        "text": "頭部・身体への衝撃後の変化と危険な兆候を認識する"
+      },
+      "explanations": [
+        "飲めるか、反応は正常か",
+        "意識消失がなくても頭部損傷を疑う",
+        "緊急性を高める変化",
+        "誰が復帰を判断するか",
+        "窒息が疑われても強い咳ができるとき"
+      ],
+      "questions": [
+        "ex-safe-014",
+        "ex-safe-015",
+        "ex-safe-016"
+      ],
+      "groups": [
+        "ex-safe-concussion-no-loc",
+        "ex-safe-concussion-delayed-onset",
+        "ex-safe-head-worsening-redflags"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-conditions",
+      "unit": "熱中症・頭部衝撃・窒息の初動",
+      "objective": {
+        "id": "ex-safe-conditions-o3",
+        "text": "一時的な改善と運動復帰の許可を区別する"
+      },
+      "explanations": [
+        "飲めるか、反応は正常か",
+        "意識消失がなくても頭部損傷を疑う",
+        "緊急性を高める変化",
+        "誰が復帰を判断するか",
+        "窒息が疑われても強い咳ができるとき"
+      ],
+      "questions": [
+        "ex-safe-017"
+      ],
+      "groups": [
+        "ex-safe-concussion-return-clearance"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-conditions",
+      "unit": "熱中症・頭部衝撃・窒息の初動",
+      "objective": {
+        "id": "ex-safe-conditions-o4",
+        "text": "窒息が疑われる人の有効な咳を認識し、助けを求めながら変化を観察する"
+      },
+      "explanations": [
+        "飲めるか、反応は正常か",
+        "意識消失がなくても頭部損傷を疑う",
+        "緊急性を高める変化",
+        "誰が復帰を判断するか",
+        "窒息が疑われても強い咳ができるとき"
+      ],
+      "questions": [
+        "ex-safe-018"
+      ],
+      "groups": [
+        "ex-safe-choking-effective-cough"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-consent",
+      "unit": "同意・説明と指導記録",
+      "objective": {
+        "id": "ex-safe-consent-o1",
+        "text": "目的・リスク・質問の機会を含む説明を行う"
+      },
+      "explanations": [
+        "何に同意するかを共有する",
+        "電子通信にも条件がある",
+        "法的文書を独断で作らない",
+        "何を保存するか"
+      ],
+      "questions": [
+        "ex-safe-019",
+        "ex-safe-020"
+      ],
+      "groups": [
+        "ex-safe-consent-before-assessment",
+        "ex-safe-consent-understanding"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-consent",
+      "unit": "同意・説明と指導記録",
+      "objective": {
+        "id": "ex-safe-consent-o2",
+        "text": "電子通信の条件を説明対象として捉える"
+      },
+      "explanations": [
+        "何に同意するかを共有する",
+        "電子通信にも条件がある",
+        "法的文書を独断で作らない",
+        "何を保存するか"
+      ],
+      "questions": [
+        "ex-safe-021"
+      ],
+      "groups": [
+        "ex-safe-consent-electronic-risk"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-consent",
+      "unit": "同意・説明と指導記録",
+      "objective": {
+        "id": "ex-safe-consent-o3",
+        "text": "法的文書の準備と指導記録の範囲を判断する"
+      },
+      "explanations": [
+        "何に同意するかを共有する",
+        "電子通信にも条件がある",
+        "法的文書を独断で作らない",
+        "何を保存するか"
+      ],
+      "questions": [
+        "ex-safe-022",
+        "ex-safe-023"
+      ],
+      "groups": [
+        "ex-safe-legal-form-preparation",
+        "ex-safe-records-clearance-time-purpose"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-privacy",
+      "unit": "日本の個人情報保護と現場対応",
+      "objective": {
+        "id": "ex-safe-privacy-o1",
+        "text": "情報の利用目的と要配慮情報の取得条件を確認する"
+      },
+      "explanations": [
+        "同じ施設内でも目的は無制限ではない",
+        "病歴等の取得",
+        "委託先と救急時の扱い",
+        "漏えい等の疑いが分かったら"
+      ],
+      "questions": [
+        "ex-safe-024",
+        "ex-safe-025"
+      ],
+      "groups": [
+        "ex-safe-privacy-internal-purpose-limit",
+        "ex-safe-privacy-sensitive-acquisition"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-privacy",
+      "unit": "日本の個人情報保護と現場対応",
+      "objective": {
+        "id": "ex-safe-privacy-o2",
+        "text": "委託先の監督と緊急時の提供を区別する"
+      },
+      "explanations": [
+        "同じ施設内でも目的は無制限ではない",
+        "病歴等の取得",
+        "委託先と救急時の扱い",
+        "漏えい等の疑いが分かったら"
+      ],
+      "questions": [
+        "ex-safe-026",
+        "ex-safe-027"
+      ],
+      "groups": [
+        "ex-safe-privacy-outsourcing-supervision",
+        "ex-safe-privacy-life-protection-exception"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "ex-safe-privacy",
+      "unit": "日本の個人情報保護と現場対応",
+      "objective": {
+        "id": "ex-safe-privacy-o3",
+        "text": "漏えいの疑いに対する初動を選ぶ"
+      },
+      "explanations": [
+        "同じ施設内でも目的は無制限ではない",
+        "病歴等の取得",
+        "委託先と救急時の扱い",
+        "漏えい等の疑いが分かったら"
+      ],
+      "questions": [
+        "ex-safe-028"
+      ],
+      "groups": [
+        "ex-safe-privacy-breach-initial-response"
+      ],
+      "videos": []
+    }
+  ]
+}

@@ -19,7 +19,7 @@ const modeNames: Record<LearningMode, string> = {
   diagnostic: '実力診断',
   practice: '問題演習',
   review: '復習',
-  mock: '短縮模試',
+  mock: '時間付き学習演習',
 };
 const number = new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 1 });
 const percent = (value: number | null) => (value === null ? '—' : `${number.format(value)}%`);
@@ -55,6 +55,19 @@ function timerLabel(session: SessionPerformance) {
     : session.mockTimeMode === 'study'
       ? '中断できるタイマー'
       : '時間方式の記録なし';
+}
+function sessionLabel(session: SessionPerformance) {
+  if (session.mode === 'mock')
+    return session.mockFormat === 'through' ? '学習用通し演習' : '短縮模試';
+  if (session.mode === 'practice' && session.practice)
+    return `${session.practice.batch === 'all' ? '全問題' : '追加200問'}・${
+      session.practice.selection === 'strict_unseen'
+        ? '厳密未見'
+        : session.practice.selection === 'review'
+          ? '既出を含む復習'
+          : '未見優先'
+    }`;
+  return modeNames[session.mode];
 }
 
 function DailyChart({ days }: { days: DayActivity[] }) {
@@ -189,7 +202,7 @@ export default function Analytics() {
       <section className="panel">
         <h2>分野別の回答と理解の手がかり</h2>
         <p className="muted small-text">
-          回答数には中断中の通常演習で保存した回答も含みます。短縮模試の途中回答は、終了して採点するまで集計しません。「説明可」は自己申告です。回答時間の短さだけで習熟を判定しません。
+          回答数には中断中の通常演習で保存した回答も含みます。時間付き学習演習の途中回答は、終了して採点するまで集計しません。「説明可」は自己申告です。初版50問の診断だけで全300問・全学習目標の習熟を判定しません。
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="分野別の成績表">
           <table>
@@ -318,13 +331,16 @@ export default function Analytics() {
           <>
             <div className="result-stats">
               <div>
-                <span>最新の{modeNames[mode]}</span>
+                <span>最新の{sessionLabel(latest)}</span>
                 <b>{percent(latest.accuracy)}</b>
                 <p>
-                  {latest.correct}/{latest.total}問 正解 · 未回答 {latest.unanswered}問
+                  {latest.correct}/{latest.evaluatedTotal ?? latest.total}問 正解 · 未回答{' '}
+                  {latest.unanswered}問
                 </p>
                 <small>
                   初見 {latest.firstCount} · 解き直し {latest.repeatCount}
+                  {latest.practice?.selection === 'strict_unseen' &&
+                    ` · 出題${latest.total}問・評価除外${latest.excludedCount ?? 0}問`}
                 </small>
               </div>
               <div>
@@ -332,7 +348,7 @@ export default function Analytics() {
                 <b>{percent(previous?.accuracy ?? null)}</b>
                 <p>
                   {previous
-                    ? `${previous.correct}/${previous.total}問 正解 · 未回答 ${previous.unanswered}問`
+                    ? `${previous.correct}/${previous.evaluatedTotal ?? previous.total}問 正解 · 未回答 ${previous.unanswered}問`
                     : '比較できる過去の完了記録がありません'}
                 </p>
                 {previous && (
@@ -356,9 +372,11 @@ export default function Analytics() {
               </div>
             </div>
             <p className="muted small-text">
-              完了した学習だけを比較します。未回答は全出題数の分母に含めます。
+              完了した学習だけを比較します。通常学習・時間付き演習は未回答も出題数の分母に含めます。厳密未見演習は実際に初見と判定できた回答だけを評価し、既出・先読みは除外します。
               {mode === 'mock' &&
-                `短縮模試は最新と同じ${latest.total}問・${timerLabel(latest)}の記録だけを比較候補にします。`}
+                `${sessionLabel(latest)}は最新と同じ${latest.total}問・${timerLabel(latest)}の記録だけを比較候補にします。`}
+              {mode === 'practice' &&
+                '問題演習は問題数・対象バッチ・未見条件が同じ記録だけを比べます。'}
               問題・単元・難易度・初見の比率が違うため、率の差をそのまま学習効果とは判断できません。
             </p>
           </>
@@ -382,7 +400,7 @@ export default function Analytics() {
                 <tr>
                   <th scope="col">日付</th>
                   <th scope="col">形式</th>
-                  <th scope="col">正解／全出題</th>
+                  <th scope="col">正解／採点対象</th>
                   <th scope="col">正答率</th>
                   <th scope="col">未回答</th>
                   <th scope="col">初見／解き直し</th>
@@ -397,11 +415,16 @@ export default function Analytics() {
                       {dateLabel(session.completedAt ?? session.startedAt, settings.timezone)}
                     </td>
                     <td>
-                      {modeNames[session.mode]}
+                      {sessionLabel(session)}
                       {session.mode === 'mock' && <small> · {timerLabel(session)}</small>}
                     </td>
                     <td>
-                      {session.correct}/{session.total}問
+                      {session.correct}/{session.evaluatedTotal ?? session.total}問
+                      {session.practice?.selection === 'strict_unseen' && (
+                        <small>
+                          （出題{session.total}・除外{session.excludedCount ?? 0}）
+                        </small>
+                      )}
                     </td>
                     <td>{percent(session.accuracy)}</td>
                     <td>{session.unanswered}問</td>

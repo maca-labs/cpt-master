@@ -2,6 +2,10 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, readFile } from 'node:fs/promises';
 import { seedVideos, units } from '../src/content';
 import { validateBackup } from '../src/storage/db';
+import { isRecommendedVideo } from '../src/engines/video-review';
+
+const recommendedCount = seedVideos.filter((video) => isRecommendedVideo(video)).length;
+const candidateCount = seedVideos.length - recommendedCount;
 
 const jspo = seedVideos.find((video) => video.youtubeId === 'XBkaAAwyS4s')!;
 const squat = seedVideos.find((video) => video.youtubeId === 'fIvDJoyVgRQ')!;
@@ -33,11 +37,15 @@ test('recommendation filter separates JSPO transcript and squat visual reviews f
   page,
 }, testInfo) => {
   await open(page, '/videos');
-  await expect(page.getByRole('button', { name: 'おすすめ 2本', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: '候補・確認保留 8本', exact: true })).toBeVisible();
-  await expect(page.locator('article.video-card')).toHaveCount(10);
-  await page.getByRole('button', { name: 'おすすめ 2本', exact: true }).click();
-  await expect(page.locator('article.video-card')).toHaveCount(2);
+  await expect(
+    page.getByRole('button', { name: `おすすめ ${recommendedCount}本`, exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: `候補・確認保留 ${candidateCount}本`, exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('article.video-card')).toHaveCount(seedVideos.length);
+  await page.getByRole('button', { name: `おすすめ ${recommendedCount}本`, exact: true }).click();
+  await expect(page.locator('article.video-card')).toHaveCount(recommendedCount);
   const card = videoCard(page, jspo.title);
   await expect(card.getByText('おすすめ · AIによる字幕照合', { exact: true })).toBeVisible();
   await card.locator('summary').click();
@@ -96,8 +104,10 @@ test('recommendation filter separates JSPO transcript and squat visual reviews f
     animations: 'disabled',
   });
 
-  await page.getByRole('button', { name: '候補・確認保留 8本', exact: true }).click();
-  await expect(page.locator('article.video-card')).toHaveCount(8);
+  await page
+    .getByRole('button', { name: `候補・確認保留 ${candidateCount}本`, exact: true })
+    .click();
+  await expect(page.locator('article.video-card')).toHaveCount(candidateCount);
   await expect(videoCard(page, jspo.title)).toHaveCount(0);
   await expect(videoCard(page, squat.title)).toHaveCount(0);
   const held = videoCard(page, program.title);
@@ -119,8 +129,8 @@ test('recommendation filter separates JSPO transcript and squat visual reviews f
     '全改訂差分を確認したという意味ではない',
   );
   await expect(oldGuideline.getByText(/おすすめ · /)).toHaveCount(0);
-  await page.getByRole('button', { name: 'すべて 10本', exact: true }).click();
-  await expect(page.locator('article.video-card')).toHaveCount(10);
+  await page.getByRole('button', { name: `すべて ${seedVideos.length}本`, exact: true }).click();
+  await expect(page.locator('article.video-card')).toHaveCount(seedVideos.length);
 });
 
 test('professional and technique lessons scope each recommendation to its objective while safety stays on hold', async ({
@@ -186,7 +196,9 @@ test('reordering and hiding recommendations keep backups valid and personally ad
       (await page.locator('article.video-card h3').allTextContents()).indexOf(jspo.title),
     )
     .toBe(priorIndex - 1);
-  await expect(page.getByRole('button', { name: 'おすすめ 2本', exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: `おすすめ ${recommendedCount}本`, exact: true }),
+  ).toBeVisible();
   const reordered = await checkedExport(page, testInfo, 'reordered-video-settings.json');
   expect(reordered.data.videoOverrides).toHaveLength(seedVideos.length);
   expect(
@@ -196,11 +208,13 @@ test('reordering and hiding recommendations keep backups valid and personally ad
   ).toBe(true);
 
   await open(page, '/videos');
-  await page.getByRole('button', { name: 'おすすめ 2本', exact: true }).click();
+  await page.getByRole('button', { name: `おすすめ ${recommendedCount}本`, exact: true }).click();
   await expect(videoCard(page, jspo.title)).toHaveCount(1);
   await page.getByRole('button', { name: `${jspo.title}をこの端末で非表示`, exact: true }).click();
-  await expect(page.getByRole('button', { name: 'おすすめ 1本', exact: true })).toBeVisible();
-  await expect(page.locator('article.video-card')).toHaveCount(1);
+  await expect(
+    page.getByRole('button', { name: `おすすめ ${recommendedCount - 1}本`, exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('article.video-card')).toHaveCount(recommendedCount - 1);
   await expect(videoCard(page, squat.title)).toHaveCount(1);
   const hidden = await checkedExport(page, testInfo, 'hidden-video-settings.json');
   expect(hidden.data.videoOverrides.find((item) => item.id === jspo.id)?.deleted).toBe(true);
@@ -228,8 +242,12 @@ test('reordering and hiding recommendations keep backups valid and personally ad
     .check();
   await dialog.getByRole('button', { name: '個人設定として保存', exact: true }).click();
   await expect(dialog).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'おすすめ 1本', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: '候補・確認保留 9本', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: `おすすめ ${recommendedCount - 1}本`, exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: `候補・確認保留 ${candidateCount + 1}本`, exact: true })
+    .click();
   const candidate = videoCard(page, personalTitle);
   await expect(candidate.getByText('内容未確認の候補', { exact: true })).toBeVisible();
   await expect(candidate).toContainText('メタデータ：確認済み');
@@ -239,7 +257,9 @@ test('reordering and hiding recommendations keep backups valid and personally ad
   });
   await watched.click();
   await expect(watched).toBeChecked();
-  await expect(page.getByRole('button', { name: 'おすすめ 1本', exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: `おすすめ ${recommendedCount - 1}本`, exact: true }),
+  ).toBeVisible();
   const added = await checkedExport(page, testInfo, 'personal-candidate-settings.json');
   const savedPersonal = added.data.videoOverrides.find(
     (item) => item.video?.youtubeId === 'qL7C2MzikiU',

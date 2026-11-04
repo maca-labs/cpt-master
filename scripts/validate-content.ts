@@ -150,6 +150,13 @@ const videoSchema = z.object({
     checkedAt: date.nullable(),
     method: text.nullable(),
   }),
+  embed: z
+    .object({
+      status: z.enum(['unconfirmed', 'embeddable', 'blocked']),
+      checkedAt: date.nullable(),
+      method: text.nullable(),
+    })
+    .optional(),
   content: z.object({
     status: z.enum(['unreviewed', 'source_checked', 'expert_reviewed']),
     checkedAt: date.nullable(),
@@ -296,11 +303,11 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       'questions',
       `今回の収録目標は${releaseTargets.questions}問です（${data.questions.length}件）。`,
     );
-  if (data.videos.length !== 10)
+  if (data.videos.length < 10)
     error(
       'counts.videos',
       'videos',
-      `確認済みメタデータを持つ動画候補は10件必要です（${data.videos.length}件）。`,
+      `初版からの動画候補10件を維持してください（${data.videos.length}件）。`,
     );
 
   const checkIds = (items: readonly { id: string }[], path: string) => {
@@ -686,6 +693,17 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       (!video.playback.checkedAt || !video.playback.method)
     )
       error('video.playback-record', path, '再生状態を確認した場合は確認日と方法が必要です。');
+    if (
+      video.embed &&
+      (video.embed.status === 'unconfirmed'
+        ? video.embed.checkedAt !== null || video.embed.method !== null
+        : !video.embed.checkedAt || !video.embed.method)
+    )
+      error(
+        'video.embed-record',
+        path,
+        '埋め込み確認は再生確認と分け、確認日・方法を記録してください。',
+      );
     checkRefs(video.content.sourceRefs, `${path}.content.sourceRefs`);
   }
   // Cache each prompt once: hundreds of questions require tens of thousands of

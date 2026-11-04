@@ -34,7 +34,8 @@ async function records<T>(page: Page, name: string): Promise<T[]> {
 async function completeSafetyPractice(page: Page, correctPattern: boolean[]) {
   await ready(page, '/practice');
   await page.getByLabel(/^学習する単元/).selectOption('safety');
-  await page.getByRole('button', { name: '問題演習を始める', exact: true }).click();
+  await expect(page.getByRole('button', { name: '問題演習を始める', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: '利用可能な3問で始める', exact: true }).click();
   for (let index = 0; index < correctPattern.length; index++) {
     await expect(page.locator('.quiz-top .pill')).toHaveText(
       `確認問題 · ${index + 1} / ${correctPattern.length}`,
