@@ -91,7 +91,7 @@
 | Pages用ファイル検査               | 合格。プロジェクト配下のassets・manifest・Service Worker登録先とscopeを検査                             |
 | 動画関連E2E                       | PC・モバイル計6件合格。推薦2/候補8、限定範囲・出典・単元への紐づけ、CPR保留理由、個人設定とJSONを確認   |
 | 実際のPWA更新E2E                  | PC・モバイル計6件合格。初回未制御タブの停止を修正前に再現し、修正後の更新・回答保存・別タブ非強制を確認 |
-| 公開先E2E・HTTP・ブラウザー確認   | 公開後に確認する                                                                                        |
+| 公開先E2E・HTTP・ブラウザー確認   | PC・モバイル計4件合格。HTML・JS・manifest・SWはHTTP 200。既存タブの0.3.2更新とおすすめ2本も確認         |
 
 PCは1280×900、モバイルは390×844のMicrosoft Edge（Playwright）で検査しました。実スマートフォン端末や、YouTube全動画の埋め込みを確認した結果ではありません。
 
@@ -107,7 +107,18 @@ npm run build
 node scripts/validate-pages.mjs
 ```
 
-公開先での最終確認はこの欄へ追記します。自動検査や公開処理の成功は、追加の動画内容審査や人間専門家の確認を意味しません。
+最終公開先は[CPT Masterの動画ライブラリ](https://maca-labs.github.io/cpt-master/#/videos)です。公開コード`4089b695ba6498f2532cf6885bc827d24a640225`の[GitHub Actions](https://github.com/maca-labs/cpt-master/actions/runs/41805908136)は成功し、処理内でも型・教材検査・単体172件・Pagesビルドとファイル検査がすべて通過しました。動画追加を含む先行版の公開処理も成功しましたが、最終確認はPWA修正を含む0.3.2に対して行っています。
+
+公開先の4ケースでは、おすすめ2本の字幕／映像の表示、関連単元の深いリンクと再読み込み、横はみ出しがないこと、Service Worker制御、オフラインでの教材閲覧・回答保存・再読み込み後の保持をPCとモバイルで確認しました。実ブラウザーの既存公開タブでも、更新案内・確認チェック・更新ボタンから0.3.2へ再読み込みし、おすすめ2本のフィルターを表示して確認用タブを残しています。
+
+今回のE2Eは動画6・PWA更新6・最終公開先4の、重複しない16ケースが合格しました。再撮影や修正前再現、先行版の再実行を件数へ足していません。[PC公開画面](../artifacts/published-videos-desktop.png)・[モバイル公開画面](../artifacts/published-videos-mobile.png)。
+
+```powershell
+$env:E2E_PUBLISHED_URL = 'https://maca-labs.github.io/cpt-master/'
+npx playwright test e2e/pages.spec.ts
+```
+
+自動検査や公開処理の成功は、追加の動画内容審査や人間専門家の確認を意味しません。文書・確認画像のみの最終更新では、アプリの公開ワークフローを再実行しません。
 
 ### 公開確認で見つけたPWA更新の修正
 
