@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.npm-cache/
+test-results/
+playwright-report/
+*.log
+*.tsbuildinfo
+artifacts/preview.pid
+artifacts/playwright/
+artifacts/playwright-report/
+.env
+.env.*
+!.env.example
+**/*transcript*.txt
