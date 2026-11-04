@@ -4,7 +4,7 @@
 
 NSCA-CPTの学習開始位置を見つけ、要点・動画候補・確認問題・復習をつなぐ個人用の非公式学習アプリです。React + TypeScript + Viteで動作し、学習履歴はブラウザーのIndexedDBへ保存します。基本機能にAPIキーは不要です。
 
-GitHub Pagesの公開先は **[CPT Master](https://maca-labs.github.io/cpt-master/)** です。公開ビルドの配信・画面確認の結果はリリース記録で確認してください。PCのローカル版から公開先へ履歴を移すときは、下記のJSONバックアップを使います。
+GitHub Pagesで **[CPT Master](https://maca-labs.github.io/cpt-master/)** を公開しました。スマートフォンからもこのURLを開いて利用できます。公開先でのPC・モバイル幅の検査、オフライン学習と保存の確認結果はリリース記録にまとめています。PCのローカル版から公開先へ履歴を移すときは、下記のJSONバックアップを使います。
 
 ## 起動する
 
