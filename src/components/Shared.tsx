@@ -201,12 +201,20 @@ export function VideoCard({ video, unitId }: { video: Video; unitId?: string }) 
         </a>
         <div className="video-status">
           メタデータ：{video.metadata.status === 'confirmed' ? '確認済み' : '未確認'} ／ 再生：
-          {video.playback.status === 'unconfirmed' ? '未確認' : video.playback.status}
+          {
+            {
+              unconfirmed: '未確認',
+              playable: '通常ページで一部確認',
+              embed_blocked: '埋め込み不可',
+              unavailable: '利用不可',
+            }[video.playback.status]
+          }
           <br />
           確認日 {video.metadata.checkedAt}
           <details>
             <summary>確認方法と内容審査の状態</summary>
             <p>{video.metadata.method}</p>
+            {video.playback.method && <p>再生確認：{video.playback.method}</p>}
             {review ? (
               <>
                 <p>

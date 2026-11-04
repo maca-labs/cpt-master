@@ -13,9 +13,10 @@ import {
 
 let database: LearningDB;
 
-function reviewed(): Video {
-  const video = seedVideos.find((candidate) => isRecommendedVideo(candidate));
-  if (!video) throw new Error('照合済み動画のテスト用参照がありません。');
+function reviewed(youtubeId = 'XBkaAAwyS4s'): Video {
+  const video = seedVideos.find((candidate) => candidate.youtubeId === youtubeId);
+  if (!video || !isRecommendedVideo(video))
+    throw new Error('照合済み動画のテスト用参照がありません。');
   return structuredClone(video);
 }
 
@@ -71,15 +72,22 @@ describe('personal video settings and bundled content reviews', () => {
     ).toBe(false);
   });
 
-  it('uses the current bundled review when only ordering changes', () => {
-    const source = reviewed();
-    const override = toPersonalVideo({ ...source, order: 999 });
-    const result = mergedVideos([source], [{ id: source.id, video: override }])[0];
-    expect(result.order).toBe(999);
-    expect(result.content).toEqual(source.content);
-    expect(isRecommendedVideo(result, 'professional')).toBe(true);
-    expect(override.content.status).toBe('unreviewed');
-  });
+  it.each([
+    ['XBkaAAwyS4s', 'professional', 'transcript'],
+    ['fIvDJoyVgRQ', 'technique', 'visual'],
+  ])(
+    'uses the current bundled review for %s when only ordering changes',
+    (youtubeId, unitId, method) => {
+      const source = reviewed(youtubeId);
+      const override = toPersonalVideo({ ...source, order: 999 });
+      const result = mergedVideos([source], [{ id: source.id, video: override }])[0];
+      expect(result.order).toBe(999);
+      expect(result.content).toEqual(source.content);
+      expect(isRecommendedVideo(result, unitId)).toBe(true);
+      expect(result.content.review?.method).toBe(method);
+      expect(override.content.status).toBe('unreviewed');
+    },
+  );
 
   it('does not let an old unreviewed personal override hide an updated bundled review', () => {
     const source = reviewed();
@@ -124,7 +132,7 @@ describe('personal video settings and bundled content reviews', () => {
       sourceRefs: [],
     });
     expect(isRecommendedVideo(result)).toBe(false);
-    expect(seedVideos.filter((video) => isRecommendedVideo(video))).toHaveLength(1);
+    expect(seedVideos.filter((video) => isRecommendedVideo(video))).toHaveLength(2);
   });
 
   it('ignores a forged personal review and rejects it in imported backup data', async () => {

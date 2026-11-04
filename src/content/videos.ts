@@ -1,5 +1,10 @@
 import type { Video } from '../domain/types';
-import { videoReviews } from './video-reviews';
+import {
+  videoReviews,
+  videoContentSourceRefs,
+  videoReviewReasons,
+  videoPlaybackChecks,
+} from './video-reviews';
 
 // Metadata was fetched from YouTube's oEmbed endpoint on the stated date.
 // A successful metadata response does not establish playback or content accuracy.
@@ -130,46 +135,32 @@ export const seedVideos: Video[] = candidates.map(({ discoveryUrl, ...candidate 
   url: `https://www.youtube.com/watch?v=${candidate.youtubeId}`,
   unitIds: candidate.youtubeId === 'to4SW3kqm9Y' ? ['physiology'] : candidate.unitIds,
   objectiveIds: videoReviews[candidate.youtubeId].objectiveIds,
-  reason:
-    candidate.youtubeId === 'XBkaAAwyS4s'
-      ? 'ハラスメントが生じやすい力関係と、相手が拒否しにくい状況への配慮を学ぶためのおすすめ。日本語の自動字幕をJSPOの一次資料とAIが照合しました。音声・図表は未確認です。'
-      : candidate.youtubeId === 'hdtWEM3Oqwc'
-        ? '週日程・目標に応じた計画の補助候補。全自動字幕を読みましたが、定義や数値の不明瞭な箇所を解消できず、おすすめは保留しています。'
-        : candidate.reason,
+  reason: videoReviewReasons[candidate.youtubeId] ?? candidate.reason,
   metadata: {
     status: 'confirmed',
     checkedAt,
     method: `Web検索で候補を発見し、YouTube公式oEmbedへHTTPS GETを実行。JSON応答のtitle・author_nameを確認。掲載元: ${discoveryUrl}。これはメタデータの確認記録で、内容の照合は別に記録。`,
     evidenceUrl: `https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${candidate.youtubeId}`)}&format=json`,
   },
-  playback: { status: 'unconfirmed', checkedAt: null, method: null },
+  playback: videoPlaybackChecks[candidate.youtubeId] ?? {
+    status: 'unconfirmed',
+    checkedAt: null,
+    method: null,
+  },
   content: {
-    status: candidate.youtubeId === 'XBkaAAwyS4s' ? 'source_checked' : 'unreviewed',
-    checkedAt: candidate.youtubeId === 'XBkaAAwyS4s' ? checkedAt : null,
-    method:
-      candidate.youtubeId === 'XBkaAAwyS4s'
-        ? 'AIが取得できた全自動字幕とJSPO一次資料を照合。音声・図表の実視聴や人間専門家レビューではない。'
+    status:
+      videoReviews[candidate.youtubeId].decision === 'recommended'
+        ? 'source_checked'
+        : 'unreviewed',
+    checkedAt:
+      videoReviews[candidate.youtubeId].decision === 'recommended'
+        ? videoReviews[candidate.youtubeId].checkedAt
         : null,
-    sourceRefs:
-      candidate.youtubeId === 'XBkaAAwyS4s'
-        ? [
-            {
-              sourceId: 'video-jspo-ethics',
-              locator: 'PDF pp.15–16：構造的要因、表面化しにくい問題。',
-            },
-            {
-              sourceId: 'video-jspo-handbook1',
-              locator: '本文p.17 / PDFp.18：ハラスメントの考え方。',
-            },
-          ]
-        : candidate.youtubeId === 'hdtWEM3Oqwc'
-          ? [
-              {
-                sourceId: 'video-nsca-power',
-                locator: 'パワーの定義。字幕の疑義を検討した比較資料。',
-              },
-            ]
-          : [],
+    method:
+      videoReviews[candidate.youtubeId].decision !== 'recommended'
+        ? null
+        : `AIによる${videoReviews[candidate.youtubeId].method === 'visual' ? '主要画面・テロップ' : '取得字幕'}と出典の照合。確認範囲と留保は動画別の審査記録を参照。人間の専門家レビューではありません。`,
+    sourceRefs: videoContentSourceRefs[candidate.youtubeId] ?? [],
     review: videoReviews[candidate.youtubeId],
   },
 }));

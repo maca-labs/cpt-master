@@ -30,9 +30,9 @@ describe('initial content publishing checks', () => {
       videos: 10,
       byDomain: { assessment: 23, planning: 32, technique: 31, safety: 14 },
       diagnosticByDomain: { assessment: 12, planning: 16, technique: 15, safety: 7 },
-      videoReviewDeclarations: { unreviewed: 9, source_checked: 1, expert_reviewed: 0 },
-      recommendedVideos: 1,
-      candidateVideos: 9,
+      videoReviewDeclarations: { unreviewed: 8, source_checked: 2, expert_reviewed: 0 },
+      recommendedVideos: 2,
+      candidateVideos: 8,
       examEligible: 0,
     });
     expect(report.verificationScope).toContain('内容照合');
@@ -150,23 +150,37 @@ describe('initial content publishing checks', () => {
     );
   });
 
-  it('retains the scoped JSPO recommendation and nine candidates without re-reviewing their content', () => {
+  it('retains distinct transcript and visual recommendations and eight candidates without re-reviewing their content', () => {
     const input = copy();
     const recommended = input.videos.filter((video) => isRecommendedVideo(video));
-    expect(recommended.map((video) => video.youtubeId)).toEqual(['XBkaAAwyS4s']);
-    expect(recommended[0].content.review).toMatchObject({
+    expect(recommended.map((video) => video.youtubeId).sort()).toEqual([
+      'XBkaAAwyS4s',
+      'fIvDJoyVgRQ',
+    ]);
+    expect(
+      recommended.find((video) => video.youtubeId === 'XBkaAAwyS4s')!.content.review,
+    ).toMatchObject({
       decision: 'recommended',
       reviewerType: 'ai',
       method: 'transcript',
       objectiveIds: ['professional-o4'],
     });
-    expect(input.videos.filter((video) => !isRecommendedVideo(video))).toHaveLength(9);
+    const squat = recommended.find((video) => video.youtubeId === 'fIvDJoyVgRQ')!;
+    expect(squat.content.review).toMatchObject({
+      decision: 'recommended',
+      reviewerType: 'ai',
+      method: 'visual',
+      objectiveIds: ['technique-o4'],
+    });
+    expect(isRecommendedVideo(squat, 'technique')).toBe(true);
+    expect(isRecommendedVideo(squat, 'professional')).toBe(false);
+    expect(input.videos.filter((video) => !isRecommendedVideo(video))).toHaveLength(8);
     expect(validateContent(input).errors).toEqual([]);
   });
 
   it('allows an unavailable transcript or unresolved transcript review to remain on hold', () => {
     const input = copy();
-    const unavailable = input.videos.find((video) => video.youtubeId === 'NGNaD_UY-A4')!;
+    const unavailable = input.videos.find((video) => video.youtubeId === '0VT-7KAtOxw')!;
     const unresolved = input.videos.find((video) => video.youtubeId === 'hdtWEM3Oqwc')!;
     expect(unavailable.content.review).toMatchObject({ decision: 'hold', method: 'unavailable' });
     expect(unresolved.content.review).toMatchObject({ decision: 'hold', method: 'transcript' });
@@ -180,7 +194,7 @@ describe('initial content publishing checks', () => {
 
   it('keeps unassigned candidates with a warning, but rejects their recommendation', () => {
     const input = copy();
-    const candidate = input.videos.find((video) => video.youtubeId === 'fIvDJoyVgRQ')!;
+    const candidate = input.videos.find((video) => video.youtubeId === 'vfyowlhlRlA')!;
     expect(candidate.objectiveIds).toEqual([]);
     expect(validateContent(input).errors).toEqual([]);
     expect(
@@ -239,8 +253,8 @@ describe('initial content publishing checks', () => {
 
   it('does not use the current recommendation count as automatic content approval', () => {
     const input = copy();
-    input.videos.find((video) => video.youtubeId === 'XBkaAAwyS4s')!.content.review!.decision =
-      'hold';
+    for (const video of input.videos.filter((candidate) => isRecommendedVideo(candidate)))
+      video.content.review!.decision = 'hold';
     const report = validateContent(input);
     expect(report.errors).toEqual([]);
     expect(report.summary.recommendedVideos).toBe(0);

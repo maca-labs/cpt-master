@@ -12,14 +12,19 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
     page.getByRole('heading', { name: '理解から、指導できる知識へ。', exact: true }),
   ).toBeVisible();
   await page.goto(published! + '#/videos');
-  await expect(page.getByRole('button', { name: 'おすすめ 1本', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'おすすめ 1本', exact: true }).click();
-  await expect(page.locator('article.video-card')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'おすすめ 2本', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'おすすめ 2本', exact: true }).click();
+  await expect(page.locator('article.video-card')).toHaveCount(2);
+  await expect(page.getByText('おすすめ · AIによる字幕照合', { exact: true })).toBeVisible();
+  await expect(page.getByText('おすすめ · AIによる映像照合', { exact: true })).toBeVisible();
   await page.goto(published! + '#/learn/professional');
   await page.reload();
   await expect(
     page.getByRole('heading', { name: '専門職としての境界と信頼', exact: true }),
   ).toBeVisible();
+  await page.goto(published! + '#/learn/technique');
+  await page.reload();
+  await expect(page.getByText('おすすめ · AIによる映像照合', { exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto(published! + '#/exam');
   await expect(page.locator('main')).toContainText('短縮');
