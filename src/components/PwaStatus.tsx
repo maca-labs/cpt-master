@@ -29,6 +29,8 @@ function ProductionPwaStatus() {
   const mounted = useRef(true),
     approved = useRef(false),
     checking = useRef(false);
+  const activationCleanup = useRef<(() => void) | null>(null);
+  const reloading = useRef(false);
   const lastCheckedAt = useRef(0);
   const manualCheck = useRef<(() => Promise<void>) | null>(null);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
@@ -40,6 +42,28 @@ function ProductionPwaStatus() {
   const [applying, setApplying] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const supported = 'serviceWorker' in navigator;
+
+  const completeUpdate = () => {
+    activationCleanup.current?.();
+    if (!mounted.current || reloading.current) return;
+    if (shouldReloadPwa({ approved: approved.current, blocked: blockedRef.current })) {
+      reloading.current = true;
+      window.location.reload();
+    } else {
+      approved.current = false;
+      setControllerChanged(true);
+      setApplying(false);
+      setDismissed(false);
+    }
+  };
+  const failUpdate = (error: unknown) => {
+    activationCleanup.current?.();
+    approved.current = false;
+    if (!mounted.current) return;
+    setRegistrationError(error instanceof Error ? error.message : String(error));
+    setApplying(false);
+    setAcknowledged(false);
+  };
 
   const {
     offlineReady: [offlineReady, setOfflineReady],
@@ -58,17 +82,8 @@ function ProductionPwaStatus() {
       setRegistrationError(error instanceof Error ? error.message : String(error));
     },
     onNeedReload() {
-      if (!mounted.current) return;
-      if (shouldReloadPwa({ approved: approved.current, blocked: blockedRef.current })) {
-        window.location.reload();
-      } else {
-        // A second tab may activate a waiting worker. Keep this tab's current
-        // answer and unsaved inputs on screen until its user explicitly agrees.
-        approved.current = false;
-        setControllerChanged(true);
-        setApplying(false);
-        setDismissed(false);
-      }
+      // An activation in another tab never grants this tab reload permission.
+      completeUpdate();
     },
   });
   const available = needRefresh || controllerChanged;
@@ -77,6 +92,7 @@ function ProductionPwaStatus() {
     return () => {
       mounted.current = false;
       approved.current = false;
+      activationCleanup.current?.();
     };
   }, []);
   useEffect(() => {
@@ -148,12 +164,40 @@ function ProductionPwaStatus() {
     approved.current = true;
     setApplying(true);
     try {
-      if (controllerChanged) window.location.reload();
-      else await updateServiceWorker(true);
+      const waiting = registration?.waiting;
+      if (controllerChanged || (!waiting && registration?.active)) {
+        completeUpdate();
+        return;
+      }
+      if (!waiting)
+        throw new Error('更新の準備を確認できません。通信を確認して再度お試しください。');
+
+      // On a first visit the page may still have no controller. Workbox's
+      // controlling callback then need not run, even after explicit activation.
+      // Observe this exact waiting worker and reload only on this tab's approval.
+      activationCleanup.current?.();
+      const activated = () => {
+        if (waiting.state === 'activated') completeUpdate();
+        else if (waiting.state === 'redundant')
+          failUpdate(new Error('更新の適用を完了できませんでした。もう一度確認してください。'));
+      };
+      const timeout = window.setTimeout(() => {
+        if (waiting.state === 'activated') completeUpdate();
+        else
+          failUpdate(
+            new Error('更新の適用に時間がかかっています。接続を確認して再度お試しください。'),
+          );
+      }, 15000);
+      activationCleanup.current = () => {
+        window.clearTimeout(timeout);
+        waiting.removeEventListener('statechange', activated);
+        activationCleanup.current = null;
+      };
+      waiting.addEventListener('statechange', activated);
+      await updateServiceWorker(true);
+      activated();
     } catch (error) {
-      approved.current = false;
-      setRegistrationError(error instanceof Error ? error.message : String(error));
-      setApplying(false);
+      failUpdate(error);
     }
   };
 

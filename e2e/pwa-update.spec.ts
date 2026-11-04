@@ -150,7 +150,7 @@ async function documentToken(page: Page) {
     () => (window as Window & { __pwaDocumentToken?: string }).__pwaDocumentToken ?? null,
   );
 }
-async function requestUpdateThroughUi(page: Page, origin: string) {
+async function requestUpdateThroughUi(page: Page, origin: string, expectWaiting = true) {
   const response = await page.request.post(`${origin}/__test_revision`);
   expect(response.status()).toBe(200);
   const summary = page
@@ -159,15 +159,16 @@ async function requestUpdateThroughUi(page: Page, origin: string) {
     .filter({ hasText: 'オフライン学習・ホーム画面への追加' });
   await summary.click();
   await page.getByRole('button', { name: '更新を確認する', exact: true }).click();
-  await expect
-    .poll(
-      () =>
-        page.evaluate(async () =>
-          Boolean((await navigator.serviceWorker.getRegistration())?.waiting),
-        ),
-      { timeout: 25000 },
-    )
-    .toBe(true);
+  if (expectWaiting)
+    await expect
+      .poll(
+        () =>
+          page.evaluate(async () =>
+            Boolean((await navigator.serviceWorker.getRegistration())?.waiting),
+          ),
+        { timeout: 25000 },
+      )
+      .toBe(true);
   await expect(page.getByTestId('pwa-update-notice')).toBeVisible({ timeout: 25000 });
 }
 async function applyThroughUi(page: Page) {
@@ -182,6 +183,48 @@ async function applyThroughUi(page: Page) {
   await reload;
   await expect(page.getByTestId('pwa-status')).toBeVisible();
 }
+
+test('an update reloads a first-visit tab that has never been controlled', async ({
+  page,
+  pwaServer,
+}) => {
+  // Deliberately do not use warmControlledApp: its reload hides the first-visit
+  // lifecycle, where an active worker may exist without controlling this tab.
+  await page.goto(`${pwaServer}/#/exam`);
+  await expect(
+    page.getByRole('heading', { name: '10・20・50問の短縮模試', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByTestId('pwa-status')).toBeVisible();
+  const initial = await page.evaluate(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    return {
+      activeState: registration.active?.state,
+      controlled: Boolean(navigator.serviceWorker.controller),
+    };
+  });
+  expect(['activating', 'activated']).toContain(initial.activeState);
+  await expect
+    .poll(() =>
+      page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.active?.state),
+    )
+    .toBe('activated');
+  expect(initial.controlled).toBe(false);
+  const token = await markDocument(page);
+  // With no controlled clients, the replacement may activate immediately;
+  // the real update notice must still lead to a completed user-approved reload.
+  await requestUpdateThroughUi(page, pwaServer, false);
+  expect(await documentToken(page)).toBe(token);
+  expect(await page.evaluate(() => navigator.serviceWorker.controller === null)).toBe(true);
+  await applyThroughUi(page);
+  expect(await documentToken(page)).toBeNull();
+  await expect(
+    page.getByRole('heading', { name: '10・20・50問の短縮模試', exact: true }),
+  ).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)))
+    .toBe(true);
+  await expect(page.getByRole('button', { name: '更新中…', exact: true })).toHaveCount(0);
+});
 
 test('a real PWA update waits for mock interruption and preserves saved answers and flags', async ({
   page,

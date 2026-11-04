@@ -17,6 +17,13 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(page.locator('article.video-card')).toHaveCount(2);
   await expect(page.getByText('おすすめ · AIによる字幕照合', { exact: true })).toBeVisible();
   await expect(page.getByText('おすすめ · AIによる映像照合', { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await mkdir('artifacts', { recursive: true });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({
+    path: `artifacts/published-videos-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
   await page.goto(published! + '#/learn/professional');
   await page.reload();
   await expect(
@@ -30,7 +37,6 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(page.locator('main')).toContainText('短縮');
   await page.goto(published! + '#/analytics');
   await expect(page.locator('main')).toBeVisible();
-  await mkdir('artifacts', { recursive: true });
   await page.screenshot({
     path: `artifacts/published-${testInfo.project.name}.png`,
     fullPage: true,
