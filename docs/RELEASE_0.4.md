@@ -51,4 +51,10 @@ IndexedDBはschema version 1を維持し、既存レコードを消去・再作�
 
 ローカルは`C:\Users\shudi\Documents\cpt-master`で`起動.bat`、または`npm run build`の後`npm run preview -- --port 5173 --strictPort`で起動する。写真補正アプリのコード・依存関係・設定・Gitには変更していない。
 
-公開確認のコミットと結果は、公開処理の完了後に以下へ追記する。
+## 公開結果
+
+コード`56bd3f10d6ae914c3928a7964abc226b961d95ed`をmainへプッシュし、[GitHub Actions](https://github.com/maca-labs/cpt-master/actions/runs/41833433028)で型・教材検査・単体188件・Pagesビルド・パス検査とデプロイが成功した。
+
+公開URLは[CPT Master](https://maca-labs.github.io/cpt-master/)。HTML・manifest・Service WorkerはHTTP 200、公開版の表示は0.4.0。EdgeのPC/モバイルで公開先E2E **8件すべて合格**。36単元の一覧、新しい負荷計算単元、限定おすすめ2本、深いリンク、旧版JSONの事前検査・確認付き復元、メモ/回答/復習の保持、不正参照の拒否、12媒体の表示・コマ移動、オフライン回答保存と再読込を確認した。
+
+111目標の詳細対応表に300問すべてが対応し、欠落IDがないことも確認した。公開後の結果・画面記録の追記は文書/検証画像だけで、公開済み教材コードは変更しない。既存の利用者タブでは、回答やメモを保存して更新案内から再読み込みする。保存データの削除は不要である。
