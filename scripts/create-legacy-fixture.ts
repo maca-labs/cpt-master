@@ -1,0 +1,27 @@
+import 'fake-indexeddb/auto';
+import { writeFile } from 'node:fs/promises';
+import { questions, seedVideos } from '../src/content';
+import { LearningDB, exportBackup, defaultSettings, toPersonalVideo } from '../src/storage/db';
+import { createSession, nextReview } from '../src/engines/learning';
+
+const database = new LearningDB('cpt-build-legacy-fixture');
+const q = questions.find(item => item.id === 'anatomy-p-01')!;
+const session = createSession('practice', [q], [], [], () => 0.5);
+session.id = 'legacy-fixture-session';
+session.startedAt = '2026-11-04T00:00:00.000Z';
+session.status = 'completed';
+session.completedAt = '2026-11-04T00:00:20.000Z';
+await database.sessions.put(session);
+await database.attempts.put({ id:'legacy-fixture-answer',sessionId:session.id,questionId:q.id,questionRevision:q.revision,groupId:q.groupId,domainId:q.domainId,unitId:q.unitId,selectedChoiceId:q.correctChoiceId,correctChoiceId:q.correctChoiceId,correct:true,firstSeen:true,canExplain:false,elapsedMs:20000,choiceOrder:session.choiceOrders[q.id],at:session.completedAt });
+await database.exposures.put({id:'legacy-fixture-exposure',sessionId:session.id,questionId:q.id,groupId:q.groupId,kind:'question',at:session.startedAt});
+await database.reviews.put({...nextReview(undefined,true,false,new Date(session.completedAt)),questionId:q.id});
+await database.favorites.put({questionId:q.id});
+await database.unitProgress.put({unitId:q.unitId,rating:3,note:'旧版から移す単元メモ',updatedAt:session.completedAt});
+const v=seedVideos.find(item=>item.youtubeId==='XBkaAAwyS4s')!;
+await database.videoProgress.put({videoId:v.id,watched:true,note:'旧版から移す視聴メモ',updatedAt:session.completedAt});
+await database.videoOverrides.put({id:v.id,video:toPersonalVideo({...v,order:99})});
+await database.settings.put({...defaultSettings,theme:'dark',diagnosticStatus:'skipped'});
+const backup=await exportBackup(database);
+await writeFile('tests/fixtures/legacy-v1-backup.json',JSON.stringify(backup,null,2)+'\n',{flag:'wx',encoding:'utf8'});
+await database.delete();
+console.log('旧版コード自身のexport/validateを通るテスト専用バックアップを保存しました。利用者DBには接続していません。');

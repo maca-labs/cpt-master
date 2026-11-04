@@ -1,0 +1,792 @@
+{
+  "checkedAt": "2026-11-04",
+  "contentVersion": "2026-11-04.1",
+  "rows": [
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o1",
+        "text": "解剖学的肢位と位置・運動面の用語で身体を説明できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-01",
+        "anatomy-d-02",
+        "anatomy-p-01",
+        "anatomy-p-02",
+        "anatomy-p-03"
+      ],
+      "groups": [
+        "anatomy-reference-position",
+        "anatomy-sagittal-elbow",
+        "anatomy-proximal-distal",
+        "anatomy-medial-lateral",
+        "anatomy-supine-posture"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o2",
+        "text": "関節の動きを屈曲・伸展・外転などに区別できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-03",
+        "anatomy-d-04",
+        "anatomy-d-05",
+        "anatomy-d-06",
+        "anatomy-p-04",
+        "anatomy-p-05",
+        "anatomy-p-06"
+      ],
+      "groups": [
+        "anatomy-elbow-flexion",
+        "anatomy-shoulder-abduction",
+        "anatomy-ankle-dorsiflexion",
+        "anatomy-forearm-supination",
+        "anatomy-trunk-lateral-flexion",
+        "anatomy-hip-internal-rotation",
+        "anatomy-foot-eversion"
+      ],
+      "videos": [
+        {
+          "youtubeId": "eXl-2JuEYpk",
+          "title": "関節の種類の覚え方",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "anatomy",
+      "unit": "動きを読むための機能解剖学",
+      "objective": {
+        "id": "anatomy-o3",
+        "text": "腱・主働筋・拮抗筋・固定筋の役割を説明できる"
+      },
+      "explanations": [
+        "最初に、身体の地図をそろえる",
+        "運動面は観察のための道具",
+        "関節運動を言葉に置き換える",
+        "筋の名前だけでなく役割を覚える",
+        "力の伝達をイメージする"
+      ],
+      "questions": [
+        "anatomy-d-07",
+        "anatomy-d-08",
+        "anatomy-p-07",
+        "anatomy-p-08"
+      ],
+      "groups": [
+        "anatomy-tendon-transmission",
+        "anatomy-quadriceps-prime-mover",
+        "anatomy-fixator-function",
+        "anatomy-epimysium-structure"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o1",
+        "text": "ATP再合成の基本経路と筋収縮の仕組みを説明できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-d-01",
+        "physiology-d-02",
+        "physiology-d-03",
+        "physiology-d-04",
+        "physiology-p-03",
+        "physiology-p-04",
+        "physiology-p-05"
+      ],
+      "groups": [
+        "physiology-atp-direct-energy",
+        "physiology-phosphocreatine-reaction",
+        "physiology-glycolysis-oxygen",
+        "physiology-aerobic-mitochondria",
+        "physiology-calcium-troponin",
+        "physiology-neuromuscular-acetylcholine",
+        "physiology-relaxation-calcium-pump"
+      ],
+      "videos": [
+        {
+          "youtubeId": "to4SW3kqm9Y",
+          "title": "【ゴロ覚えあり】超絶わかりやすい！！筋収縮の生理【解剖生理学25】",
+          "recommended": false
+        },
+        {
+          "youtubeId": "e_OrhETNKio",
+          "title": "【運動生理学】ATP CP系をわかりやすく解説！",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o2",
+        "text": "運動単位・筋線維・収縮様式を区別できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-d-05",
+        "physiology-d-06",
+        "physiology-d-07",
+        "physiology-d-08",
+        "physiology-p-01",
+        "physiology-p-02"
+      ],
+      "groups": [
+        "physiology-motor-unit-definition",
+        "physiology-motor-unit-recruitment",
+        "physiology-slow-oxidative-fatigue",
+        "physiology-concentric-action",
+        "physiology-eccentric-control",
+        "physiology-isometric-hold"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "physiology",
+      "unit": "運動生理学とトレーニング適応",
+      "objective": {
+        "id": "physiology-o3",
+        "text": "筋肥大・持久性適応・心拍出量の基本を説明できる"
+      },
+      "explanations": [
+        "筋が直接使うエネルギー",
+        "神経から筋へ、収縮から弛緩へ",
+        "収縮は「短くなる」だけではない",
+        "力を調節する運動単位",
+        "筋線維と長期的な適応",
+        "循環の基本式を意味で覚える"
+      ],
+      "questions": [
+        "physiology-p-06",
+        "physiology-p-07",
+        "physiology-p-08"
+      ],
+      "groups": [
+        "physiology-hypertrophy-fiber-size",
+        "physiology-endurance-capillaries",
+        "physiology-cardiac-output-equation"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o1",
+        "text": "目標・準備性・期待を面談で整理できる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-01",
+        "assessment-p-01",
+        "assessment-p-02"
+      ],
+      "groups": [
+        "assessment-active-listening-goal",
+        "assessment-participation-readiness",
+        "assessment-relationship-expectations"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o2",
+        "text": "健康情報を確認し、指導範囲に応じて専門職と連携できる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-02",
+        "assessment-d-03",
+        "assessment-p-04"
+      ],
+      "groups": [
+        "assessment-comprehensive-health-history",
+        "assessment-scope-referral-decision",
+        "assessment-required-medical-release"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "assessment",
+      "unit": "面談・健康情報・体力評価",
+      "objective": {
+        "id": "assessment-o3",
+        "text": "測定項目と手順・記録条件を区別し、評価結果を再評価につなげられる"
+      },
+      "explanations": [
+        "面談は、相手の目的を理解する時間",
+        "健康情報を運動開始前の判断につなぐ",
+        "測るものと測り方をセットで考える",
+        "結果を目標と再評価へ戻す"
+      ],
+      "questions": [
+        "assessment-d-04",
+        "assessment-d-05",
+        "assessment-d-06",
+        "assessment-p-03",
+        "assessment-p-05",
+        "assessment-p-06"
+      ],
+      "groups": [
+        "assessment-grip-measurement-handling",
+        "assessment-sit-reach-starting-reference",
+        "assessment-reevaluation-schedule",
+        "assessment-evaluation-goal-indicators",
+        "assessment-shuttle-estimation-versus-direct",
+        "assessment-reassessment-program-change"
+      ],
+      "videos": [
+        {
+          "youtubeId": "dOlSdv_YyuI",
+          "title": "握力",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o1",
+        "text": "糖質・脂質・タンパク質とエネルギー収支を説明できる"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-01",
+        "nutrition-d-02",
+        "nutrition-d-03",
+        "nutrition-d-04"
+      ],
+      "groups": [
+        "nutrition-carbohydrate-fuel",
+        "nutrition-protein-building-block",
+        "nutrition-fat-energy-use",
+        "nutrition-energy-surplus-storage"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o2",
+        "text": "多様な食品・食物繊維・食品表示を一般的な食習慣の確認に使える"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-05",
+        "nutrition-p-01",
+        "nutrition-p-02"
+      ],
+      "groups": [
+        "nutrition-food-variety",
+        "nutrition-fiber-digestive-transit",
+        "nutrition-label-reference-amount"
+      ],
+      "videos": [
+        {
+          "youtubeId": "0VT-7KAtOxw",
+          "title": "スポーツと栄養",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "assessment",
+      "unitId": "nutrition",
+      "unit": "栄養の基礎と指導の範囲",
+      "objective": {
+        "id": "nutrition-o3",
+        "text": "水分とサプリメントの情報を整理し、必要な専門職へつなげる"
+      },
+      "explanations": [
+        "栄養素は、役割から整理する",
+        "一食だけでなく食習慣を見る",
+        "エネルギー収支を極端な制限に結び付けない",
+        "水分とサプリメント"
+      ],
+      "questions": [
+        "nutrition-d-06",
+        "nutrition-p-03",
+        "nutrition-p-04",
+        "nutrition-p-05"
+      ],
+      "groups": [
+        "nutrition-supplement-food-foundation",
+        "nutrition-adequate-fluid",
+        "nutrition-supplement-medication-interaction",
+        "nutrition-therapeutic-nutrition-referral"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o1",
+        "text": "特異性・個別性・漸進性・変化の原則を計画に結び付ける"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-01",
+        "program-02",
+        "program-04"
+      ],
+      "groups": [
+        "applied-program-01",
+        "applied-program-02",
+        "applied-program-04"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o2",
+        "text": "負荷と休息を、実施能力や当日の状態に合わせて調整する"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-03",
+        "program-06",
+        "program-07",
+        "program-10",
+        "program-11",
+        "program-12",
+        "program-15",
+        "program-16"
+      ],
+      "groups": [
+        "applied-program-03",
+        "applied-program-06",
+        "applied-program-07",
+        "applied-program-10",
+        "applied-program-11",
+        "applied-program-12",
+        "applied-program-15",
+        "applied-program-16"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "planning",
+      "unitId": "program",
+      "unit": "目的から組み立てるプログラム",
+      "objective": {
+        "id": "program-o3",
+        "text": "目標・設備・時間に応じて運動様式と優先順位を選ぶ"
+      },
+      "explanations": [
+        "先に決めるのは「何を変えたいか」",
+        "漸進はカレンダーより実施能力を基準にする",
+        "休息はプログラムの一部",
+        "目標と現実の両方に合う計画"
+      ],
+      "questions": [
+        "program-05",
+        "program-08",
+        "program-09",
+        "program-13",
+        "program-14"
+      ],
+      "groups": [
+        "applied-program-05",
+        "applied-program-08",
+        "applied-program-09",
+        "applied-program-13",
+        "applied-program-14"
+      ],
+      "videos": [
+        {
+          "youtubeId": "hdtWEM3Oqwc",
+          "title": "How to design a complete training program",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o1",
+        "text": "安定した開始姿勢と、ベンチプレスで修正したい動作を説明する"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-01",
+        "technique-08",
+        "technique-15"
+      ],
+      "groups": [
+        "applied-technique-01",
+        "applied-technique-08",
+        "applied-technique-15"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o2",
+        "text": "RDLとローイングの基本動作を観察し、修正点を選ぶ"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-02",
+        "technique-03",
+        "technique-04",
+        "technique-09",
+        "technique-10",
+        "technique-11"
+      ],
+      "groups": [
+        "applied-technique-02",
+        "applied-technique-03",
+        "applied-technique-04",
+        "applied-technique-09",
+        "applied-technique-10",
+        "applied-technique-11"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o3",
+        "text": "準備運動・呼吸・補助者との意思疎通を指導に組み込む"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [
+        "technique-05",
+        "technique-06",
+        "technique-07",
+        "technique-12",
+        "technique-13",
+        "technique-14"
+      ],
+      "groups": [
+        "applied-technique-05",
+        "applied-technique-06",
+        "applied-technique-07",
+        "applied-technique-12",
+        "applied-technique-13",
+        "applied-technique-14"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "technique",
+      "unitId": "technique",
+      "unit": "動作を観察して伝える",
+      "objective": {
+        "id": "technique-o4",
+        "text": "ハイバーバックスクワットの開始姿勢と動作制御を説明し、個人に合う可動域と安全設定・補助の条件を確認する"
+      },
+      "explanations": [
+        "反復の前に、開始姿勢を見る",
+        "ヒンジとローの観察点",
+        "準備運動を本練習につなげる",
+        "呼吸と補助の合図も技術の一部",
+        "バックスクワットは、深さと安全条件を個別に決める"
+      ],
+      "questions": [],
+      "groups": [],
+      "videos": [
+        {
+          "youtubeId": "fIvDJoyVgRQ",
+          "title": "バックスクワット",
+          "recommended": true
+        }
+      ]
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o1",
+        "text": "施設に合う緊急対応計画と日常点検の要点を説明する"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-01",
+        "safety-02",
+        "safety-05",
+        "safety-07"
+      ],
+      "groups": [
+        "applied-safety-01",
+        "applied-safety-02",
+        "applied-safety-05",
+        "applied-safety-07"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o2",
+        "text": "成人の心停止が疑われる場面で、通報・CPR・AEDを遅らせない原則を説明する"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-03",
+        "safety-04"
+      ],
+      "groups": [
+        "applied-safety-03",
+        "applied-safety-04"
+      ],
+      "videos": [
+        {
+          "youtubeId": "NGNaD_UY-A4",
+          "title": "【日本赤十字社】心肺蘇生とAEDの使い方 ～JRC蘇生ガイドライン2020対応～",
+          "recommended": false
+        }
+      ]
+    },
+    {
+      "domain": "safety",
+      "unitId": "safety",
+      "unit": "安全な環境と緊急時の初動",
+      "objective": {
+        "id": "safety-o3",
+        "text": "知識学習と実技講習を区別し、技能維持の計画を立てる"
+      },
+      "explanations": [
+        "施設ごとの緊急対応計画",
+        "使う前の点検と使用停止",
+        "成人の救命で覚える基本原則",
+        "動画で知り、実技で練習する"
+      ],
+      "questions": [
+        "safety-06"
+      ],
+      "groups": [
+        "applied-safety-06"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o1",
+        "text": "個人情報と記録の扱いを、専門職としての守秘原則から判断する"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-01",
+        "professional-07"
+      ],
+      "groups": [
+        "applied-professional-01",
+        "applied-professional-07"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o2",
+        "text": "自分の提供範囲を認識し、適切な専門家への紹介を選ぶ"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-02",
+        "professional-05"
+      ],
+      "groups": [
+        "applied-professional-02",
+        "applied-professional-05"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o3",
+        "text": "資格表示・継続学習・著作物の利用を誠実に行う"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [
+        "professional-03",
+        "professional-04",
+        "professional-06"
+      ],
+      "groups": [
+        "applied-professional-03",
+        "applied-professional-04",
+        "applied-professional-06"
+      ],
+      "videos": []
+    },
+    {
+      "domain": "safety",
+      "unitId": "professional",
+      "unit": "専門職としての境界と信頼",
+      "objective": {
+        "id": "professional-o4",
+        "text": "ハラスメントが起こりやすい力関係や環境を説明し、相手が拒否しにくい状況に配慮する"
+      },
+      "explanations": [
+        "話された情報は宣伝素材ではない",
+        "提供できる範囲を明確にする",
+        "記録は残し、アクセスを絞る",
+        "資格と教材を正しく扱う",
+        "拒否の言葉がないことを、同意と決めつけない"
+      ],
+      "questions": [],
+      "groups": [],
+      "videos": [
+        {
+          "youtubeId": "XBkaAAwyS4s",
+          "title": "※字幕あり【スポーツ現場におけるハラスメント防止動画】ch1.ハラスメントの考え方",
+          "recommended": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "app": "cpt-master",
+  "formatVersion": 1,
+  "contentVersion": "2026-11-04.1",
+  "createdAt": "2026-11-04T12:02:21.845Z",
+  "data": {
+    "attempts": [
+      {
+        "id": "legacy-fixture-answer",
+        "sessionId": "legacy-fixture-session",
+        "questionId": "anatomy-p-01",
+        "questionRevision": 1,
+        "groupId": "anatomy-proximal-distal",
+        "domainId": "technique",
+        "unitId": "anatomy",
+        "selectedChoiceId": "c1",
+        "correctChoiceId": "c1",
+        "correct": true,
+        "firstSeen": true,
+        "canExplain": false,
+        "elapsedMs": 20000,
+        "choiceOrder": [
+          "c2",
+          "c1",
+          "c3"
+        ],
+        "at": "2026-11-04T00:00:20.000Z"
+      }
+    ],
+    "exposures": [
+      {
+        "id": "legacy-fixture-exposure",
+        "sessionId": "legacy-fixture-session",
+        "questionId": "anatomy-p-01",
+        "groupId": "anatomy-proximal-distal",
+        "kind": "question",
+        "at": "2026-11-04T00:00:00.000Z"
+      }
+    ],
+    "reviews": [
+      {
+        "questionId": "anatomy-p-01",
+        "dueAt": "2026-11-05T00:00:20.000Z",
+        "intervalDays": 1,
+        "wrongStreak": 1,
+        "manual": false
+      }
+    ],
+    "sessions": [
+      {
+        "id": "legacy-fixture-session",
+        "mode": "practice",
+        "questionIds": [
+          "anatomy-p-01"
+        ],
+        "choiceOrders": {
+          "anatomy-p-01": [
+            "c2",
+            "c1",
+            "c3"
+          ]
+        },
+        "firstSeenByQuestion": {
+          "anatomy-p-01": true
+        },
+        "index": 0,
+        "status": "completed",
+        "startedAt": "2026-11-04T00:00:00.000Z",
+        "completedAt": "2026-11-04T00:00:20.000Z"
+      }
+    ],
+    "videoProgress": [
+      {
+        "videoId": "yt-XBkaAAwyS4s",
+        "watched": true,
+        "note": "旧版から移す視聴メモ",
+        "updatedAt": "2026-11-04T00:00:20.000Z"
+      }
+    ],
+    "unitProgress": [
+      {
+        "unitId": "anatomy",
+        "rating": 3,
+        "note": "旧版から移す単元メモ",
+        "updatedAt": "2026-11-04T00:00:20.000Z"
+      }
+    ],
+    "videoOverrides": [
+      {
+        "id": "yt-XBkaAAwyS4s",
+        "video": {
+          "youtubeId": "XBkaAAwyS4s",
+          "title": "※字幕あり【スポーツ現場におけるハラスメント防止動画】ch1.ハラスメントの考え方",
+          "channel": " JSPO -日本スポーツ協会-",
+          "unitIds": [
+            "professional"
+          ],
+          "difficulty": "基礎",
+          "order": 99,
+          "reason": "ハラスメントが生じやすい力関係と、相手が拒否しにくい状況への配慮を学ぶためのおすすめ。日本語の自動字幕をJSPOの一次資料とAIが照合しました。音声・図表は未確認です。",
+          "id": "yt-XBkaAAwyS4s",
+          "url": "https://www.youtube.com/watch?v=XBkaAAwyS4s",
+          "objectiveIds": [
+            "professional-o4"
+          ],
+          "metadata": {
+            "status": "confirmed",
+            "checkedAt": "2026-11-04",
+            "method": "Web検索で候補を発見し、YouTube公式oEmbedへHTTPS GETを実行。JSON応答のtitle・author_nameを確認。掲載元: https://www.japan-sports.or.jp/women/tabid1331.html。これはメタデータの確認記録で、内容の照合は別に記録。",
+            "evidenceUrl": "https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DXBkaAAwyS4s&format=json"
+          },
+          "playback": {
+            "status": "unconfirmed",
+            "checkedAt": null,
+            "method": null
+          },
+          "content": {
+            "status": "unreviewed",
+            "checkedAt": null,
+            "method": null,
+            "sourceRefs": []
+          }
+        }
+      }
+    ],
+    "settings": [
+      {
+        "id": "main",
+        "theme": "dark",
+        "diagnosticStatus": "skipped",
+        "timezone": "Asia/Tokyo"
+      }
+    ],
+    "favorites": [
+      {
+        "questionId": "anatomy-p-01"
+      }
+    ],
+    "studyEvents": []
+  }
+}
