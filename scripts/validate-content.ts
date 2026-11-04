@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { units, questions, sources, seedVideos } from '../src/content';
 import { blueprint, domainIds, domains } from '../src/content/blueprints';
 import { isRecommendedVideo } from '../src/engines/video-review';
+import { releaseTargets } from '../src/content/release';
+import { mediaAssets } from '../src/content/media';
+import { eligible } from '../src/engines/learning';
 import type { DomainId, Question, Source, Unit, Video } from '../src/domain/types';
 
 export interface ContentBundle {
@@ -35,6 +38,9 @@ export interface ValidationReport {
     recommendedVideos: number;
     candidateVideos: number;
     examEligible: number;
+    independentGroups: number;
+    usableQuestions: number;
+    mediaQuestions: number;
   };
   verificationScope: string;
 }
@@ -105,6 +111,9 @@ const questionSchema = z.object({
   choices: z.array(z.object({ id: text, text, explanation: text })).min(1),
   correctChoiceId: text,
   explanation: text,
+  media: z
+    .object({ kind: z.enum(['diagram', 'sequence']), assetId: text, caption: text, alt: text })
+    .optional(),
   sourceRefs: z.array(sourceRef).min(1),
   review: reviewSchema,
 });
@@ -161,6 +170,15 @@ export function normalizePrompt(prompt: string): string {
     .normalize('NFKC')
     .toLocaleLowerCase('ja-JP')
     .replace(/[\p{P}\p{S}\s]/gu, '');
+}
+// Mathematical signs carry meaning (100 J differs from −100 J). They cannot be
+// erased when detecting identical answer choices.
+export function normalizeChoice(choice: string): string {
+  return choice
+    .normalize('NFKC')
+    .toLocaleLowerCase('ja-JP')
+    .replace(/−/g, '-')
+    .replace(/[\s、。,.「」『』！？!?]/gu, '');
 }
 function bigrams(value: string): Set<string> {
   return new Set(
@@ -246,6 +264,9 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       recommendedVideos: 0,
       candidateVideos: 0,
       examEligible: 0,
+      independentGroups: 0,
+      usableQuestions: 0,
+      mediaQuestions: 0,
     },
   };
   const error = (code: string, path: string, message: string) =>
@@ -263,13 +284,17 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
   report.summary.questions = data.questions.length;
   report.summary.sources = data.sources.length;
   report.summary.videos = data.videos.length;
-  if (data.units.length !== 8)
-    error('counts.units', 'units', `初期単元は8件必要です（${data.units.length}件）。`);
-  if (data.questions.length !== 100)
+  if (data.units.length !== releaseTargets.units)
+    error(
+      'counts.units',
+      'units',
+      `今回の収録目標は${releaseTargets.units}単元です（${data.units.length}件）。`,
+    );
+  if (data.questions.length !== releaseTargets.questions)
     error(
       'counts.questions',
       'questions',
-      `初期問題は100件必要です（${data.questions.length}件）。`,
+      `今回の収録目標は${releaseTargets.questions}問です（${data.questions.length}件）。`,
     );
   if (data.videos.length !== 10)
     error(
@@ -326,10 +351,19 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       );
     const videoCount = data.videos.filter((video) => video.unitIds.includes(unit.id)).length;
     if (videoCount < 1 || videoCount > 3)
-      error(
+      warn(
         'unit.videos',
         path,
-        `単元「${unit.id}」の動画候補は1〜3本必要です（${videoCount}本）。`,
+        `単元「${unit.id}」の動画は${videoCount}本。対応する実在動画の内容確認が未完了です。`,
+      );
+    if (
+      unit.id.startsWith('ex-') &&
+      (unit.sections.length < 3 || unit.terms.length < 3 || unit.objectives.length < 3)
+    )
+      error(
+        'unit.completeness',
+        path,
+        '追加単元は本文3節・3用語・3目標以上が必要です。量の検査は内容審査ではありません。',
       );
   }
   for (const id of ['anatomy', 'physiology']) {
@@ -363,6 +397,22 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
     if (q.pool === 'diagnostic') report.summary.diagnosticByDomain[q.domainId]++;
     report.summary.reviewDeclarations[q.review.status]++;
     if (canUseInExam(q)) report.summary.examEligible++;
+    if (eligible(q)) report.summary.usableQuestions++;
+    if (q.media) report.summary.mediaQuestions++;
+    if (q.context === 'image' || q.context === 'video') {
+      const asset = q.media && mediaAssets[q.media.assetId as keyof typeof mediaAssets];
+      if (
+        !asset ||
+        asset.kind !== q.media?.kind ||
+        (q.context === 'video' && (asset.kind !== 'sequence' || asset.frames < 2))
+      )
+        error(
+          'question.media',
+          path,
+          '画像・映像問題には対応する自作図/アニメーションの実体が必要です。',
+        );
+    } else if (q.media)
+      error('question.media-context', path, '図を使う問題はimageまたはvideoのcontextが必要です。');
     const unit = unitMap.get(q.unitId);
     if (!unit) error('question.unit', path, `所属単元「${q.unitId}」が存在しません。`);
     else if (unit.domainId !== q.domainId)
@@ -379,7 +429,7 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       error('choice.id-duplicate', path, '選択肢IDが重複しています。');
     if (q.choices.filter((choice) => choice.id === q.correctChoiceId).length !== 1)
       error('choice.correct', path, '正答IDは、存在する一つの選択肢だけに対応する必要があります。');
-    if (new Set(q.choices.map((choice) => normalizePrompt(choice.text))).size !== q.choices.length)
+    if (new Set(q.choices.map((choice) => normalizeChoice(choice.text))).size !== q.choices.length)
       error('choice.text-duplicate', path, '同じ内容の選択肢が重複しています。');
     checkRefs(q.sourceRefs, `${path}.sourceRefs`);
     if (q.review.revision !== q.revision)
@@ -413,7 +463,7 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       error(
         'group.duplicate',
         'questions',
-        `初期100問ではgroup「${groupId}」の重複を認めません：${members.map((q) => q.id).join(', ')}。`,
+        `同一問題グループ「${groupId}」が重複しています：${members.map((q) => q.id).join(', ')}。`,
       );
     if (members.filter((q) => q.pool === 'diagnostic').length > 1)
       error(
@@ -431,12 +481,13 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
         `診断の予約グループ「${groupId}」が通常問題等と共有されています。`,
       );
   }
+  report.summary.independentGroups = groups.size;
   for (const id of domainIds) {
-    if (report.summary.byDomain[id] !== initialCounts[id])
+    if (report.summary.byDomain[id] !== releaseTargets.domains[id])
       error(
         'counts.domain',
         `questions.${id}`,
-        `初期配分は${initialCounts[id]}問、実際は${report.summary.byDomain[id]}問です。`,
+        `今回の配分は${releaseTargets.domains[id]}問、実際は${report.summary.byDomain[id]}問です。`,
       );
     if (report.summary.diagnosticByDomain[id] !== diagnosticCounts[id])
       error(
@@ -637,12 +688,18 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       error('video.playback-record', path, '再生状態を確認した場合は確認日と方法が必要です。');
     checkRefs(video.content.sourceRefs, `${path}.content.sourceRefs`);
   }
+  // Cache each prompt once: hundreds of questions require tens of thousands of
+  // comparisons, but their normalization/bigram sets do not change per pair.
+  const promptIndex = data.questions.map((q) => {
+    const normalized = normalizePrompt(q.prompt);
+    return { normalized, grams: bigrams(normalized) };
+  });
   for (let i = 0; i < data.questions.length; i++)
     for (let j = i + 1; j < data.questions.length; j++) {
       const a = data.questions[i],
         b = data.questions[j];
-      const normalizedA = normalizePrompt(a.prompt),
-        normalizedB = normalizePrompt(b.prompt);
+      const normalizedA = promptIndex[i].normalized,
+        normalizedB = promptIndex[j].normalized;
       if (normalizedA === normalizedB)
         error(
           'prompt.duplicate',
@@ -651,7 +708,15 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
         );
       else if (
         Math.min(normalizedA.length, normalizedB.length) >= 16 &&
-        promptSimilarity(a.prompt, b.prompt) >= 0.78
+        (() => {
+          const aa = promptIndex[i].grams,
+            bb = promptIndex[j].grams;
+          if (!aa.size || !bb.size || (2 * Math.min(aa.size, bb.size)) / (aa.size + bb.size) < 0.78)
+            return false;
+          let overlap = 0;
+          for (const gram of aa) if (bb.has(gram)) overlap++;
+          return (2 * overlap) / (aa.size + bb.size) >= 0.78;
+        })()
       ) {
         warn(
           'prompt.similar',

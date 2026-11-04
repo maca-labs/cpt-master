@@ -258,6 +258,8 @@ describe('atomic short mock grading and backup', () => {
     const other = createSession('practice', [q], [], []);
     other.startedAt = now.toISOString();
     await target.sessions.add(other);
+    other.choiceOrders[q.id] = [...existing.choiceOrder];
+    await target.sessions.put(other);
     await target.attempts.add({ ...existing, sessionId: other.id });
     const before = await snapshot(target);
     expect(() => validateBackup(JSON.stringify({ ...incoming, data: before }))).not.toThrow();

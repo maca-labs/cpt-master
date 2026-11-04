@@ -44,8 +44,9 @@ describe('short mock selection', () => {
     expect(new Set(selected.map((q) => q.groupId)).size).toBe(20);
     for (const [id, count] of Object.entries(mockAllocation(20)))
       expect(selected.filter((q) => q.domainId === id)).toHaveLength(count);
-    expect(mockAvailability(questions, 50, false).some((row) => row.missing > 0)).toBe(true);
-    expect(() => selectMock(questions, 50, false)).toThrow(/不足/);
+    expect(mockAvailability(questions, 50, false).every((row) => row.missing === 0)).toBe(true);
+    expect(selectMock(questions, 50, false).every((q) => q.pool === 'practice')).toBe(true);
+    expect(() => selectMock(exactBank(), 50, false)).toThrow(/不足/);
     expect(selectMock(questions, 50, true)).toHaveLength(50);
   });
   it('does not count draft, stale, unsupported or exam-pool questions toward quotas', () => {

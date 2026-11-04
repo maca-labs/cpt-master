@@ -248,7 +248,7 @@ export default function Dashboard() {
           <h2>基礎から、つながる学び</h2>
         </div>
         <Link to="/learn" className="text-link">
-          全8単元を見る <ArrowRight size={16} />
+          全{units.length}単元を見る <ArrowRight size={16} />
         </Link>
       </div>
       <div className="unit-grid featured">

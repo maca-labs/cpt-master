@@ -16,6 +16,7 @@ import {
 } from '../engines/learning';
 import { db, recordExposure } from '../storage/db';
 import { Empty, FavoriteButton, PageTitle, Pill, SourceList } from '../components/Shared';
+import { QuestionMedia } from '../components/QuestionMedia';
 export function Diagnostic() {
   const { data, settings } = useLearning(),
     start = useStartLearning();
@@ -330,6 +331,7 @@ export function Quiz() {
         </div>
         <small className="eyebrow">QUESTION {String(session.index + 1).padStart(2, '0')}</small>
         <h1>{q.prompt}</h1>
+        <QuestionMedia question={q} />
         <div className="choices">
           {session.choiceOrders[q.id].map((cid, i) => {
             const choice = q.choices.find((c) => c.id === cid)!;
@@ -398,7 +400,9 @@ export function Quiz() {
             {!attempt.firstSeen && <small>この回答は解き直しとして記録しています。</small>}
           </div>
         )}
-        {((attempt && !diag) || peek) && <Explanation questionId={q.id} sessionId={session.id} />}
+        {((attempt && !diag) || peek) && (
+          <Explanation questionId={q.id} sessionId={session.id} showMedia={false} />
+        )}
         <div className="question-footer">
           <small>
             {q.id} · rev.{q.revision} ·{' '}
@@ -419,12 +423,21 @@ export function Quiz() {
     </>
   );
 }
-export function Explanation({ questionId, sessionId }: { questionId: string; sessionId?: string }) {
+export function Explanation({
+  questionId,
+  sessionId,
+  showMedia = true,
+}: {
+  questionId: string;
+  sessionId?: string;
+  showMedia?: boolean;
+}) {
   const q = questions.find((q) => q.id === questionId)!;
   const { data, run } = useLearning();
   const registered = data.reviews.some((r) => r.questionId === q.id && r.manual);
   return (
     <div className="explanation">
+      {showMedia && <QuestionMedia question={q} />}
       <h3>正答：{q.choices.find((c) => c.id === q.correctChoiceId)?.text}</h3>
       <p>{q.explanation}</p>
       <dl className="choice-reasons">

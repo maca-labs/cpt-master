@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Check, Clock3, ListChecks } from 'luci
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { isRecommendedVideo } from '../engines/video-review';
+import { eligible } from '../engines/learning';
 import { units, questions, seedVideos } from '../content';
 import { domains, domainIds } from '../content/blueprints';
 import { useLearning } from '../app/context';
@@ -51,7 +52,17 @@ export function Catalog() {
           ))}
       </div>
       <p className="muted small-text">
-        初版の8単元は各分野への学習入口です。公式出題範囲の全項目を網羅したものではありません。
+        {units.length}単元・{questions.length}
+        問を収録。公式出題範囲の全項目を網羅したものではありません。
+        <a
+          className="text-link"
+          href="https://github.com/maca-labs/cpt-master/blob/main/docs/CURRICULUM_GAPS.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {' '}
+          出題範囲との対応・未収録項目
+        </a>
       </p>
     </>
   );
@@ -77,9 +88,12 @@ export function Lesson() {
   const videos = mergedVideos(seedVideos, data.videoOverrides).filter((v) =>
     v.unitIds.includes(unit.id),
   );
-  const allCount = questions.filter((q) => q.unitId === unit.id && q.pool !== 'exam').length;
+  const allCount = questions.filter(
+    (q) => eligible(q) && q.unitId === unit.id && q.pool !== 'exam',
+  ).length;
   const available = questions.filter(
     (q) =>
+      eligible(q) &&
       q.unitId === unit.id &&
       q.pool !== 'exam' &&
       (['completed', 'skipped'].includes(settings.diagnosticStatus) || q.pool !== 'diagnostic'),

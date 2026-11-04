@@ -42,6 +42,12 @@ export interface Question {
   choices: { id: string; text: string; explanation: string }[];
   correctChoiceId: string;
   explanation: string;
+  media?: {
+    kind: 'diagram' | 'sequence';
+    assetId: string;
+    caption: string;
+    alt: string;
+  };
   sourceRefs: SourceRef[];
   review: {
     status: ReviewStatus;

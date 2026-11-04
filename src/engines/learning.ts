@@ -61,6 +61,7 @@ export function selectPractice(
     shuffle(
       bank.filter(
         (q) =>
+          eligible(q) &&
           q.pool !== 'exam' &&
           (unlocked || q.pool !== 'diagnostic') &&
           (!unitId || q.unitId === unitId),

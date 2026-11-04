@@ -13,3 +13,5 @@ artifacts/playwright-report/
 .env.*
 !.env.example
 **/*transcript*.txt
+artifacts/media-*.png
+artifacts/expansion-*.png

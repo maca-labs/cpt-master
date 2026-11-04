@@ -69,10 +69,10 @@ test('20-question mock keeps answers private until submission and includes unans
 }) => {
   await open(page);
   await page.getByRole('combobox', { name: '短縮模試の問題数', exact: true }).selectOption('50');
-  await expect(page.getByRole('status').filter({ hasText: '不足' })).toContainText('不足');
+  await expect(page.getByRole('status').filter({ hasText: '不足' })).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: '50問の短縮模試を始める', exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await expect(
     page.getByRole('link', { name: '155問模試の準備状況', exact: true }),
   ).toHaveAttribute('href', '#/exam/full');

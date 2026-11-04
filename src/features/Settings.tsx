@@ -15,6 +15,7 @@ import { questions, seedVideos, units, contentVersion } from '../content';
 import { examReadiness } from '../engines/learning';
 import { isRecommendedVideo } from '../engines/video-review';
 import { Empty, PageTitle, Pill } from '../components/Shared';
+import { finalDevelopmentTargets } from '../content/release';
 export function BlueprintDetails() {
   return (
     <section className="panel" id="blueprint">
@@ -125,7 +126,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.3.2</small>
+          <small>教材版 {contentVersion} · アプリ 0.4.0</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>
@@ -144,12 +145,20 @@ export default function Settings() {
               {seedVideos.length} /{' '}
               {seedVideos.filter((v) => v.metadata.status === 'confirmed').length}本
             </b>
-            <span>AIによる字幕照合済みのおすすめ</span>
+            <span>AIによる内容照合済みのおすすめ（確認範囲付き）</span>
             <b>{seedVideos.filter((v) => isRecommendedVideo(v)).length}本</b>
           </div>
           <p className="muted small-text">
             自動検査への合格は、科学的な正確性や専門家レビューを意味しません。公式問題の転載はしていません。
           </p>
+          <a
+            className="text-link"
+            href="https://github.com/maca-labs/cpt-master/blob/main/docs/CONTENT_EXPANSION_REVIEW.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            出典照合・AIレビューの対象と留保
+          </a>
         </section>
       </div>
       <section className="panel">
@@ -202,7 +211,7 @@ export default function Settings() {
               <b>{tableNames.reduce((n, k) => n + pending.data[k].length, 0)}件</b>
             </div>
             <p className="small-text">
-              現在のデータを残してマージします。同じIDはこの端末の記録を優先し、診断の完了状態は後戻りさせません。初版では同じ教材版のみ対応します。
+              現在のデータを残してマージします。同じIDはこの端末の記録を優先し、診断の完了状態は後戻りさせません。旧教材版2026-11-04.1は、元の100問・8単元への参照を検査して現行版へ移行します。
             </p>
             <label className="check-line">
               <input
@@ -245,6 +254,13 @@ export default function Settings() {
         <p className="muted small-text">
           短縮模試・成績比較・PWA更新案内を利用できます。155問の本番形式模試、全範囲への教材展開、PWAの詳細な実端末検証は後続段階です。YouTubeの視聴には通信が必要です。
         </p>
+        <p className="muted small-text">
+          独自の最終開発目標：小単元{finalDevelopmentTargets.units.join('〜')}、通常
+          {finalDevelopmentTargets.regularQuestions}問（診断
+          {finalDevelopmentTargets.diagnosticIncluded}問を含む）、通常学習とは別の模試専用
+          {finalDevelopmentTargets.questionsPerMock}問×{finalDevelopmentTargets.exclusiveMockSets}
+          セット。公式の合格条件ではありません。
+        </p>
       </section>
     </>
   );
@@ -260,7 +276,7 @@ export function Exam() {
       />
       <Empty
         title="155問模試の開始条件を満たしていません"
-        body="初期100問の使い回しで155問模試を成立させません。50問診断・短縮模試・確認問題で学習できます。"
+        body="本番形式の155問模試は準備中です。専用問題・専門家審査・画像映像等の必要条件が揃うまで公開しません。50問診断・短縮模試・確認問題を利用できます。"
       />
       <section className="panel">
         <h2>公開前の確認事項</h2>

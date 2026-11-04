@@ -14,6 +14,54 @@
   --soft: #f8faf6;
   --shadow: 0 3px 15px #223e3018;
 }
+.question-media {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.question-media svg {
+  display: block;
+  width: 100%;
+  max-height: 350px;
+  color: var(--text);
+}
+.question-media svg text {
+  font-size: 17px;
+  fill: currentColor;
+}
+.media-frame-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.question-media figcaption {
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+.question-media figcaption small {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.explanation,
+.notice,
+.source-list {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.media-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .question-media * {
+    scroll-behavior: auto;
+  }
+}
 * {
   box-sizing: border-box;
 }

@@ -12,7 +12,15 @@ import type {
   VideoOverride,
   VideoProgress,
 } from '../domain/types';
-import { contentVersion, questions, units, seedVideos } from '../content';
+import {
+  contentVersion,
+  questions,
+  units,
+  seedVideos,
+  legacyQuestionIds,
+  legacyUnitIds,
+} from '../content';
+import { legacyContentVersion } from '../content/release';
 export interface Favorite {
   questionId: string;
 }
@@ -329,10 +337,19 @@ export function validateBackup(text: string): Backup {
       `形式が不正です：${result.error.issues[0]?.path.join('.')}。既存データは変更していません。`,
     );
   const backup = result.data as Backup;
-  if (backup.contentVersion !== contentVersion)
-    throw new Error('教材の版が異なります。この初版では同じ教材版のバックアップのみ復元できます。');
-  const qMap = new Map(questions.map((q) => [q.id, q]));
-  const uids = new Set(units.map((u) => u.id));
+  const legacy = backup.contentVersion === legacyContentVersion;
+  if (backup.contentVersion !== contentVersion && !legacy)
+    throw new Error(
+      '対応していない教材版です。現行版または互換性を検証した旧版のバックアップを使用してください。',
+    );
+  // The original 100 questions remain byte-for-byte unchanged. A legacy-labelled
+  // file must still reference only that bank; it cannot smuggle new identifiers.
+  const compatibleQuestions = legacy
+    ? questions.filter((q) => legacyQuestionIds.has(q.id))
+    : questions;
+  const compatibleUnits = legacy ? units.filter((u) => legacyUnitIds.has(u.id)) : units;
+  const qMap = new Map(compatibleQuestions.map((q) => [q.id, q]));
+  const uids = new Set(compatibleUnits.map((u) => u.id));
   for (const name of tableNames) {
     const keys = backup.data[name].map((r: unknown) => {
       const obj = r as Record<string, unknown>;
@@ -341,8 +358,15 @@ export function validateBackup(text: string): Backup {
     if (new Set(keys).size !== keys.length) throw new Error(`${name}に重複IDがあります。`);
   }
   const sessionIds = new Set(backup.data.sessions.map((s) => s.id));
+  const sessionsById = new Map(backup.data.sessions.map((s) => [s.id, s]));
+  const answeredPairs = new Set<string>();
   for (const a of backup.data.attempts) {
     const q = qMap.get(a.questionId);
+    const session = sessionsById.get(a.sessionId);
+    const pair = JSON.stringify([a.sessionId, a.questionId]);
+    if (answeredPairs.has(pair))
+      throw new Error('同じセッション・問題の解答履歴が重複しています。');
+    answeredPairs.add(pair);
     if (
       !q ||
       q.revision !== a.questionRevision ||
@@ -353,6 +377,10 @@ export function validateBackup(text: string): Backup {
       !q.choices.some((c) => c.id === a.selectedChoiceId) ||
       a.correct !== (a.selectedChoiceId === q.correctChoiceId) ||
       !sessionIds.has(a.sessionId) ||
+      !session?.questionIds.includes(a.questionId) ||
+      a.choiceOrder.some(
+        (choice, index) => choice !== session?.choiceOrders[a.questionId]?.[index],
+      ) ||
       a.choiceOrder.length !== q.choices.length ||
       new Set(a.choiceOrder).size !== q.choices.length ||
       q.choices.some((c) => !a.choiceOrder.includes(c.id))
@@ -360,6 +388,11 @@ export function validateBackup(text: string): Backup {
       throw new Error('解答履歴と教材の対応が不正です。');
   }
   for (const s of backup.data.sessions) {
+    for (const record of [s.choiceOrders, s.firstSeenByQuestion]) {
+      const keys = Object.keys(record);
+      if (keys.length !== s.questionIds.length || keys.some((key) => !s.questionIds.includes(key)))
+        throw new Error('セッションの問題別記録に、問題順と一致しない参照があります。');
+    }
     if ((s.mode === 'mock') !== !!s.mock)
       throw new Error('短縮模試の設定とセッション形式が一致しません。');
     if (s.mock) {
@@ -460,6 +493,7 @@ export function validateBackup(text: string): Backup {
     if (
       qMap.get(e.questionId)?.groupId !== e.groupId ||
       !sessionIds.has(e.sessionId) ||
+      !sessionsById.get(e.sessionId)?.questionIds.includes(e.questionId) ||
       backup.data.sessions.some(
         (s) => s.id === e.sessionId && s.mode === 'mock' && !s.questionIds.includes(e.questionId),
       )
@@ -474,7 +508,7 @@ export function validateBackup(text: string): Backup {
     ...backup.data.videoOverrides.filter((v) => v.video).map((v) => v.id),
   ]);
   const objectiveUnits = new Map(
-    units.flatMap((u) => u.objectives.map((o) => [o.id, u.id] as const)),
+    compatibleUnits.flatMap((u) => u.objectives.map((o) => [o.id, u.id] as const)),
   );
   for (const o of backup.data.videoOverrides) {
     if (o.video) {
@@ -507,7 +541,7 @@ export function validateBackup(text: string): Backup {
       throw new Error('タイムゾーンが不正です。');
     }
   }
-  return backup;
+  return { ...backup, contentVersion };
 }
 export async function exportBackup(database: LearningDB = db): Promise<Backup> {
   return {

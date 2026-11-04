@@ -58,7 +58,7 @@ describe('follow-up video review scope', () => {
     expect(text).toMatch(/かかと|踵/);
     expect(text).toContain('セーフティ');
     expect(text).toContain('補助');
-    expect(questions).toHaveLength(100);
+    expect(questions).toHaveLength(300);
     expect(questions.some((item) => item.objectiveIds.includes('technique-o4'))).toBe(false);
   });
 

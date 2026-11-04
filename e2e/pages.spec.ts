@@ -11,6 +11,16 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(
     page.getByRole('heading', { name: '理解から、指導できる知識へ。', exact: true }),
   ).toBeVisible();
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.4.0');
+  await page.goto(published! + '#/learn');
+  await expect(page.locator('.unit-card')).toHaveCount(36);
+  await page.goto(published! + '#/learn/ex-plan-load');
+  await expect(
+    page.getByRole('heading', { name: '抵抗運動の負荷・量を計算して読む', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: '確認問題を解く（8問）', exact: true }),
+  ).toBeEnabled();
   await page.goto(published! + '#/videos');
   await expect(page.getByRole('button', { name: 'おすすめ 2本', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'おすすめ 2本', exact: true }).click();

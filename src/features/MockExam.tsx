@@ -457,6 +457,7 @@ export function MockExamSession() {
           </div>
           <small className="eyebrow">QUESTION {String(session.index + 1).padStart(2, '0')}</small>
           <h1>{question.prompt}</h1>
+          <QuestionMedia question={question} />
           <div className="choices">
             {session.choiceOrders[question.id].map((choiceId, index) => {
               const choice = question.choices.find((item) => item.id === choiceId)!;
@@ -706,3 +707,4 @@ export function MockExamResults() {
     </>
   );
 }
+import { QuestionMedia } from '../components/QuestionMedia';
