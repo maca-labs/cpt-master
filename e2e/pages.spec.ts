@@ -14,7 +14,7 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(
     page.getByRole('heading', { name: '理解から、指導できる知識へ。', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.0');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.1');
   await page.goto(published! + '#/learn');
   await expect(page.locator('.unit-card')).toHaveCount(36);
   await page.goto(published! + '#/learn/ex-plan-load');
@@ -30,7 +30,9 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   ).toBeVisible();
   await page.getByRole('button', { name: `おすすめ ${recommendedCount}本`, exact: true }).click();
   await expect(page.locator('article.video-card')).toHaveCount(recommendedCount);
-  await expect(page.getByText('おすすめ · AIによる字幕照合', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText('おすすめ · AIによる字幕照合', { exact: true }).first(),
+  ).toBeVisible();
   await expect(
     page.getByText('おすすめ · AIによる映像照合', { exact: true }).first(),
   ).toBeVisible();

@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { seedVideos, sources, units } from '../src/content';
 import { videoV05Additions } from '../src/content/video-additions-v05';
 import { isRecommendedVideo } from '../src/engines/video-review';
+import v05VideoManifest from './fixtures/v05-video-manifest.json';
+
+const originalIds = new Set(v05VideoManifest.map((video) => video.id));
+const originalVideos = seedVideos.filter((video) => originalIds.has(video.id));
 
 // These checks audit saved identities, evidence records and scope. They do not
 // replay videos or replace the visual/source review documented in VIDEO_REVIEW_0.5.
@@ -19,10 +23,10 @@ describe('v0.5 scoped video review records', () => {
         'RpbxIG5HTf4',
       ].sort(),
     );
-    expect(seedVideos).toHaveLength(18);
-    expect(new Set(seedVideos.map((v) => v.youtubeId)).size).toBe(18);
-    expect(seedVideos.filter((v) => isRecommendedVideo(v))).toHaveLength(10);
-    expect(seedVideos.filter((v) => !isRecommendedVideo(v))).toHaveLength(8);
+    expect(originalVideos).toHaveLength(18);
+    expect(new Set(originalVideos.map((v) => v.youtubeId)).size).toBe(18);
+    expect(originalVideos.filter((v) => isRecommendedVideo(v))).toHaveLength(10);
+    expect(originalVideos.filter((v) => !isRecommendedVideo(v))).toHaveLength(8);
   });
   it('keeps metadata, actual visual scope, source references and reviewer type explicit', () => {
     for (const video of videoV05Additions) {

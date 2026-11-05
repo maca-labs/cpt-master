@@ -1,10 +1,10 @@
 # 日本向け出題範囲との対応・残る不足
 
-更新日2026-11-05（日本時間）。公式資料の照合日は下記の2026-11-04を維持。教材版2026-11-04.2。実装前の[8単元・100問の対応表](CURRICULUM_baseline-100.md)を先に保存してから、0.4の追加教材を作成した。0.5では問題本体を変えず、動画と学習方法を追加した。現在は36単元・300問・300問題グループ。
+更新日2026-11-05（日本時間）。公式資料の照合日は下記の2026-11-04を維持。教材版2026-11-04.2。実装前の[8単元・100問の対応表](CURRICULUM_baseline-100.md)を先に保存してから、0.4の追加教材を作成した。0.5では問題本体を変えず、動画と学習方法を追加し、0.5.1では残る22単元の動画を調査・追加した。現在は36単元・300問・300問題グループ。
 
 日本向けの親項目は[NSCAジャパンの出題範囲](https://nsca-japan.or.jp/certification/exam/nsca-cpt/)と[日本語ハンドブック](https://nsca-japan.or.jp/pdf/certification/exam/cbt_handbook.pdf)印刷p.10を参照（確認日2026-11-04、版・適用開始日不明）。本番設計の採点対象140問の内訳32/45/43/20（別に採点外15問）を採用し、Web割合23/32/31/14とPDF割合25/31/31/13の不一致は未解消。米国DCOは別資料の参考で、日本版正式細目として混在させない。以下の小単元・目標は公開された日本公式の説明を本アプリが細分化したもので、公式の詳細DCOコードを再現したものではない。
 
-全36単元について「親分野→学習目標→本文の節→全問題ID/グループ→動画」を追える[詳細対応表](CURRICULUM_v05-300.md)と[機械可読JSON](CURRICULUM_v05-300.json)を用意した。問題の多さや参照の存在だけで説明十分性や臨床能力を保証しない。
+全36単元について「親分野→学習目標→本文の節→全問題ID/グループ→動画」を追える[詳細対応表](CURRICULUM_v051-300.md)と[機械可読JSON](CURRICULUM_v051-300.json)を用意した。問題の多さや参照の存在だけで説明十分性や臨床能力を保証しない。
 
 ## 追加28小単元と実収録
 
@@ -12,34 +12,34 @@
 
 | 日本公式の親分野→独自小単元 | 目標ID→解説の節 | 問題数 / ID範囲 | 動画の直接対応 |
 |---|---|---|---|
-| クライアントに対する面談と評価 → 測定の品質を見分ける (ex-assess-quality) | ex-assess-quality-o1, ex-assess-quality-o2, ex-assess-quality-o3 → 繰り返せることと、目的に合うこと／本人にも検者にも準備が必要／条件と疲労を記録する／変化を、誤差と切り分ける／関連動画 | 8問 / ex-assess-quality-01〜ex-assess-quality-08 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 成人テストの手順と記録 (ex-assess-adult-tests) | ex-assess-adult-tests-o1, ex-assess-adult-tests-o2, ex-assess-adult-tests-o3 → 対象者と採用する要項を先に決める／握力は、四つの記録をそのまま平均しない／有効な動作だけを数える／時間・終了・距離にも固有の規則がある／関連動画 | 8問 / ex-assess-adult-tests-01〜ex-assess-adult-tests-08 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 体格と体組成を区別する (ex-assess-bodycomp) | ex-assess-bodycomp-o1, ex-assess-bodycomp-o2, ex-assess-bodycomp-o3 → BMIは身長と体重から求める／割合を量へ戻す／測定原理と、その日の条件／位置の違う周径を混ぜない／関連動画 | 6問 / ex-assess-bodycomp-01〜ex-assess-bodycomp-06 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 継続を支える行動の面談 (ex-assess-behavior) | ex-assess-behavior-o1, ex-assess-behavior-o2, ex-assess-behavior-o3 → 決心と実行を分けて聞く／結果だけでなく、行うことを決める／記録を、採点ではなく調整に使う／中断への代案と、望む支援／関連動画 | 6問 / ex-assess-behavior-01〜ex-assess-behavior-06 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 健康情報を評価の条件に変える (ex-assess-health) | ex-assess-health-o1, ex-assess-health-o2, ex-assess-health-o3 → 運動していない、だけで活動量を決めない／空欄と、以前の回答をそのまま使わない／目的と内容に合う環境で評価する／測定値と判断の役割を分ける／家庭血圧は、測る前と集計をそろえる／関連動画 | 6問 / ex-assess-health-01〜ex-assess-health-06 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 日本の食品表示を計算して読む (ex-assess-food-label) | ex-assess-food-label-o1, ex-assess-food-label-o2, ex-assess-food-label-o3 → 基準量から、食べた量へ／ナトリウムと食塩相当量／炭水化物の内訳と、表示の有無／強調されている成分と条件だけを読む／関連動画 | 7問 / ex-assess-food-label-01〜ex-assess-food-label-07 | **未収録・内容確認待ち** |
-| クライアントに対する面談と評価 → 水分と食事の記録を読み取る (ex-assess-hydration) | ex-assess-hydration-o1, ex-assess-hydration-o2, ex-assess-hydration-o3 → 何を、どれだけ記録したか／一つの日を、普段全体の代表にしない／記録すること自体も、行動を変え得る／発汗量の概算には、飲水と尿も入れる／関連動画 | 5問 / ex-assess-hydration-01〜ex-assess-hydration-05 | **未収録・内容確認待ち** |
-| プログラムプランニング → 抵抗運動の負荷・量を計算して読む (ex-plan-load) | ex-plan-load-o1, ex-plan-load-o2, ex-plan-load-o3 → 負荷のkgと1RM割合／反復数とvolume loadは別の記録／休息の回数を数えて見積もる／外から加えた量と本人の反応 | 8問 / ex-plan-load-01〜ex-plan-load-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 有酸素運動の強度と活動量 (ex-plan-cardio) | ex-plan-cardio-o1, ex-plan-cardio-o2, ex-plan-cardio-o3 → HRRの割合は最大心拍の割合ではない／同じ歩行でも、きつさは人により違う／服薬があるときの指標／活動の強度と時間を合計する | 8問 / ex-plan-cardio-01〜ex-plan-cardio-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 周期化・ピーキングと並行トレーニング (ex-plan-progression) | ex-plan-progression-o1, ex-plan-progression-o2, ex-plan-progression-o3 → 大きな目標を日々の練習へつなぐ／期が変われば役割も変わる／直前に疲労を積み増さない／二つの様式を別勘定にしない | 8問 / ex-plan-progression-01〜ex-plan-progression-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → プライオメトリクスとスピード練習 (ex-plan-power) | ex-plan-power-o1, ex-plan-power-o2, ex-plan-power-o3 → 複雑さは習得状況へ合わせる／接地回数と強度を別に記録する／全力スプリントを持久走へ変えない／最初の一本から遅い場合 | 8問 / ex-plan-power-01〜ex-plan-power-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 若年者と高齢者の計画 (ex-plan-age) | ex-plan-age-o1, ex-plan-age-o2, ex-plan-age-o3 → 若年者は監督と学習環境から／技能と継続する気持ちを育てる／高齢者の目標は生活につなげる／できる姿勢から必要な速さへ | 8問 / ex-plan-age-01〜ex-plan-age-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 妊娠期・産後の運動計画 (ex-plan-pregnancy) | ex-plan-pregnancy-o1, ex-plan-pregnancy-o2, ex-plan-pregnancy-o3 → 一般推奨と個別の許可を分ける／経験から出発点を決める／種目と姿勢、環境を変える／症状と産後の再開 | 8問 / ex-plan-pregnancy-01〜ex-plan-pregnancy-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 糖尿病・高血圧と運動計画 (ex-plan-metabolic) | ex-plan-metabolic-o1, ex-plan-metabolic-o2, ex-plan-metabolic-o3 → 治療と一緒に活動を考える／運動すれば必ず血糖が下がるわけではない／眼と足の条件を運動へ反映する／当日と一日全体の計画 | 8問 / ex-plan-metabolic-01〜ex-plan-metabolic-08 | **未収録・内容確認待ち** |
-| プログラムプランニング → 整形外科的制約と医療連携 (ex-plan-orthopedic) | ex-plan-orthopedic-o1, ex-plan-orthopedic-o2, ex-plan-orthopedic-o3 → 疾患名だけで休止か高負荷かを決めない／術後と骨折では個別条件が先／骨の脆弱性に合わせて動作を調整する／変化を評価へ戻す | 8問 / ex-plan-orthopedic-01〜ex-plan-orthopedic-08 | **未収録・内容確認待ち** |
+| クライアントに対する面談と評価 → 測定の品質を見分ける (ex-assess-quality) | ex-assess-quality-o1, ex-assess-quality-o2, ex-assess-quality-o3 → 繰り返せることと、目的に合うこと／本人にも検者にも準備が必要／条件と疲労を記録する／変化を、誤差と切り分ける／関連動画 | 8問 / ex-assess-quality-01〜ex-assess-quality-08 | 1本、推薦0本 |
+| クライアントに対する面談と評価 → 成人テストの手順と記録 (ex-assess-adult-tests) | ex-assess-adult-tests-o1, ex-assess-adult-tests-o2, ex-assess-adult-tests-o3 → 対象者と採用する要項を先に決める／握力は、四つの記録をそのまま平均しない／有効な動作だけを数える／時間・終了・距離にも固有の規則がある／関連動画 | 8問 / ex-assess-adult-tests-01〜ex-assess-adult-tests-08 | 1本、推薦0本 |
+| クライアントに対する面談と評価 → 体格と体組成を区別する (ex-assess-bodycomp) | ex-assess-bodycomp-o1, ex-assess-bodycomp-o2, ex-assess-bodycomp-o3 → BMIは身長と体重から求める／割合を量へ戻す／測定原理と、その日の条件／位置の違う周径を混ぜない／関連動画 | 6問 / ex-assess-bodycomp-01〜ex-assess-bodycomp-06 | 2本、推薦1本 |
+| クライアントに対する面談と評価 → 継続を支える行動の面談 (ex-assess-behavior) | ex-assess-behavior-o1, ex-assess-behavior-o2, ex-assess-behavior-o3 → 決心と実行を分けて聞く／結果だけでなく、行うことを決める／記録を、採点ではなく調整に使う／中断への代案と、望む支援／関連動画 | 6問 / ex-assess-behavior-01〜ex-assess-behavior-06 | 1本、推薦1本 |
+| クライアントに対する面談と評価 → 健康情報を評価の条件に変える (ex-assess-health) | ex-assess-health-o1, ex-assess-health-o2, ex-assess-health-o3 → 運動していない、だけで活動量を決めない／空欄と、以前の回答をそのまま使わない／目的と内容に合う環境で評価する／測定値と判断の役割を分ける／家庭血圧は、測る前と集計をそろえる／関連動画 | 6問 / ex-assess-health-01〜ex-assess-health-06 | 1本、推薦1本 |
+| クライアントに対する面談と評価 → 日本の食品表示を計算して読む (ex-assess-food-label) | ex-assess-food-label-o1, ex-assess-food-label-o2, ex-assess-food-label-o3 → 基準量から、食べた量へ／ナトリウムと食塩相当量／炭水化物の内訳と、表示の有無／強調されている成分と条件だけを読む／関連動画 | 7問 / ex-assess-food-label-01〜ex-assess-food-label-07 | 2本、推薦2本 |
+| クライアントに対する面談と評価 → 水分と食事の記録を読み取る (ex-assess-hydration) | ex-assess-hydration-o1, ex-assess-hydration-o2, ex-assess-hydration-o3 → 何を、どれだけ記録したか／一つの日を、普段全体の代表にしない／記録すること自体も、行動を変え得る／発汗量の概算には、飲水と尿も入れる／関連動画 | 5問 / ex-assess-hydration-01〜ex-assess-hydration-05 | 1本、推薦1本 |
+| プログラムプランニング → 抵抗運動の負荷・量を計算して読む (ex-plan-load) | ex-plan-load-o1, ex-plan-load-o2, ex-plan-load-o3 → 負荷のkgと1RM割合／反復数とvolume loadは別の記録／休息の回数を数えて見積もる／外から加えた量と本人の反応 | 8問 / ex-plan-load-01〜ex-plan-load-08 | 2本、推薦1本 |
+| プログラムプランニング → 有酸素運動の強度と活動量 (ex-plan-cardio) | ex-plan-cardio-o1, ex-plan-cardio-o2, ex-plan-cardio-o3 → HRRの割合は最大心拍の割合ではない／同じ歩行でも、きつさは人により違う／服薬があるときの指標／活動の強度と時間を合計する | 8問 / ex-plan-cardio-01〜ex-plan-cardio-08 | 1本、推薦1本 |
+| プログラムプランニング → 周期化・ピーキングと並行トレーニング (ex-plan-progression) | ex-plan-progression-o1, ex-plan-progression-o2, ex-plan-progression-o3 → 大きな目標を日々の練習へつなぐ／期が変われば役割も変わる／直前に疲労を積み増さない／二つの様式を別勘定にしない | 8問 / ex-plan-progression-01〜ex-plan-progression-08 | 1本、推薦1本 |
+| プログラムプランニング → プライオメトリクスとスピード練習 (ex-plan-power) | ex-plan-power-o1, ex-plan-power-o2, ex-plan-power-o3 → 複雑さは習得状況へ合わせる／接地回数と強度を別に記録する／全力スプリントを持久走へ変えない／最初の一本から遅い場合 | 8問 / ex-plan-power-01〜ex-plan-power-08 | 1本、推薦0本 |
+| プログラムプランニング → 若年者と高齢者の計画 (ex-plan-age) | ex-plan-age-o1, ex-plan-age-o2, ex-plan-age-o3 → 若年者は監督と学習環境から／技能と継続する気持ちを育てる／高齢者の目標は生活につなげる／できる姿勢から必要な速さへ | 8問 / ex-plan-age-01〜ex-plan-age-08 | 1本、推薦0本 |
+| プログラムプランニング → 妊娠期・産後の運動計画 (ex-plan-pregnancy) | ex-plan-pregnancy-o1, ex-plan-pregnancy-o2, ex-plan-pregnancy-o3 → 一般推奨と個別の許可を分ける／経験から出発点を決める／種目と姿勢、環境を変える／症状と産後の再開 | 8問 / ex-plan-pregnancy-01〜ex-plan-pregnancy-08 | 1本、推薦0本 |
+| プログラムプランニング → 糖尿病・高血圧と運動計画 (ex-plan-metabolic) | ex-plan-metabolic-o1, ex-plan-metabolic-o2, ex-plan-metabolic-o3 → 治療と一緒に活動を考える／運動すれば必ず血糖が下がるわけではない／眼と足の条件を運動へ反映する／当日と一日全体の計画 | 8問 / ex-plan-metabolic-01〜ex-plan-metabolic-08 | 1本、推薦1本 |
+| プログラムプランニング → 整形外科的制約と医療連携 (ex-plan-orthopedic) | ex-plan-orthopedic-o1, ex-plan-orthopedic-o2, ex-plan-orthopedic-o3 → 疾患名だけで休止か高負荷かを決めない／術後と骨折では個別条件が先／骨の脆弱性に合わせて動作を調整する／変化を評価へ戻す | 8問 / ex-plan-orthopedic-01〜ex-plan-orthopedic-08 | 1本、推薦1本 |
 | エクササイズテクニック → スクワットとランジの観察・調整 (ex-tech-squat) | ex-tech-squat-o1, ex-tech-squat-o2, ex-tech-squat-o3 → 見たい項目を先に決める／パラレルは全員共通の到達義務ではない／ランジの難しさは重量だけで決まらない／進行は、保てた条件を残しながら行う | 8問 / ex-tech-001〜ex-tech-008 | 1本、推薦1本 |
 | エクササイズテクニック → ヒンジと床からの持ち上げ (ex-tech-hinge) | ex-tech-hinge-o1, ex-tech-hinge-o2, ex-tech-hinge-o3 → 床から引く前の位置関係／上体を起こす局面を見分ける／RDLの反復は立位から／練習条件を言葉と観察でそろえる | 8問 / ex-tech-009〜ex-tech-016 | 1本、推薦1本 |
 | エクササイズテクニック → プレスとプルの支持・軌道 (ex-tech-upper) | ex-tech-upper-o1, ex-tech-upper-o2, ex-tech-upper-o3 → バーと前腕の位置関係／座ったプレスでも体幹を観察する／ラットプルダウンは設定から／肩甲帯と復帰局面も見る | 8問 / ex-tech-017〜ex-tech-024 | 3本、推薦3本 |
 | エクササイズテクニック → 体幹と自重動作の制御 (ex-tech-core) | ex-tech-core-o1, ex-tech-core-o2, ex-tech-core-o3 → 四肢は動かし、体幹は制御する／プランクは秒数だけで評価しない／プッシュアップは身体全体の移動／自重でも支持条件で要求は変わる | 8問 / ex-tech-025〜ex-tech-032 | 1本、推薦1本 |
-| エクササイズテクニック → 柔軟性と準備運動の使い分け (ex-tech-flex) | ex-tech-flex-o1, ex-tech-flex-o2, ex-tech-flex-o3 → 準備運動とストレッチは同じではない／静的ストレッチを一律に禁止しない／動いたというだけで方法は決まらない／出せる範囲と動かされる範囲を分ける | 8問 / ex-tech-033〜ex-tech-040 | **未収録・内容確認待ち** |
+| エクササイズテクニック → 柔軟性と準備運動の使い分け (ex-tech-flex) | ex-tech-flex-o1, ex-tech-flex-o2, ex-tech-flex-o3 → 準備運動とストレッチは同じではない／静的ストレッチを一律に禁止しない／動いたというだけで方法は決まらない／出せる範囲と動かされる範囲を分ける | 8問 / ex-tech-033〜ex-tech-040 | 2本、推薦1本 |
 | エクササイズテクニック → 有酸素機器の設定と動作 (ex-tech-cardio) | ex-tech-cardio-o1, ex-tech-cardio-o2, ex-tech-cardio-o3 → ローイングは動作の順序を整える／ダンパーの数字は強度そのものではない／バイクは姿勢を見てから微調整する／停止機構と表示の限界 | 8問 / ex-tech-041〜ex-tech-048 | 1本、推薦1本 |
-| エクササイズテクニック → 着地・減速・スピードの技術 (ex-tech-power) | ex-tech-power-o1, ex-tech-power-o2, ex-tech-power-o3 → 高さより先に着地の質を確かめる／吸収して次の動作へつなぐ／減速の深さは次の動作に合わせる／速さと加速度を区別する | 8問 / ex-tech-049〜ex-tech-056 | **未収録・内容確認待ち** |
+| エクササイズテクニック → 着地・減速・スピードの技術 (ex-tech-power) | ex-tech-power-o1, ex-tech-power-o2, ex-tech-power-o3 → 高さより先に着地の質を確かめる／吸収して次の動作へつなぐ／減速の深さは次の動作に合わせる／速さと加速度を区別する | 8問 / ex-tech-049〜ex-tech-056 | 1本、推薦0本 |
 | エクササイズテクニック → 力の腕・仕事・パワーの使い分け (ex-tech-mechanics) | ex-tech-mechanics-o1, ex-tech-mechanics-o2, ex-tech-mechanics-o3 → 力の腕は作用線までの垂直距離／つり合いは向きと対象をそろえる／仕事では力と変位の方向を見る／パワーの比較と静止の解釈 | 6問 / ex-tech-057〜ex-tech-062 | 1本、推薦1本 |
-| 安全性・緊急時の手順・法的諸問題 → 緊急計画を現場で使える形にする (ex-safe-eap) | ex-safe-eap-o1, ex-safe-eap-o2, ex-safe-eap-o3 → 計画の穴を現場で探す／訓練の結果で改訂する／導入と定期保守／事故に関わった器具の扱い | 6問 / ex-safe-001〜ex-safe-006 | **未収録・内容確認待ち** |
-| 安全性・緊急時の手順・法的諸問題 → 成人のCPR・AEDを条件から判断する (ex-safe-cpr) | ex-safe-cpr-o1, ex-safe-cpr-o2, ex-safe-cpr-o3 → テンポだけでは質を保証しない／ショック不要でも処置は続く／肌への密着と衣服への配慮／役割を交代して継続する | 6問 / ex-safe-007〜ex-safe-012 | **未収録・内容確認待ち** |
-| 安全性・緊急時の手順・法的諸問題 → 熱中症・頭部衝撃・窒息の初動 (ex-safe-conditions) | ex-safe-conditions-o1, ex-safe-conditions-o2, ex-safe-conditions-o3, ex-safe-conditions-o4 → 飲めるか、反応は正常か／意識消失がなくても頭部損傷を疑う／緊急性を高める変化／誰が復帰を判断するか／窒息が疑われても強い咳ができるとき | 6問 / ex-safe-013〜ex-safe-018 | **未収録・内容確認待ち** |
-| 安全性・緊急時の手順・法的諸問題 → 同意・説明と指導記録 (ex-safe-consent) | ex-safe-consent-o1, ex-safe-consent-o2, ex-safe-consent-o3 → 何に同意するかを共有する／電子通信にも条件がある／法的文書を独断で作らない／何を保存するか | 5問 / ex-safe-019〜ex-safe-023 | **未収録・内容確認待ち** |
-| 安全性・緊急時の手順・法的諸問題 → 日本の個人情報保護と現場対応 (ex-safe-privacy) | ex-safe-privacy-o1, ex-safe-privacy-o2, ex-safe-privacy-o3 → 同じ施設内でも目的は無制限ではない／病歴等の取得／委託先と救急時の扱い／漏えい等の疑いが分かったら | 5問 / ex-safe-024〜ex-safe-028 | **未収録・内容確認待ち** |
+| 安全性・緊急時の手順・法的諸問題 → 緊急計画を現場で使える形にする (ex-safe-eap) | ex-safe-eap-o1, ex-safe-eap-o2, ex-safe-eap-o3 → 計画の穴を現場で探す／訓練の結果で改訂する／導入と定期保守／事故に関わった器具の扱い | 6問 / ex-safe-001〜ex-safe-006 | 1本、推薦0本 |
+| 安全性・緊急時の手順・法的諸問題 → 成人のCPR・AEDを条件から判断する (ex-safe-cpr) | ex-safe-cpr-o1, ex-safe-cpr-o2, ex-safe-cpr-o3 → テンポだけでは質を保証しない／ショック不要でも処置は続く／肌への密着と衣服への配慮／役割を交代して継続する | 6問 / ex-safe-007〜ex-safe-012 | 1本、推薦0本 |
+| 安全性・緊急時の手順・法的諸問題 → 熱中症・頭部衝撃・窒息の初動 (ex-safe-conditions) | ex-safe-conditions-o1, ex-safe-conditions-o2, ex-safe-conditions-o3, ex-safe-conditions-o4 → 飲めるか、反応は正常か／意識消失がなくても頭部損傷を疑う／緊急性を高める変化／誰が復帰を判断するか／窒息が疑われても強い咳ができるとき | 6問 / ex-safe-013〜ex-safe-018 | 2本、推薦0本 |
+| 安全性・緊急時の手順・法的諸問題 → 同意・説明と指導記録 (ex-safe-consent) | ex-safe-consent-o1, ex-safe-consent-o2, ex-safe-consent-o3 → 何に同意するかを共有する／電子通信にも条件がある／法的文書を独断で作らない／何を保存するか | 5問 / ex-safe-019〜ex-safe-023 | 1本、推薦1本 |
+| 安全性・緊急時の手順・法的諸問題 → 日本の個人情報保護と現場対応 (ex-safe-privacy) | ex-safe-privacy-o1, ex-safe-privacy-o2, ex-safe-privacy-o3 → 同じ施設内でも目的は無制限ではない／病歴等の取得／委託先と救急時の扱い／漏えい等の疑いが分かったら | 5問 / ex-safe-024〜ex-safe-028 | 1本、推薦1本 |
 
 ## 問題数と利用条件
 
@@ -60,7 +60,7 @@
 - 計画：複数週の具体的な抵抗運動/持久力計画、疲労と再評価を組み合わせる複合ケース。対象者は若年・高齢・妊娠産後・代謝疾患・運動器の選定事例に限られ、心疾患・呼吸器疾患等を網羅しない。
 - 技術：全器具・全種目、詳細な補助法、オリンピックリフト等。画像・映像形式12問は独自模式図6件・コマ送りアニメーション6件で、権利確認済み実写写真/実写動画の問題は0問。模式図で実際の人を診断しない。
 - 安全・職務：成人救命の一部と暑熱・頭部衝撃・窒息、説明・記録、日本の個人情報法の選定場面を追加。小児救命、全外傷、施設条件別の詳細、保険・契約・民事責任等の網羅は未完了。海外指針を日本の法律として適用しない。
-- 動画：登録18本中、確認範囲を限定したおすすめ10本、候補/保留8本。追加28単元のうち6単元に新規8本を対応。残り22単元には内容確認済み動画がない。既存の推薦2本を新目標へ無審査で転用しない。[0.5動画審査記録](VIDEO_REVIEW_0.5.md)の確認範囲・方法・出典を参照。
+- 動画：登録44本中、確認範囲を限定したおすすめ24本、候補/保留20本。追加28単元のうち19単元に、目標の一部を照合した動画がある。残り9単元には内容確認済み動画がない。既存の推薦2本を新目標へ無審査で転用しない。[0.5.1の22単元・目標別動画審査記録](VIDEO_REVIEW_0.5.1.md)の確認範囲・方法・出典を参照。
 - 模試：通常問題と独立した専用155問×3セットは0/465問。専門家審査・媒体と権利・分野数等の条件が揃うまで本番形式は準備中。既存の10/20/50問短縮模試と155問180分通し演習は通常問題を使う学習練習。通し演習は全155問採点で、本試験の140問採点＋15問採点外とは異なる。専用問題はまず155問1セットから別枠で整備する。
 
 ## 独自の最終開発目標

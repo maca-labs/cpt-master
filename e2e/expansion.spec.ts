@@ -57,7 +57,7 @@ test('old backup preflight, new lesson learning, persistence and invalid restore
   page,
 }, info) => {
   await ready(page, '/settings');
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.0');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.1');
   const text = await readFile(
       new URL('../tests/fixtures/legacy-v1-backup.json', import.meta.url),
       'utf8',
@@ -94,7 +94,11 @@ test('old backup preflight, new lesson learning, persistence and invalid restore
   await page
     .getByRole('textbox', { name: '単元メモ', exact: true })
     .fill('旧版の記録を残して、新しい負荷計算を学ぶ。');
-  await page.getByRole('button', { name: 'メモを保存', exact: true }).click();
+  await page
+    .locator('section.panel')
+    .filter({ has: page.getByRole('textbox', { name: '単元メモ', exact: true }) })
+    .getByRole('button', { name: 'メモを保存', exact: true })
+    .click();
   await page.getByRole('button', { name: '確認問題を解く（8問）', exact: true }).click();
   const prompt = await page.locator('.quiz-card h1').innerText(),
     q = questions.find((q) => q.prompt === prompt)!;

@@ -12,7 +12,7 @@ import {
   careVideoReasons,
 } from './video-review-care';
 
-export const videoCatalogVersion = '2026-11-05.1';
+export const videoCatalogVersion = '2026-11-05.2';
 export const videoReviewSources: Source[] = [
   ...scienceVideoSources,
   ...careVideoSources,

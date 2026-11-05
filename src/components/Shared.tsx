@@ -230,7 +230,9 @@ export function VideoCard({ video, unitId }: { video: Video; unitId?: string }) 
               <>
                 <p>
                   <b>内容確認日 {review.checkedAt}</b> ·{' '}
-                  {review.reviewerType === 'ai' ? 'AIによる確認' : '人間の専門家による確認'}
+                  {review.reviewerType === 'ai'
+                    ? 'AIによる確認（人間の専門家レビューは未実施）'
+                    : '人間の専門家による確認'}
                   <br />
                   {review.coverage}
                 </p>

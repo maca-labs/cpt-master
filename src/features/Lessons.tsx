@@ -246,7 +246,12 @@ export function Lesson() {
               <div className="text-section" key={s.title}>
                 <span className="section-number">{String(i + 1).padStart(2, '0')}</span>
                 <h3>{s.title}</h3>
-                <p>{s.body}</p>
+                <p>
+                  {s.title === '関連動画' &&
+                  videos.some((video) => isRecommendedVideo(video, unit.id))
+                    ? 'この単元の内容を照合した動画を上の動画欄に掲載しています。確認した学習目標・箇所と、確認範囲外の内容を各動画の記録で確認してください。'
+                    : s.body}
+                </p>
                 {s.bullets && (
                   <ul>
                     {s.bullets.map((b) => (

@@ -10,6 +10,10 @@ import {
 import type { ContentBundle } from '../scripts/validate-content';
 import type { Question } from '../src/domain/types';
 import { isRecommendedVideo } from '../src/engines/video-review';
+import v05VideoManifest from './fixtures/v05-video-manifest.json';
+
+const v05VideoIds = new Set(v05VideoManifest.map((video) => video.id));
+const v051Videos = seedContent.videos.filter((video) => !v05VideoIds.has(video.id));
 
 const copy = () =>
   structuredClone(seedContent) as {
@@ -31,12 +35,13 @@ describe('initial content publishing checks', () => {
       byDomain: { assessment: 69, planning: 96, technique: 93, safety: 42 },
       diagnosticByDomain: { assessment: 12, planning: 16, technique: 15, safety: 7 },
       videoReviewDeclarations: {
-        unreviewed: 8,
-        source_checked: seedContent.videos.length - 8,
+        unreviewed: 8 + v051Videos.filter((video) => video.content.status === 'unreviewed').length,
+        source_checked:
+          10 + v051Videos.filter((video) => video.content.status === 'source_checked').length,
         expert_reviewed: 0,
       },
-      recommendedVideos: seedContent.videos.length - 8,
-      candidateVideos: 8,
+      recommendedVideos: 10 + v051Videos.filter((video) => isRecommendedVideo(video)).length,
+      candidateVideos: 8 + v051Videos.filter((video) => !isRecommendedVideo(video)).length,
       examEligible: 0,
     });
     expect(report.verificationScope).toContain('内容照合');
@@ -157,7 +162,7 @@ describe('initial content publishing checks', () => {
     );
   });
 
-  it('retains distinct transcript and visual recommendations and eight candidates without re-reviewing their content', () => {
+  it('retains the original transcript and visual reviews and eight original holds alongside additions', () => {
     const input = copy();
     const recommended = input.videos.filter((video) => isRecommendedVideo(video));
     expect(recommended.map((video) => video.youtubeId)).toEqual(
@@ -180,7 +185,9 @@ describe('initial content publishing checks', () => {
     });
     expect(isRecommendedVideo(squat, 'technique')).toBe(true);
     expect(isRecommendedVideo(squat, 'professional')).toBe(false);
-    expect(input.videos.filter((video) => !isRecommendedVideo(video))).toHaveLength(8);
+    expect(
+      input.videos.filter((video) => v05VideoIds.has(video.id) && !isRecommendedVideo(video)),
+    ).toHaveLength(8);
     expect(validateContent(input).errors).toEqual([]);
   });
 
