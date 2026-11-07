@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Flag, Pause, Play, Check } from 'lucide-react';
-import { questions, units } from '../content';
+import { liveQuery } from 'dexie';
+import { allQuestions, questions, units } from '../content';
 import { domains } from '../content/blueprints';
+import { focusMock } from '../content/focus-mock';
 import type { Question, Session } from '../domain/types';
 import { useLearning } from '../app/context';
 import { db, recordExposure } from '../storage/db';
@@ -21,6 +23,7 @@ import {
   previewComposition,
   recordMockDisplay,
   selectThrough,
+  startFocusMock,
   type MockDisplay,
 } from '../engines/mock';
 import { partitionAttempts, rate } from '../engines/learning';
@@ -29,6 +32,8 @@ import { Explanation } from './Practice';
 
 const timeText = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+
+const mockLabels = { short: '短縮模試', through: '学習用通し演習', focus: '集中模試' };
 
 function Composition({ counts }: { counts: ReturnType<typeof mockComposition> }) {
   return (
@@ -72,6 +77,9 @@ export default function MockExamHome() {
   const [timeMode, setTimeMode] = useState<'study' | 'continuous'>('study');
   const [busy, setBusy] = useState(false);
   const [throughPreview, setThroughPreview] = useState<Question[] | null>(null);
+  const activeFocus = data.sessions.find(
+    (s) => s.status === 'active' && s.mock?.format === 'focus',
+  );
   const lock = useRef(false),
     navigate = useNavigate();
   const unlocked = ['completed', 'skipped'].includes(settings.diagnosticStatus);
@@ -161,6 +169,41 @@ export default function MockExamHome() {
         title="問題に向き合い、時間配分も練習する。"
         description="見直しと時間配分を練習し、次に学ぶ単元を見つけましょう。"
       />
+      <section className="panel" id="focus-mock">
+        <Pill tone="green">学習用の新規ケース問題</Pill>
+        <h2>{focusMock.title}</h2>
+        <p>
+          計画10問と安全管理10問で、若年者・高齢者、妊娠期、代謝疾患、関節の条件、
+          緊急計画、成人救命、暑熱・頭部衝撃などの場面を扱います。
+        </p>
+        <p>
+          3択・全{focusMock.questionCount}問。制限時間は{timeText(focusMock.limitSeconds)}で、
+          保存して中断すると時計も停止します。全問を採点し、未回答も分母に含めます。
+          解説と出典は採点後に確認できます。
+        </p>
+        <p className="muted small-text">
+          AIによる出典照合済みの固定セットです。再挑戦では同じ問題を、問題順と選択肢順を変えて出題します。
+          専用の本番形式模試は設定画面で準備状況を確認できます。
+        </p>
+        {activeFocus ? (
+          <Link className="button primary" to={`/exam/${activeFocus.id}`}>
+            集中模試を再開
+          </Link>
+        ) : (
+          <button
+            className="button primary"
+            disabled={busy}
+            onClick={() =>
+              void run(async () => {
+                const session = await startFocusMock();
+                navigate(`/exam/${session.id}`);
+              })
+            }
+          >
+            集中模試20問を始める <ArrowRight size={16} />
+          </button>
+        )}
+      </section>
       <section className="panel">
         <Pill tone="amber">学習用の短縮模試 · AIによる出典照合済み問題</Pill>
         <h2>10・20・50問の短縮模試</h2>
@@ -324,17 +367,19 @@ export default function MockExamHome() {
       {data.sessions.some((s) => s.mode === 'mock' && s.status === 'active') && (
         <section className="panel">
           <h2>
-            {data.sessions.some((s) => s.status === 'active' && s.mock?.format === 'through')
-              ? '中断中の短縮模試・通し演習'
-              : '中断中の短縮模試'}
+            {activeFocus
+              ? '中断中の模試・演習'
+              : data.sessions.some((s) => s.status === 'active' && s.mock?.format === 'through')
+                ? '中断中の短縮模試・通し演習'
+                : '中断中の短縮模試'}
           </h2>
           {data.sessions
             .filter((s) => s.mode === 'mock' && s.status === 'active')
             .map((s) => (
               <Link key={s.id} className="list-row" to={`/exam/${s.id}`}>
                 <span>
-                  {s.mock?.format === 'through' ? '学習用通し演習' : '短縮模試'} ·{' '}
-                  {s.questionIds.length}問 · {s.mock?.paused ? '一時停止中' : '進行中'} · 回答{' '}
+                  {mockLabels[s.mock?.format ?? 'short']} · {s.questionIds.length}問 ·{' '}
+                  {s.mock?.paused ? '一時停止中' : '進行中'} · 回答{' '}
                   {Object.keys(s.mock?.draftAnswers ?? {}).length}問
                 </span>
                 <span>
@@ -347,9 +392,11 @@ export default function MockExamHome() {
       )}
       <section className="panel">
         <h2>
-          {data.sessions.some((s) => s.status === 'completed' && s.mock?.format === 'through')
-            ? 'これまでの短縮模試・通し演習'
-            : 'これまでの短縮模試'}
+          {data.sessions.some((s) => s.status === 'completed' && s.mock?.format === 'focus')
+            ? 'これまでの模試・演習'
+            : data.sessions.some((s) => s.status === 'completed' && s.mock?.format === 'through')
+              ? 'これまでの短縮模試・通し演習'
+              : 'これまでの短縮模試'}
         </h2>
         {data.sessions
           .filter((s) => s.mode === 'mock' && s.status === 'completed')
@@ -358,14 +405,13 @@ export default function MockExamHome() {
             <Link key={s.id} className="list-row" to={`/exam-results/${s.id}`}>
               <span>
                 {new Date(s.startedAt).toLocaleString('ja-JP')} ·{' '}
-                {s.mock?.format === 'through' ? '学習用通し演習' : '短縮模試'} ·{' '}
-                {s.questionIds.length}問
+                {mockLabels[s.mock?.format ?? 'short']} · {s.questionIds.length}問
               </span>
               <b>{mockSummary(s, data.attempts).rate}%</b>
             </Link>
           ))}
         {!data.sessions.some((s) => s.mode === 'mock' && s.status === 'completed') && (
-          <p className="muted">完了した短縮模試と通し演習はここに残ります。</p>
+          <p className="muted">完了した模試と通し演習はここに残ります。</p>
         )}
       </section>
       <Link className="button secondary" to="/exam/full">
@@ -380,9 +426,23 @@ export function MockExamSession() {
   const { id } = useParams(),
     { data, run } = useLearning(),
     navigate = useNavigate();
-  const session = data.sessions.find((s) => s.id === id && s.mode === 'mock');
+  const [observedSession, setObservedSession] = useState<Session>();
+  useEffect(() => {
+    if (!id) return;
+    const subscription = liveQuery(() => db.sessions.get(id)).subscribe({
+      next: setObservedSession,
+      error: () => setObservedSession(undefined),
+    });
+    return () => subscription.unsubscribe();
+  }, [id]);
+  const session =
+    observedSession?.id === id && observedSession?.mode === 'mock'
+      ? observedSession
+      : data.sessions.find((s) => s.id === id && s.mode === 'mock');
   const isThrough = session?.mock?.format === 'through';
-  const question = questions.find((q) => q.id === session?.questionIds[session.index]);
+  const label = mockLabels[session?.mock?.format ?? 'short'];
+  const question = allQuestions.find((q) => q.id === session?.questionIds[session.index]);
+  const savedDraft = question && session?.mock?.draftAnswers[question.id];
   const [now, setNow] = useState(() => Date.now()),
     [selected, setSelected] = useState(''),
     [canExplain, setCanExplain] = useState(false),
@@ -419,11 +479,18 @@ export function MockExamSession() {
     return () => clearInterval(timer);
   }, []);
   useEffect(() => {
+    setSelected(savedDraft?.choiceId ?? '');
+    setCanExplain(savedDraft?.canExplain ?? false);
+  }, [
+    question?.id,
+    session?.id,
+    session?.mock?.paused,
+    savedDraft?.choiceId,
+    savedDraft?.canExplain,
+  ]);
+  useEffect(() => {
     let cancelled = false;
     setDisplayState({ status: 'stale' });
-    const draft = question && session?.mock?.draftAnswers[question.id];
-    setSelected(draft?.choiceId ?? '');
-    setCanExplain(draft?.canExplain ?? false);
     setNotice('');
     began.current = Date.now();
     if (question && session?.status === 'active' && !session.mock?.paused)
@@ -464,20 +531,22 @@ export function MockExamSession() {
   };
   const saveChoice = (choice: string, explain = canExplain) => {
     if (!question) return;
-    setSelected(choice);
-    setCanExplain(explain);
     return update(
-      (fresh) => withMockDraft(fresh, question, choice, explain, Date.now() - began.current),
-      () => setNotice('下書きを保存しました。採点は終了時に行います。'),
+      (fresh) => {
+        if (fresh.questionIds[fresh.index] !== question.id)
+          throw new Error('別のタブで問題が切り替わりました。表示中の問題を確認してください。');
+        return withMockDraft(fresh, question, choice, explain, Date.now() - began.current);
+      },
+      () => {
+        setSelected(choice);
+        setCanExplain(explain);
+        setNotice('下書きを保存しました。採点は終了時に行います。');
+      },
     );
   };
-  const flush = (fresh: Session) =>
-    selected && question && !fresh.mock?.paused
-      ? withMockDraft(fresh, question, selected, canExplain, Date.now() - began.current)
-      : fresh;
   const move = (index: number) =>
     update(
-      (fresh) => ({ ...flush(fresh), index }),
+      (fresh) => ({ ...fresh, index }),
       () => {
         setShowReview(false);
         setConfirm(false);
@@ -485,10 +554,7 @@ export function MockExamSession() {
     );
   const interrupt = () =>
     update(
-      (fresh) => {
-        const saved = flush(fresh);
-        return saved.mock!.timeMode === 'study' ? pauseMock(saved) : saved;
-      },
+      (fresh) => (fresh.mock!.timeMode === 'study' ? pauseMock(fresh) : fresh),
       () => navigate('/exam'),
     );
   if (!session?.mock || !question)
@@ -500,7 +566,7 @@ export function MockExamSession() {
   if (session.status === 'completed')
     return (
       <Empty
-        title={isThrough ? 'この通し演習は完了しました' : 'この短縮模試は完了しました'}
+        title={isThrough ? 'この通し演習は完了しました' : `この${label}は完了しました`}
         body="結果から復習する単元を確認できます。"
       >
         <Link className="button primary" to={`/exam-results/${session.id}`}>
@@ -518,13 +584,9 @@ export function MockExamSession() {
           保存して中断
         </button>
         <Pill>
-          {isThrough ? '学習用通し演習' : '短縮模試'} · {session.index + 1} /{' '}
-          {session.questionIds.length}
+          {label} · {session.index + 1} / {session.questionIds.length}
         </Pill>
-        <strong
-          role="timer"
-          aria-label={isThrough ? '学習用通し演習の残り時間' : '短縮模試の残り時間'}
-        >
+        <strong role="timer" aria-label={`${label}の残り時間`}>
           残り {timeText(remaining)}
           {state.paused ? ' · 停止中' : ''}
         </strong>
@@ -544,7 +606,7 @@ export function MockExamSession() {
           <button
             className="button small ghost"
             disabled={busy}
-            onClick={() => void update((fresh) => pauseMock(flush(fresh)))}
+            onClick={() => void update((fresh) => pauseMock(fresh))}
           >
             <Pause size={15} />
             一時停止
@@ -592,11 +654,7 @@ export function MockExamSession() {
         </section>
       )}
       {confirm && (
-        <section
-          className="panel"
-          role="dialog"
-          aria-label={isThrough ? '学習用通し演習の提出確認' : '短縮模試の提出確認'}
-        >
+        <section className="panel" role="dialog" aria-label={`${label}の提出確認`}>
           <h2>この内容で採点しますか？</h2>
           <p>
             未回答 {session.questionIds.length - answered}
@@ -618,7 +676,7 @@ export function MockExamSession() {
       )}
       {state.paused ? (
         <section className="panel">
-          <h1>短縮模試を一時停止しています</h1>
+          <h1>{label}を一時停止しています</h1>
           <p>回答・フラグ・残り時間を保存しました。</p>
           <button
             className="button primary"
@@ -696,8 +754,8 @@ export function MockExamSession() {
               checked={canExplain}
               disabled={busy}
               onChange={(event) => {
-                setCanExplain(event.target.checked);
                 if (selected) void saveChoice(selected, event.target.checked);
+                else setCanExplain(event.target.checked);
               }}
             />
             この答えの根拠を説明できる
@@ -767,7 +825,7 @@ export function MockExamResults() {
   const result = mockSummary(session, data.attempts);
   const isThrough = session.mock.format === 'through';
   const composition = mockComposition(
-    session.questionIds.map((qid) => questions.find((q) => q.id === qid)!),
+    session.questionIds.map((qid) => allQuestions.find((q) => q.id === qid)!),
     session.firstSeenByQuestion,
   );
   const records = data.attempts.filter((a) => a.sessionId === session.id);
@@ -780,6 +838,7 @@ export function MockExamResults() {
         s.mode === 'mock' &&
         s.status === 'completed' &&
         s.id !== session.id &&
+        (s.completedAt ?? '') < (session.completedAt ?? '') &&
         s.mock?.format === session.mock?.format &&
         s.questionIds.length === session.questionIds.length,
     )
@@ -789,9 +848,12 @@ export function MockExamResults() {
     <>
       <PageTitle
         eyebrow={isThrough ? 'TIMED LEARNING RESULTS' : 'SHORT MOCK RESULTS'}
-        title={isThrough ? '学習用通し演習の結果' : '短縮模試の結果'}
+        title={`${mockLabels[session.mock.format]}の結果`}
         description="今回の学習上の正答率です。公式換算スコア・合否・合格確率は算出しません。"
       />
+      {session.mock.format === 'focus' && (
+        <p className="notice">{focusMock.title}。計画10問と安全管理10問の学習結果です。</p>
+      )}
       {isThrough && (
         <>
           <p className="notice">
@@ -854,16 +916,18 @@ export function MockExamResults() {
               </tr>
             </thead>
             <tbody>
-              {result.domains.map((row) => (
-                <tr key={row.id}>
-                  <td>{domains[row.id].short}</td>
-                  <td>
-                    {row.correct} / {row.total}
-                  </td>
-                  <td>{row.total - row.answered}</td>
-                  <td>{row.rate ?? '—'}%</td>
-                </tr>
-              ))}
+              {result.domains
+                .filter((row) => row.total > 0)
+                .map((row) => (
+                  <tr key={row.id}>
+                    <td>{domains[row.id].short}</td>
+                    <td>
+                      {row.correct} / {row.total}
+                    </td>
+                    <td>{row.total - row.answered}</td>
+                    <td>{row.rate ?? '—'}%</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -877,7 +941,7 @@ export function MockExamResults() {
         {recordedSession === session.id &&
           displayState.status === 'ready' &&
           session.questionIds.map((qid) => {
-            const q = questions.find((item) => item.id === qid)!;
+            const q = allQuestions.find((item) => item.id === qid)!;
             const answer = records.find((a) => a.questionId === qid);
             return (
               <div className="result-question" key={qid}>

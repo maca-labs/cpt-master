@@ -43,7 +43,7 @@ export interface SessionPerformance {
   independentGroups: number;
   medianResponseMs: number | null;
   mockTimeMode: 'study' | 'continuous' | null;
-  mockFormat?: 'short' | 'through' | null;
+  mockFormat?: NonNullable<Session['mock']>['format'] | null;
   practice?: Session['practice'];
   evaluatedTotal?: number;
   excludedCount?: number;

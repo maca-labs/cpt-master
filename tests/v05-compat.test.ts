@@ -61,7 +61,7 @@ describe('v0.5 additive schema compatibility', () => {
         sha256: createHash('sha256').update(JSON.stringify(q)).digest('hex'),
       })),
     ).toEqual(manifest);
-    expect(contentVersion).toBe('2026-11-04.2');
+    expect(contentVersion).toBe('2026-11-08.1');
   });
   it.each(['v04-backup.json', 'legacy-v1-backup.json'])(
     'restores %s without replacing notes, answers, settings or active drafts',

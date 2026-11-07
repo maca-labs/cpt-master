@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useLearning } from './context';
 import { createSession, selectDiagnostic, prioritizeReview, eligible } from '../engines/learning';
-import { questions } from '../content';
+import { allQuestions, questions } from '../content';
 import { db, defaultSettings, recordExposure, type LearningDB } from '../storage/db';
 import type { Session } from '../domain/types';
 import {
@@ -26,7 +26,7 @@ export async function recordPracticeResultsDisplay(
     if (!session || session.mode === 'mock' || session.status !== 'completed')
       return { status: 'stale' };
     const selected = session.questionIds.map((id) =>
-      questions.find((question) => question.id === id)!,
+      allQuestions.find((question) => question.id === id)!,
     );
     const groups = new Set(selected.map((question) => question.groupId));
     const owners = (await database.sessions.toArray()).filter(
@@ -36,7 +36,7 @@ export async function recordPracticeResultsDisplay(
         other.mode === 'practice' &&
         other.practice?.selection === 'strict_unseen' &&
         other.questionIds.some((id) =>
-          groups.has(questions.find((question) => question.id === id)!.groupId),
+          groups.has(allQuestions.find((question) => question.id === id)!.groupId),
         ),
     );
     if (owners.length) {
@@ -189,7 +189,7 @@ export function useStartLearning() {
             const attempts = await db.attempts.toArray(),
               exposures = await db.exposures.toArray();
             const selected = prioritizeReview(
-              questions.filter(
+              allQuestions.filter(
                 (question) =>
                   eligible(question) &&
                   question.pool !== 'exam' &&

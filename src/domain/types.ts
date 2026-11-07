@@ -37,7 +37,7 @@ export interface Question {
   format: 'single_choice' | 'true_false';
   context: 'text' | 'case' | 'image' | 'video';
   difficulty: 1 | 2 | 3;
-  pool: 'diagnostic' | 'practice' | 'exam';
+  pool: 'diagnostic' | 'practice' | 'focus' | 'exam';
   prompt: string;
   choices: { id: string; text: string; explanation: string }[];
   correctChoiceId: string;
@@ -152,7 +152,7 @@ export interface Session {
     requestedCount: 10 | 20 | 50;
   };
   mock?: {
-    format: 'short' | 'through';
+    format: 'short' | 'through' | 'focus';
     questionCount: 10 | 20 | 50 | 155;
     timeMode: 'study' | 'continuous';
     limitSeconds: number;

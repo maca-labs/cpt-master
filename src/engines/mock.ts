@@ -1,6 +1,7 @@
 import type { Attempt, DomainId, Exposure, Question, Session } from '../domain/types';
-import { questions } from '../content';
+import { allQuestions } from '../content';
 import { domainIds, domains } from '../content/blueprints';
+import { focusMock, focusMockQuestions } from '../content/focus-mock';
 import { createSession, eligible, isFirstSeen, nextReview, shuffle } from './learning';
 import { db, recordExposure, type LearningDB } from '../storage/db';
 import { reservedStrictGroups } from './practice-selection';
@@ -40,17 +41,17 @@ export async function recordMockDisplay(
           session.questionIds[session.index] !== questionIds[0]))
     )
       return { status: 'stale' };
-    const selected = questionIds.map((id) => questions.find((q) => q.id === id)!);
+    const selected = questionIds.map((id) => allQuestions.find((q) => q.id === id)!);
     const groups = new Set(selected.map((q) => q.groupId));
     const blockers = (await database.sessions.toArray()).filter(
       (other) =>
         other.status === 'active' &&
         other.mode === 'practice' &&
         other.practice?.selection === 'strict_unseen' &&
-        other.questionIds.some((id) => groups.has(questions.find((q) => q.id === id)!.groupId)),
+        other.questionIds.some((id) => groups.has(allQuestions.find((q) => q.id === id)!.groupId)),
     );
     if (blockers.length) {
-      const reserved = reservedStrictGroups(blockers, questions);
+      const reserved = reservedStrictGroups(blockers, allQuestions);
       return {
         status: 'reserved',
         sessionIds: blockers.map((other) => other.id),
@@ -128,7 +129,7 @@ export function createThroughSession(
   previewIds?: string[],
 ): Session {
   const available = availableMockBank(bank, sessions).filter(
-    (q) => eligible(q) && q.pool !== 'exam' && (unlocked || q.pool !== 'diagnostic'),
+    (q) => eligible(q) && (q.pool === 'practice' || (unlocked && q.pool === 'diagnostic')),
   );
   const selected = previewIds
     ? previewIds.map((id) => available.find((q) => q.id === id))
@@ -145,21 +146,16 @@ export function createThroughSession(
   const allocation = mockAllocation(THROUGH_QUESTION_COUNT);
   if (domainIds.some((id) => checked.filter((q) => q.domainId === id).length !== allocation[id]))
     throw new Error('学習用通し演習の分野配分が不正です。');
-  return {
-    ...createSession('mock', checked, exposures, attempts, rng),
-    startedAt: now.toISOString(),
-    mock: {
-      format: 'through',
-      questionCount: THROUGH_QUESTION_COUNT,
-      timeMode: 'continuous',
-      limitSeconds: THROUGH_LIMIT_SECONDS,
-      remainingSeconds: THROUGH_LIMIT_SECONDS,
-      deadlineAt: new Date(now.getTime() + THROUGH_LIMIT_SECONDS * 1000).toISOString(),
-      paused: false,
-      flags: [],
-      draftAnswers: {},
-    },
-  };
+  return startTimedMock(
+    checked,
+    exposures,
+    attempts,
+    'through',
+    'continuous',
+    THROUGH_LIMIT_SECONDS,
+    now,
+    rng,
+  );
 }
 export function mockAllocation(count: number): Record<DomainId, number> {
   if (!Number.isInteger(count) || count < 1 || count > 155) throw new Error('問題数が不正です。');
@@ -184,7 +180,7 @@ export function mockAllocation(count: number): Record<DomainId, number> {
 function plan(bank: Question[], count: number, unlocked: boolean, rng: () => number) {
   const allocation = mockAllocation(count);
   const pool = bank.filter(
-    (q) => eligible(q) && q.pool !== 'exam' && (unlocked || q.pool !== 'diagnostic'),
+    (q) => eligible(q) && (q.pool === 'practice' || (unlocked && q.pool === 'diagnostic')),
   );
   const slots = domainIds.flatMap((id) => Array<DomainId>(allocation[id]).fill(id));
   const choices = new Map(
@@ -254,13 +250,58 @@ export function createMockSession(
 ): Session {
   if (![10, 20, 50].includes(count)) throw new Error('短縮模試は10・20・50問から選んでください。');
   const selected = selectMock(bank, count, unlocked, rng);
-  const limitSeconds = count * 70;
+  return startTimedMock(selected, exposures, attempts, 'short', timeMode, count * 70, now, rng);
+}
+
+export async function startFocusMock(database: LearningDB = db, now = new Date()) {
+  return database.transaction(
+    'rw',
+    [database.sessions, database.exposures, database.attempts],
+    async () => {
+      const active = await database.sessions
+        .where('status')
+        .equals('active')
+        .filter((s) => s.mock?.format === 'focus')
+        .first();
+      if (active) return active;
+      const selected = focusMockQuestions.filter(eligible);
+      if (
+        selected.length !== focusMock.questionCount ||
+        new Set(selected.map((q) => q.groupId)).size !== selected.length
+      )
+        throw new Error('集中模試の問題セットが揃っていません。');
+      const session = startTimedMock(
+        shuffle(selected),
+        await database.exposures.toArray(),
+        await database.attempts.toArray(),
+        'focus',
+        'study',
+        focusMock.limitSeconds,
+        now,
+        Math.random,
+      );
+      await database.sessions.add(session);
+      return session;
+    },
+  );
+}
+
+function startTimedMock(
+  selected: Question[],
+  exposures: Exposure[],
+  attempts: Attempt[],
+  format: MockState['format'],
+  timeMode: MockState['timeMode'],
+  limitSeconds: number,
+  now: Date,
+  rng: () => number,
+): Session {
   return {
     ...createSession('mock', selected, exposures, attempts, rng),
     startedAt: now.toISOString(),
     mock: {
-      format: 'short',
-      questionCount: count,
+      format,
+      questionCount: selected.length as MockState['questionCount'],
       timeMode,
       limitSeconds,
       remainingSeconds: limitSeconds,
@@ -357,7 +398,11 @@ export function withMockDraft(
     },
   };
 }
-export function mockSummary(session: Session, attempts: Attempt[], bank: Question[] = questions) {
+export function mockSummary(
+  session: Session,
+  attempts: Attempt[],
+  bank: Question[] = allQuestions,
+) {
   const records = attempts.filter(
     (a) => a.sessionId === session.id && session.questionIds.includes(a.questionId),
   );
@@ -392,7 +437,7 @@ export async function finishMock(
   sessionId: string,
   reason: 'submitted' | 'timeout',
   database: LearningDB = db,
-  now = new Date(),
+  now?: Date,
 ) {
   return database.transaction(
     'rw',
@@ -402,12 +447,13 @@ export async function finishMock(
       if (!session || session.mode !== 'mock' || !session.mock)
         throw new Error('短縮模試が見つかりません。');
       if (session.status === 'completed') return session;
-      const remaining = remainingMockSeconds(session, now);
+      const finishedAt = now ?? new Date();
+      const remaining = remainingMockSeconds(session, finishedAt);
       if (reason === 'timeout' && remaining > 0) throw new Error('まだ制限時間内です。');
       const exposures = await database.exposures.toArray(),
         attempts = await database.attempts.toArray();
       for (const qid of session.questionIds) {
-        const q = questions.find((item) => item.id === qid);
+        const q = allQuestions.find((item) => item.id === qid);
         if (!q) throw new Error('教材と模試の対応を確認できません。');
         const draft = session.mock.draftAnswers[qid];
         const correct = !!draft && draft.choiceId === q.correctChoiceId;
@@ -438,14 +484,14 @@ export async function finishMock(
           await database.reviews.get(qid),
           correct,
           draft?.canExplain ?? false,
-          now,
+          finishedAt,
         );
         await database.reviews.put({ ...review, questionId: qid });
       }
       const completed: Session = {
         ...session,
         status: 'completed',
-        completedAt: now.toISOString(),
+        completedAt: finishedAt.toISOString(),
         mock: {
           ...session.mock,
           remainingSeconds: remaining,

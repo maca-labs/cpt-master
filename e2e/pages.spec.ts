@@ -14,7 +14,7 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(
     page.getByRole('heading', { name: '理解から、指導できる知識へ。', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.1');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.2');
   await page.goto(published! + '#/learn');
   await expect(page.locator('.unit-card')).toHaveCount(36);
   await page.goto(published! + '#/learn/ex-plan-load');

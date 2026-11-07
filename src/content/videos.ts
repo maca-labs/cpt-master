@@ -1,6 +1,7 @@
 import type { Video } from '../domain/types';
 import { videoV05Additions } from './video-additions-v05';
 import { videoV051Additions } from './video-additions-v051';
+import { videoV052Updates } from './video-additions-v052';
 import {
   videoReviews,
   videoContentSourceRefs,
@@ -167,8 +168,14 @@ const reviewedCandidates: Video[] = candidates.map(({ discoveryUrl, ...candidate
   },
 }));
 
-export const seedVideos: Video[] = [
+export const videoV051Catalog: Video[] = [
   ...reviewedCandidates,
   ...videoV05Additions,
   ...videoV051Additions,
+];
+const updatesById = new Map(videoV052Updates.map((video) => [video.id, video]));
+const previousIds = new Set(videoV051Catalog.map((video) => video.id));
+export const seedVideos: Video[] = [
+  ...videoV051Catalog.map((video) => updatesById.get(video.id) ?? video),
+  ...videoV052Updates.filter((video) => !previousIds.has(video.id)),
 ];

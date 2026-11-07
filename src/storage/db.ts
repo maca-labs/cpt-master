@@ -14,13 +14,15 @@ import type {
 } from '../domain/types';
 import {
   contentVersion,
+  allQuestions,
   questions,
   units,
   seedVideos,
   legacyQuestionIds,
   legacyUnitIds,
 } from '../content';
-import { legacyContentVersion } from '../content/release';
+import { legacyContentVersion, previousContentVersion } from '../content/release';
+import { focusMock } from '../content/focus-mock';
 import { expansionQuestionIds } from '../content/batches';
 export interface Favorite {
   questionId: string;
@@ -189,7 +191,7 @@ const session = z
       .optional(),
     mock: z
       .object({
-        format: z.enum(['short', 'through']),
+        format: z.enum(['short', 'through', 'focus']),
         questionCount: z.union([z.literal(10), z.literal(20), z.literal(50), z.literal(155)]),
         timeMode: z.enum(['study', 'continuous']),
         limitSeconds: z.number().int().min(1).max(21600),
@@ -355,15 +357,18 @@ export function validateBackup(text: string): Backup {
     );
   const backup = result.data as Backup;
   const legacy = backup.contentVersion === legacyContentVersion;
-  if (backup.contentVersion !== contentVersion && !legacy)
+  const previous = backup.contentVersion === previousContentVersion;
+  if (backup.contentVersion !== contentVersion && !legacy && !previous)
     throw new Error(
       '対応していない教材版です。現行版または互換性を検証した旧版のバックアップを使用してください。',
     );
   // The original 100 questions remain byte-for-byte unchanged. A legacy-labelled
   // file must still reference only that bank; it cannot smuggle new identifiers.
+  // An older open tab can export shared records with its previous version label.
+  // Validate the known IDs and their revisions even in this mixed-tab backup.
   const compatibleQuestions = legacy
     ? questions.filter((q) => legacyQuestionIds.has(q.id))
-    : questions;
+    : allQuestions;
   const compatibleUnits = legacy ? units.filter((u) => legacyUnitIds.has(u.id)) : units;
   const qMap = new Map(compatibleQuestions.map((q) => [q.id, q]));
   const uids = new Set(compatibleUnits.map((u) => u.id));
@@ -414,6 +419,7 @@ export function validateBackup(text: string): Backup {
         if (
           !q ||
           q.pool === 'exam' ||
+          q.pool === 'focus' ||
           (s.practice.batch === 'expansion-2026-11-04' && !expansionQuestionIds.has(qid))
         )
           throw new Error('演習バッチと問題の対応が不正です。');
@@ -437,6 +443,10 @@ export function validateBackup(text: string): Backup {
       const m = s.mock;
       if (
         (m.format === 'short' && ![10, 20, 50].includes(m.questionCount)) ||
+        (m.format === 'focus' &&
+          (m.questionCount !== focusMock.questionCount ||
+            m.timeMode !== 'study' ||
+            m.limitSeconds !== focusMock.limitSeconds)) ||
         (m.format === 'through' &&
           (m.questionCount !== 155 || m.timeMode !== 'continuous' || m.limitSeconds !== 10800))
       )
@@ -519,6 +529,8 @@ export function validateBackup(text: string): Backup {
     for (const qid of s.questionIds) {
       const q = qMap.get(qid);
       const order = s.choiceOrders[qid];
+      if (q && s.mode !== 'review' && (q.pool === 'focus') !== (s.mock?.format === 'focus'))
+        throw new Error('集中模試の形式と問題の出題枠が一致しません。');
       if (
         s.mock &&
         q &&

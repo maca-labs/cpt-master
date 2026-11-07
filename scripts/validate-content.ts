@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
-import { units, questions, sources, seedVideos } from '../src/content';
+import { units, allQuestions, sources, seedVideos } from '../src/content';
+import { focusMock } from '../src/content/focus-mock';
 import { blueprint, domainIds, domains } from '../src/content/blueprints';
 import { isRecommendedVideo } from '../src/engines/video-review';
 import { releaseTargets } from '../src/content/release';
@@ -25,6 +26,7 @@ export interface ValidationReport {
   summary: {
     units: number;
     questions: number;
+    focusQuestions: number;
     sources: number;
     videos: number;
     byDomain: Record<DomainId, number>;
@@ -45,7 +47,12 @@ export interface ValidationReport {
   verificationScope: string;
 }
 
-export const seedContent: ContentBundle = { units, questions, sources, videos: seedVideos };
+export const seedContent: ContentBundle = {
+  units,
+  questions: allQuestions,
+  sources,
+  videos: seedVideos,
+};
 const text = z.string().trim().min(1);
 const domain = z.enum(['assessment', 'planning', 'technique', 'safety']);
 const https = text.refine((value) => {
@@ -106,7 +113,7 @@ const questionSchema = z.object({
   format: z.enum(['single_choice', 'true_false']),
   context: z.enum(['text', 'case', 'image', 'video']),
   difficulty: z.union([z.literal(1), z.literal(2), z.literal(3)]),
-  pool: z.enum(['diagnostic', 'practice', 'exam']),
+  pool: z.enum(['diagnostic', 'practice', 'focus', 'exam']),
   prompt: text,
   choices: z.array(z.object({ id: text, text, explanation: text })).min(1),
   correctChoiceId: text,
@@ -262,6 +269,7 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
     summary: {
       units: 0,
       questions: 0,
+      focusQuestions: 0,
       sources: 0,
       videos: 0,
       byDomain: zeroCounts(),
@@ -288,7 +296,10 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
   }
   const data = parsed.data;
   report.summary.units = data.units.length;
-  report.summary.questions = data.questions.length;
+  const focused = data.questions.filter((q) => q.pool === 'focus');
+  const regular = data.questions.filter((q) => q.pool !== 'focus');
+  report.summary.questions = regular.length;
+  report.summary.focusQuestions = focused.length;
   report.summary.sources = data.sources.length;
   report.summary.videos = data.videos.length;
   if (data.units.length !== releaseTargets.units)
@@ -297,11 +308,22 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       'units',
       `今回の収録目標は${releaseTargets.units}単元です（${data.units.length}件）。`,
     );
-  if (data.questions.length !== releaseTargets.questions)
+  if (regular.length !== releaseTargets.questions)
     error(
       'counts.questions',
       'questions',
-      `今回の収録目標は${releaseTargets.questions}問です（${data.questions.length}件）。`,
+      `通常教材の収録目標は${releaseTargets.questions}問です（${regular.length}件）。`,
+    );
+  if (
+    focused.length !== focusMock.questionCount ||
+    focused.filter((q) => q.domainId === 'planning').length !== 10 ||
+    focused.filter((q) => q.domainId === 'safety').length !== 10 ||
+    focused.some((q) => !eligible(q) || q.context !== 'case')
+  )
+    error(
+      'counts.focus',
+      'questions',
+      '集中模試は出典照合済みの計画10問・安全管理10問の事例問題です。',
     );
   if (data.videos.length < 10)
     error(
@@ -349,7 +371,7 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
         );
       objectives.set(objective.id, unit.id);
     });
-    const count = data.questions.filter((q) => q.unitId === unit.id).length;
+    const count = regular.filter((q) => q.unitId === unit.id).length;
     if (count < 5)
       error(
         'unit.questions',
@@ -400,11 +422,11 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
   const groups = new Map<string, Question[]>();
   for (const [index, q] of data.questions.entries()) {
     const path = `questions.${index}`;
-    report.summary.byDomain[q.domainId]++;
+    if (q.pool !== 'focus') report.summary.byDomain[q.domainId]++;
     if (q.pool === 'diagnostic') report.summary.diagnosticByDomain[q.domainId]++;
-    report.summary.reviewDeclarations[q.review.status]++;
+    if (q.pool !== 'focus') report.summary.reviewDeclarations[q.review.status]++;
     if (canUseInExam(q)) report.summary.examEligible++;
-    if (eligible(q)) report.summary.usableQuestions++;
+    if (q.pool !== 'focus' && eligible(q)) report.summary.usableQuestions++;
     if (q.media) report.summary.mediaQuestions++;
     if (q.context === 'image' || q.context === 'video') {
       const asset = q.media && mediaAssets[q.media.assetId as keyof typeof mediaAssets];
@@ -488,7 +510,7 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
         `診断の予約グループ「${groupId}」が通常問題等と共有されています。`,
       );
   }
-  report.summary.independentGroups = groups.size;
+  report.summary.independentGroups = new Set(regular.map((q) => q.groupId)).size;
   for (const id of domainIds) {
     if (report.summary.byDomain[id] !== releaseTargets.domains[id])
       error(

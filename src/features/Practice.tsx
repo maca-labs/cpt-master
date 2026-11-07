@@ -7,7 +7,7 @@ import {
   useStartLearning,
   type PracticeResultsDisplay,
 } from '../app/actions';
-import { questions, units } from '../content';
+import { allQuestions, questions, units } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import {
   diagnosticAvailability,
@@ -341,7 +341,7 @@ export function Quiz() {
   const session = data.sessions.find((s) => s.id === id);
   const navigate = useNavigate();
   const q = session
-    ? questions.find((q) => q.id === session.questionIds[session.index])
+    ? allQuestions.find((q) => q.id === session.questionIds[session.index])
     : undefined;
   const [selected, setSelected] = useState(''),
     [canExplain, setCanExplain] = useState(false),
@@ -368,7 +368,7 @@ export function Quiz() {
               candidate.mode === 'practice' &&
               candidate.practice?.selection === 'strict_unseen' &&
               candidate.questionIds.some(
-                (id) => questions.find((question) => question.id === id)?.groupId === q.groupId,
+                (id) => allQuestions.find((question) => question.id === id)?.groupId === q.groupId,
               ),
           );
           if (owner) return owner.id;
@@ -655,7 +655,7 @@ export function Explanation({
   sessionId?: string;
   showMedia?: boolean;
 }) {
-  const q = questions.find((q) => q.id === questionId)!;
+  const q = allQuestions.find((q) => q.id === questionId)!;
   const { data, run } = useLearning();
   const registered = data.reviews.some((r) => r.questionId === q.id && r.manual);
   return (
@@ -912,7 +912,8 @@ export function Results() {
                 .filter((attempt) => attempt.unitId === unit.id)
                 .flatMap(
                   (attempt) =>
-                    questions.find((question) => question.id === attempt.questionId)!.objectiveIds,
+                    allQuestions.find((question) => question.id === attempt.questionId)!
+                      .objectiveIds,
                 ),
             );
             const recommended = videos.filter(
@@ -961,7 +962,7 @@ export function Results() {
       <section className="panel">
         <h2>解答を振り返る</h2>
         {attempts.map((a) => {
-          const q = questions.find((q) => q.id === a.questionId)!;
+          const q = allQuestions.find((q) => q.id === a.questionId)!;
           return (
             <div className="result-question" key={a.id}>
               <button
@@ -1044,7 +1045,7 @@ export function Review() {
           {[...data.reviews]
             .sort((a, b) => a.dueAt.localeCompare(b.dueAt))
             .map((r) => {
-              const q = questions.find((q) => q.id === r.questionId)!;
+              const q = allQuestions.find((q) => q.id === r.questionId)!;
               return (
                 <div className="review-row" key={r.questionId}>
                   <div>

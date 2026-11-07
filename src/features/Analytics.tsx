@@ -58,7 +58,9 @@ function timerLabel(session: SessionPerformance) {
 }
 function sessionLabel(session: SessionPerformance) {
   if (session.mode === 'mock')
-    return session.mockFormat === 'through' ? '学習用通し演習' : '短縮模試';
+    return { short: '短縮模試', through: '学習用通し演習', focus: '集中模試' }[
+      session.mockFormat ?? 'short'
+    ];
   if (session.mode === 'practice' && session.practice)
     return `${session.practice.batch === 'all' ? '全問題' : '追加200問'}・${
       session.practice.selection === 'strict_unseen'

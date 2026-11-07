@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { seedVideos, sources, units } from '../src/content';
+import { sources, units } from '../src/content';
+import { videoV051Catalog as seedVideos } from '../src/content/videos';
 import type { Source, Video } from '../src/domain/types';
 import { isRecommendedVideo } from '../src/engines/video-review';
 import v05VideoManifest from './fixtures/v05-video-manifest.json';

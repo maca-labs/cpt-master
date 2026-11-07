@@ -4,6 +4,7 @@ import { blueprintSources } from './blueprints';
 import { videoReviewSources } from './video-reviews';
 import { videoV05Sources } from './video-additions-v05';
 import { videoV051Sources } from './video-additions-v051';
+import { videoV052Sources } from './video-additions-v052';
 import {
   assessmentExpansionUnits,
   assessmentExpansionQuestions,
@@ -26,6 +27,7 @@ import {
   safetyExpansionSources,
 } from './expansion/safety';
 import { currentContentVersion } from './release';
+import { focusMockQuestions, focusMockSources } from './focus-mock';
 export { seedVideos } from './videos';
 export const legacyQuestionIds = new Set(
   [...foundationQuestions, ...appliedQuestions].map((q) => q.id),
@@ -50,6 +52,7 @@ export const questions = [
   })),
   ...safetyExpansionQuestions,
 ];
+export const allQuestions = [...questions, ...focusMockQuestions];
 export const sources = [
   ...blueprintSources,
   ...foundationSources,
@@ -57,6 +60,8 @@ export const sources = [
   ...videoReviewSources,
   ...videoV05Sources,
   ...videoV051Sources,
+  ...videoV052Sources,
+  ...focusMockSources,
   ...assessmentExpansionSources,
   ...planningExpansionSources,
   ...techniqueExpansionSources,

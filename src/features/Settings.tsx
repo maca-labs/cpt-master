@@ -126,7 +126,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.5.1</small>
+          <small>教材版 {contentVersion} · アプリ 0.5.2</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>
@@ -211,7 +211,7 @@ export default function Settings() {
               <b>{tableNames.reduce((n, k) => n + pending.data[k].length, 0)}件</b>
             </div>
             <p className="small-text">
-              現在のデータを残してマージします。同じIDはこの端末の記録を優先し、診断の完了状態は後戻りさせません。旧教材版2026-11-04.1は、元の100問・8単元への参照を検査して現行版へ移行します。
+              現在のデータを残してマージします。同じIDはこの端末の記録を優先します。旧教材版2026-11-04.1と2026-11-04.2も、問題と選択肢への参照を検査して現行版へ移行します。
             </p>
             <label className="check-line">
               <input
@@ -252,7 +252,9 @@ export default function Settings() {
           個人学習用の非公式アプリです。NSCAの認定教材ではありません。動画視聴はCPR/AED実技講習や資格認定条件の代替にはなりません。
         </p>
         <p className="muted small-text">
-          追加200問の選択・厳密未見演習・155問180分の学習用通し演習・短縮模試を利用できます。通し演習は既存問題を使う時間配分練習です。専用問題による本番形式模試、全範囲への教材展開、PWAの詳細な実端末検証は後続段階です。YouTubeの視聴には通信が必要です。
+          通常教材300問、学習用の集中模試20問、155問180分の通し演習、短縮模試を利用できます。
+          集中模試は特別な対象者と安全管理の事例を扱います。本番形式の準備状況は下記をご覧ください。
+          YouTubeの視聴には通信が必要です。
         </p>
         <p className="muted small-text">
           独自の最終開発目標：小単元{finalDevelopmentTargets.units.join('〜')}、通常

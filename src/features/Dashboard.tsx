@@ -12,7 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useLearning } from '../app/context';
 import { useStartLearning } from '../app/actions';
-import { questions, units } from '../content';
+import { allQuestions, units } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import { localDay, mastery, partitionAttempts, rate, streak } from '../engines/learning';
 import { Pill, UnitCard } from '../components/Shared';
@@ -137,7 +137,7 @@ export default function Dashboard() {
             icon: BookOpen,
             label: '取り組んだ問題',
             value: String(studied),
-            unit: `/ ${questions.length}問`,
+            unit: `/ ${allQuestions.length}問`,
             hint: '同じ問題グループは1問として集計',
           },
           {
