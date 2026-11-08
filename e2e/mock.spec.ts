@@ -74,7 +74,7 @@ test('20-question mock keeps answers private until submission and includes unans
     page.getByRole('button', { name: '50問の短縮模試を始める', exact: true }),
   ).toBeEnabled();
   await expect(
-    page.getByRole('link', { name: '155問模試の準備状況', exact: true }),
+    page.getByRole('link', { name: '専用模試のセットを選ぶ', exact: true }),
   ).toHaveAttribute('href', '#/exam/full');
   const id = await start(page);
   for (let index = 0; index < 19; index++) {

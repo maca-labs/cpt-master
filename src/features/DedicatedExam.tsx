@@ -1,5 +1,11 @@
 import { liveQuery } from 'dexie';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
+import {
+  ExamVerdict,
+  examVerdictLabels,
+  getExamVerdict,
+  type ExamVerdictStatus,
+} from '../components/ExamVerdict';
 import { domains } from '../content/blueprints';
 import {
   remainingDedicatedSeconds,
@@ -53,33 +59,55 @@ function QuestionNavigator({
   index,
   disabled,
   onSelect,
+  getVerdict,
+  detailsRef,
 }: {
   session: DedicatedExamSession;
   index: number;
   disabled?: boolean;
   onSelect: (index: number) => void;
+  getVerdict?: (id: string) => ExamVerdictStatus;
+  detailsRef?: Ref<HTMLDetailsElement>;
 }) {
   return (
-    <details className="dedicated-navigator">
+    <details className="dedicated-navigator" ref={detailsRef}>
       <summary>解答状況・見直し</summary>
-      <p className="muted">● 回答済み　⚑ 見直しフラグ</p>
+      <p className="muted">
+        {getVerdict
+          ? '問題を選ぶと解説へ移動します。⚑は見直しフラグです。'
+          : '● 回答済み　⚑ 見直しフラグ'}
+      </p>
       <div className="dedicated-grid">
         {session.questionIds.map((id, position) => {
           const answered = Boolean(session.answers[id]);
           const flagged = session.flags.includes(id);
+          const verdict = getVerdict?.(id);
+          const status = verdict ? examVerdictLabels[verdict] : answered ? '回答済み' : '未回答';
           return (
             <button
               key={id}
               type="button"
-              className={`button ${position === index ? 'primary' : 'secondary'}`}
+              className={`button ${position === index ? 'primary' : 'secondary'}${verdict ? ' has-verdict' : ''}`}
               aria-current={position === index ? 'step' : undefined}
-              aria-label={`問題 ${position + 1}${answered ? '、回答済み' : '、未回答'}${flagged ? '、フラグあり' : ''}`}
+              aria-label={`問題 ${position + 1}、${status}${flagged ? '、フラグあり' : ''}`}
               disabled={disabled}
               onClick={() => onSelect(position)}
             >
-              {position + 1}
-              {answered && <span aria-hidden="true">●</span>}
-              {flagged && <span aria-hidden="true">⚑</span>}
+              {verdict ? (
+                <>
+                  <span className="dedicated-grid-number">
+                    {position + 1}
+                    {flagged ? ' ⚑' : ''}
+                  </span>
+                  <span>{status}</span>
+                </>
+              ) : (
+                <>
+                  {position + 1}
+                  {answered && <span aria-hidden="true">●</span>}
+                  {flagged && <span aria-hidden="true">⚑</span>}
+                </>
+              )}
             </button>
           );
         })}
@@ -127,9 +155,12 @@ function DedicatedExam({
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [reviewIndex, setReviewIndex] = useState<number>();
+  const [review, setReview] = useState<{ sessionId: string; index: number }>();
+  const reviewIndex = review?.sessionId === session?.id ? review?.index : undefined;
   const running = useRef(false);
   const quiz = useRef<HTMLElement>(null);
+  const reviewHeading = useRef<HTMLHeadingElement>(null);
+  const reviewNavigator = useRef<HTMLDetailsElement>(null);
   const items = useMemo(() => new Map(pack.items.map((item) => [item.id, item])), [pack]);
 
   useEffect(() => {
@@ -155,6 +186,45 @@ function DedicatedExam({
       quiz.current.querySelector('h1')?.focus({ preventScroll: true });
     }
   }, [taking, session?.index]);
+
+  function focusReview() {
+    reviewHeading.current?.scrollIntoView({ block: 'start' });
+    reviewHeading.current?.focus({ preventScroll: true });
+  }
+
+  useEffect(() => {
+    if (reviewIndex !== undefined) focusReview();
+  }, [reviewIndex]);
+
+  function selectReview(index: number) {
+    if (!session) return;
+    if (reviewNavigator.current) reviewNavigator.current.open = false;
+    if (index === reviewIndex) focusReview();
+    else setReview({ sessionId: session.id, index });
+  }
+
+  function showQuestionList() {
+    if (!reviewNavigator.current) return;
+    reviewNavigator.current.open = true;
+    const summary = reviewNavigator.current.querySelector('summary');
+    summary?.scrollIntoView({ block: 'start' });
+    summary?.focus({ preventScroll: true });
+  }
+
+  function verdictFor(id: string) {
+    return getExamVerdict(session?.answers[id], items.get(id)!.correctChoiceId);
+  }
+
+  function startReview() {
+    if (!session) return;
+    if (reviewIndex !== undefined) {
+      selectReview(reviewIndex);
+      return;
+    }
+    const incorrect = session.questionIds.findIndex((id) => verdictFor(id) === 'incorrect');
+    const unanswered = session.questionIds.findIndex((id) => verdictFor(id) === 'unanswered');
+    selectReview(incorrect >= 0 ? incorrect : Math.max(0, unanswered));
+  }
 
   const seconds = session?.status === 'active' ? remainingDedicatedSeconds(session, now) : 0;
 
@@ -197,7 +267,7 @@ function DedicatedExam({
       setSession(next);
       setTaking(true);
       setConfirming(false);
-      setReviewIndex(undefined);
+      setReview(undefined);
     });
 
   return (
@@ -222,6 +292,9 @@ function DedicatedExam({
         <section className="panel">
           <h1>専用模試の結果</h1>
           <p>{session.finishedReason === 'timeout' ? '制限時間終了' : '提出済み'}</p>
+          <button className="button primary" type="button" onClick={startReview}>
+            解答・解説を見る
+          </button>
           <div className="result-stats">
             <div>
               <span>採点対象の得点</span>
@@ -242,6 +315,26 @@ function DedicatedExam({
             採点対象外15問の回答は得点に含みません。全155問の回答数は{' '}
             {Object.keys(session.answers).length} 問です。
           </p>
+          <QuestionNavigator
+            session={session}
+            index={reviewIndex ?? -1}
+            onSelect={selectReview}
+            getVerdict={verdictFor}
+            detailsRef={reviewNavigator}
+          />
+          {reviewIndex !== undefined && (
+            <ReviewedItem
+              key={session.questionIds[reviewIndex]}
+              item={items.get(session.questionIds[reviewIndex])!}
+              selected={session.answers[session.questionIds[reviewIndex]]}
+              choiceOrder={session.choiceOrders[session.questionIds[reviewIndex]]}
+              index={reviewIndex}
+              total={session.questionIds.length}
+              headingRef={reviewHeading}
+              onSelect={selectReview}
+              onShowQuestionList={showQuestionList}
+            />
+          )}
           <div className="table-scroll">
             <table>
               <thead>
@@ -264,19 +357,6 @@ function DedicatedExam({
               </tbody>
             </table>
           </div>
-          <QuestionNavigator
-            session={session}
-            index={reviewIndex ?? -1}
-            onSelect={setReviewIndex}
-          />
-          {reviewIndex !== undefined && (
-            <ReviewedItem
-              key={session.questionIds[reviewIndex]}
-              item={items.get(session.questionIds[reviewIndex])!}
-              selected={session.answers[session.questionIds[reviewIndex]]}
-              number={reviewIndex + 1}
-            />
-          )}
           <button className="button secondary" type="button" onClick={start} disabled={busy}>
             同じセットで再受験する
           </button>
@@ -451,32 +531,100 @@ function DedicatedExam({
 function ReviewedItem({
   item,
   selected,
-  number,
+  choiceOrder,
+  index,
+  total,
+  headingRef,
+  onSelect,
+  onShowQuestionList,
 }: {
   item: DedicatedExamItem;
   selected?: string;
-  number: number;
+  choiceOrder: string[];
+  index: number;
+  total: number;
+  headingRef: Ref<HTMLHeadingElement>;
+  onSelect: (index: number) => void;
+  onShowQuestionList: () => void;
 }) {
+  const choices = choiceOrder.map((id) => item.choices.find((choice) => choice.id === id)!);
+  const labels = new Map(
+    choices.map((choice, position) => [
+      choice.id,
+      String.fromCharCode(65 + position) + '．' + choice.text,
+    ]),
+  );
+  const verdict = getExamVerdict(selected, item.correctChoiceId);
   return (
-    <section className="dedicated-review">
-      <h2>
-        問題 {number} · {item.scored ? '採点対象' : '採点対象外'}
-      </h2>
-      <p>{item.prompt}</p>
-      {item.media && <Media media={item.media} />}
-      <dl className="choice-reasons">
-        {item.choices.map((choice) => (
-          <div key={choice.id}>
-            <dt>
-              {choice.id === item.correctChoiceId ? '正答 · ' : ''}
-              {choice.id === selected ? 'あなたの回答 · ' : ''}
-              {choice.text}
-            </dt>
-            <dd>{choice.explanation}</dd>
-          </div>
-        ))}
+    <section className="dedicated-review" aria-labelledby="dedicated-review-title">
+      <header className="dedicated-review-heading">
+        <h2
+          id="dedicated-review-title"
+          ref={headingRef}
+          tabIndex={-1}
+          aria-describedby="dedicated-review-verdict"
+        >
+          問題 {index + 1} · {item.scored ? '採点対象' : '採点対象外'}
+        </h2>
+        <span id="dedicated-review-verdict">
+          <ExamVerdict status={verdict} />
+        </span>
+      </header>
+      <div className="dedicated-review-nav" role="group" aria-label="解説の移動">
+        <button
+          className="button secondary small"
+          type="button"
+          disabled={index === 0}
+          onClick={() => onSelect(index - 1)}
+        >
+          前の解説
+        </button>
+        <span>
+          {index + 1} / {total}
+        </span>
+        <button
+          className="button secondary small"
+          type="button"
+          disabled={index === total - 1}
+          onClick={() => onSelect(index + 1)}
+        >
+          次の解説
+        </button>
+        <button className="button secondary small" type="button" onClick={onShowQuestionList}>
+          問題一覧
+        </button>
+      </div>
+      <p className="dedicated-review-prompt">{item.prompt}</p>
+      <dl className="dedicated-answer-summary">
+        <div>
+          <dt>あなたの回答</dt>
+          <dd>{(selected && labels.get(selected)) || '未回答'}</dd>
+        </div>
+        <div>
+          <dt>正答</dt>
+          <dd>{labels.get(item.correctChoiceId)}</dd>
+        </div>
       </dl>
-      <p>{item.explanation}</p>
+      <div className="explanation">
+        <h3>正答解説</h3>
+        <p>{item.explanation}</p>
+      </div>
+      {item.media && <Media media={item.media} />}
+      <details className="dedicated-choice-details">
+        <summary>選択肢ごとの解説</summary>
+        <dl className="choice-reasons">
+          {choices.map((choice) => (
+            <div key={choice.id}>
+              <dt>
+                {choice.id === item.correctChoiceId ? '正答 · ' : ''}
+                {choice.id === selected ? 'あなたの回答 · ' : ''}
+                {labels.get(choice.id)}
+              </dt>
+              <dd>{choice.explanation}</dd>
+            </div>
+          ))}
+        </dl>
+      </details>
       {item.sourceRefs?.length ? (
         <ul>
           {item.sourceRefs.map((source, index) => (

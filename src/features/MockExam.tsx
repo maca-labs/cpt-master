@@ -28,7 +28,9 @@ import {
 } from '../engines/mock';
 import { partitionAttempts, rate } from '../engines/learning';
 import { Empty, PageTitle, Pill } from '../components/Shared';
+import { ExamVerdict } from '../components/ExamVerdict';
 import { Explanation } from './Practice';
+import './mock-review.css';
 
 const timeText = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
@@ -803,13 +805,22 @@ export function MockExamSession() {
   );
 }
 
+function takenChoiceLabel(question: Question, choiceOrder: string[], choiceId: string) {
+  const choice = question.choices.find((item) => item.id === choiceId);
+  const position = choiceOrder.indexOf(choiceId);
+  if (!choice) return '選択肢を表示できません';
+  return position >= 0 ? String.fromCharCode(65 + position) + '．' + choice.text : choice.text;
+}
+
 export function MockExamResults() {
   const { id } = useParams(),
     { data, run } = useLearning();
   const session = data.sessions.find(
     (s) => s.id === id && s.mode === 'mock' && s.status === 'completed',
   );
-  const [opened, setOpened] = useState<string | null>(null);
+  const [opened, setOpened] = useState<{ sessionId: string; questionId: string }>();
+  const reviewHeading = useRef<HTMLHeadingElement>(null);
+  const reviewPending = useRef(false);
   const [recordedSession, setRecordedSession] = useState('');
   const [displayState, setDisplayState] = useState<MockDisplay>({ status: 'stale' });
   const reservations = data.sessions
@@ -831,6 +842,12 @@ export function MockExamResults() {
       cancelled = true;
     };
   }, [session?.id, reservations]);
+  useEffect(() => {
+    if (opened?.sessionId !== session?.id) return;
+    const heading = reviewHeading.current;
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: 'start' });
+  }, [opened, session?.id]);
   if (!session?.mock)
     return (
       <Empty title="完了した短縮模試がありません" body="短縮模試を採点すると結果が残ります。">
@@ -839,11 +856,52 @@ export function MockExamResults() {
     );
   const result = mockSummary(session, data.attempts);
   const isThrough = session.mock.format === 'through';
-  const composition = mockComposition(
-    session.questionIds.map((qid) => allQuestions.find((q) => q.id === qid)!),
-    session.firstSeenByQuestion,
-  );
+  const questionOrder = session.questionIds.map((qid) => allQuestions.find((q) => q.id === qid)!);
+  const composition = mockComposition(questionOrder, session.firstSeenByQuestion);
   const records = data.attempts.filter((a) => a.sessionId === session.id);
+  const rows = questionOrder.map((question) => ({
+    question,
+    answer: records.find((attempt) => attempt.questionId === question.id),
+  }));
+  const canReview = recordedSession === session.id && displayState.status === 'ready';
+  const openedIndex =
+    opened?.sessionId === session.id ? session.questionIds.indexOf(opened.questionId) : -1;
+  const current = canReview ? rows[openedIndex] : undefined;
+  const firstIncorrect = rows.findIndex(({ answer }) => answer?.correct === false);
+  const firstReviewIndex =
+    firstIncorrect >= 0
+      ? firstIncorrect
+      : Math.max(
+          0,
+          rows.findIndex(({ answer }) => !answer),
+        );
+
+  function openReview(index: number) {
+    const row = rows[index];
+    if (!session || !canReview || !row || reviewPending.current) return;
+    const { question } = row;
+    const selection = { sessionId: session.id, questionId: question.id };
+    if (openedIndex === index) {
+      setOpened(selection);
+      return;
+    }
+    reviewPending.current = true;
+    void run(async () => {
+      try {
+        await recordExposure({
+          id: session.id + ':' + question.id + ':explanation',
+          questionId: question.id,
+          groupId: question.groupId,
+          kind: 'explanation',
+          sessionId: session.id,
+          at: new Date().toISOString(),
+        });
+        setOpened(selection);
+      } finally {
+        reviewPending.current = false;
+      }
+    });
+  }
   const first = partitionAttempts(data.attempts, data.exposures).first.filter(
     (a) => a.sessionId === session.id,
   );
@@ -865,7 +923,18 @@ export function MockExamResults() {
         eyebrow={isThrough ? 'TIMED LEARNING RESULTS' : 'SHORT MOCK RESULTS'}
         title={`${mockLabels[session.mock.format]}の結果`}
         description="今回の学習上の正答率です。公式換算スコア・合否・合格確率は算出しません。"
-      />
+      >
+        {canReview && (
+          <button
+            className="button primary"
+            type="button"
+            onClick={() => openReview(openedIndex >= 0 ? openedIndex : firstReviewIndex)}
+          >
+            解答・解説を見る
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        )}
+      </PageTitle>
       {session.mock.format === 'focus' && (
         <p className="notice">{focusMock.title}。計画10問と安全管理10問の学習結果です。</p>
       )}
@@ -918,6 +987,96 @@ export function MockExamResults() {
           </p>
         </div>
       </div>
+      {current && (
+        <section
+          className="panel mock-review"
+          id="mock-answer-review"
+          aria-labelledby="mock-answer-review-heading"
+        >
+          <div className="mock-review-toolbar">
+            <div>
+              <h2
+                id="mock-answer-review-heading"
+                ref={reviewHeading}
+                tabIndex={-1}
+                aria-describedby="mock-answer-review-verdict"
+              >
+                第{openedIndex + 1}問の解答・解説
+              </h2>
+              <span id="mock-answer-review-verdict">
+                <ExamVerdict
+                  status={
+                    current.answer
+                      ? current.answer.correct
+                        ? 'correct'
+                        : 'incorrect'
+                      : 'unanswered'
+                  }
+                />
+              </span>
+            </div>
+            <div className="mock-review-navigation" role="group" aria-label="解説の移動">
+              <button
+                type="button"
+                className="button secondary"
+                disabled={openedIndex === 0}
+                onClick={() => openReview(openedIndex - 1)}
+              >
+                <ArrowLeft size={16} aria-hidden="true" /> 前の解説
+              </button>
+              <button
+                type="button"
+                className="button secondary"
+                disabled={openedIndex === rows.length - 1}
+                onClick={() => openReview(openedIndex + 1)}
+              >
+                次の解説 <ArrowRight size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          <dl className="mock-review-answers">
+            <div>
+              <dt>あなたの回答</dt>
+              <dd>
+                {current.answer
+                  ? takenChoiceLabel(
+                      current.question,
+                      current.answer.choiceOrder,
+                      current.answer.selectedChoiceId,
+                    )
+                  : '未回答'}
+              </dd>
+            </div>
+            <div>
+              <dt>正答</dt>
+              <dd>
+                {takenChoiceLabel(
+                  current.question,
+                  current.answer?.choiceOrder ?? session.choiceOrders[current.question.id] ?? [],
+                  current.question.correctChoiceId,
+                )}
+              </dd>
+            </div>
+          </dl>
+          {current.answer && current.answer.questionRevision !== current.question.revision && (
+            <p className="muted small-text">
+              正誤は受験時の記録です。選択肢の文面と解説は現在の問題に基づきます。
+            </p>
+          )}
+          <details key={current.question.id + '-prompt'} className="mock-review-media">
+            <summary>{current.question.media ? '問題文・図・映像を見る' : '問題文を見る'}</summary>
+            <p className="mock-review-prompt">{current.question.prompt}</p>
+            {current.question.media && <QuestionMedia question={current.question} />}
+          </details>
+          <Explanation
+            key={current.question.id + '-explanation'}
+            questionId={current.question.id}
+            sessionId={session.id}
+            showMedia={false}
+            showCorrectAnswer={false}
+          />
+        </section>
+      )}
       <section className="panel">
         <h2>分野別の結果</h2>
         <div className="table-scroll">
@@ -953,51 +1112,33 @@ export function MockExamResults() {
         {displayState.status === 'stale' && (
           <p role="status">表示履歴を保存して解答一覧を準備しています…</p>
         )}
-        {recordedSession === session.id &&
-          displayState.status === 'ready' &&
-          session.questionIds.map((qid) => {
-            const q = allQuestions.find((item) => item.id === qid)!;
-            const answer = records.find((a) => a.questionId === qid);
-            return (
-              <div className="result-question" key={qid}>
-                <button
-                  className="result-question-button"
-                  onClick={() =>
-                    void run(async () => {
-                      if (opened !== qid)
-                        await recordExposure({
-                          id: `${session.id}:${qid}:explanation`,
-                          questionId: qid,
-                          groupId: q.groupId,
-                          kind: 'explanation',
-                          sessionId: session.id,
-                          at: new Date().toISOString(),
-                        });
-                      setOpened(opened === qid ? null : qid);
-                    })
-                  }
-                >
-                  <span className={answer?.correct ? 'answer-dot good' : 'answer-dot bad'}>
-                    {answer?.correct ? '✓' : '×'}
-                  </span>
-                  <span>
-                    {q.prompt}
-                    <small>
-                      {answer ? (answer.correct ? '正解' : '誤答') : '未回答'}
-                      {session.mock!.flags.includes(qid) ? ' · フラグ付き' : ''}
-                    </small>
-                  </span>
-                </button>
-                {(!answer?.correct || !answer?.canExplain) && (
-                  <Link className="text-link" to={`/learn/${q.unitId}`}>
-                    {units.find((u) => u.id === q.unitId)?.title}・関連動画へ
-                    <ArrowRight size={15} />
-                  </Link>
-                )}
-                {opened === qid && <Explanation questionId={qid} sessionId={session.id} />}
-              </div>
-            );
-          })}
+        {canReview &&
+          rows.map(({ question: q, answer }, index) => (
+            <div className="result-question" key={q.id}>
+              <button
+                type="button"
+                className="result-question-button mock-review-row"
+                aria-controls={current ? 'mock-answer-review' : undefined}
+                aria-current={index === openedIndex ? 'true' : undefined}
+                onClick={() => openReview(index)}
+              >
+                <span className="mock-review-row-meta">
+                  <span>第{index + 1}問</span>
+                  <ExamVerdict
+                    status={answer ? (answer.correct ? 'correct' : 'incorrect') : 'unanswered'}
+                  />
+                  {session.mock!.flags.includes(q.id) && <span>フラグ付き</span>}
+                </span>
+                <span className="mock-review-row-prompt">{q.prompt}</span>
+              </button>
+              {(!answer?.correct || !answer?.canExplain) && (
+                <Link className="text-link" to={`/learn/${q.unitId}`}>
+                  {units.find((u) => u.id === q.unitId)?.title}・関連動画へ
+                  <ArrowRight size={15} />
+                </Link>
+              )}
+            </div>
+          ))}
       </section>
       {previous.length > 0 && (
         <section className="panel">

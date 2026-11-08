@@ -624,7 +624,7 @@ export function Quiz() {
               ? '回答を保存しました。解説は診断終了後に確認できます。'
               : attempt.correct
                 ? '正解です。根拠も確認しましょう。'
-                : 'もう一度、判断の理由を確認しましょう。'}{' '}
+                : '不正解です。判断の理由を確認しましょう。'}{' '}
             {!attempt.firstSeen && <small>この回答は解き直しとして記録しています。</small>}
           </div>
         )}
@@ -655,10 +655,12 @@ export function Explanation({
   questionId,
   sessionId,
   showMedia = true,
+  showCorrectAnswer = true,
 }: {
   questionId: string;
   sessionId?: string;
   showMedia?: boolean;
+  showCorrectAnswer?: boolean;
 }) {
   const q = allQuestions.find((q) => q.id === questionId)!;
   const { data, run } = useLearning();
@@ -666,7 +668,13 @@ export function Explanation({
   return (
     <div className="explanation">
       {showMedia && <QuestionMedia question={q} />}
-      <h3>正答：{q.choices.find((c) => c.id === q.correctChoiceId)?.text}</h3>
+      <h3>
+        {showCorrectAnswer ? (
+          <>正答：{q.choices.find((c) => c.id === q.correctChoiceId)?.text}</>
+        ) : (
+          '正答解説'
+        )}
+      </h3>
       <p>{q.explanation}</p>
       <dl className="choice-reasons">
         {q.choices.map((c) => (

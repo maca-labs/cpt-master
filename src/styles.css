@@ -2700,6 +2700,110 @@ th {
 .dedicated-grid .button span {
   font-size: 0.65rem;
 }
+
+.exam-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  width: fit-content;
+  padding: 0.2em 0.65em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.exam-verdict-correct {
+  color: #205d3e;
+  background: #e5f5eb;
+}
+.exam-verdict-incorrect {
+  color: #902e29;
+  background: #fbeceb;
+}
+.exam-verdict-unanswered {
+  color: var(--text);
+  background: var(--soft);
+}
+.dedicated-grid .button.has-verdict {
+  display: grid;
+  place-content: center;
+  gap: 2px;
+}
+.dedicated-grid .button .dedicated-grid-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
 .dedicated-review {
-  margin-block: 20px;
+  margin-block: 14px 24px;
+  padding: clamp(12px, 2vw, 20px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+}
+.dedicated-review-heading,
+.dedicated-review-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dedicated-navigator summary {
+  scroll-margin-top: 18px;
+}
+.dedicated-review-heading h2 {
+  margin: 0;
+  scroll-margin-top: 18px;
+}
+.dedicated-review-nav {
+  margin-block: 8px 12px;
+  font-variant-numeric: tabular-nums;
+}
+.dedicated-review-nav .button {
+  min-height: 44px;
+}
+.dedicated-review-prompt {
+  margin-block: 10px;
+  line-height: 1.6;
+}
+.dedicated-answer-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.dedicated-answer-summary > div {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+.dedicated-answer-summary dt {
+  font-weight: 700;
+}
+.dedicated-answer-summary dd {
+  margin: 2px 0 0;
+  line-height: 1.55;
+}
+.dedicated-review .explanation {
+  margin-top: 14px;
+  padding-top: 12px;
+}
+.dedicated-review .explanation p {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.dedicated-choice-details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .dedicated-answer-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dedicated-answer-summary > div {
+    display: grid;
+    grid-template-columns: 5.5em minmax(0, 1fr);
+    gap: 6px;
+  }
 }
