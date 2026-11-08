@@ -1,5 +1,6 @@
 import { liveQuery } from 'dexie';
 import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ExamReviewFilter } from '../components/ExamReviewFilter';
 import {
   ExamVerdict,
@@ -10,9 +11,11 @@ import {
 import { domains } from '../content/blueprints';
 import {
   remainingDedicatedSeconds,
+  dedicatedMissedQuestionIds,
   validateDedicatedExamPack,
   type DedicatedExamItem,
   type DedicatedExamPack,
+  type DedicatedExamRetake,
   type DedicatedExamSession,
 } from '../engines/dedicated-exam';
 import { DedicatedExamDB } from '../storage/dedicated-exam';
@@ -154,9 +157,25 @@ function DedicatedExam({
   access: 'preview' | 'released';
 }) {
   const [database] = useState(() => new DedicatedExamDB(access));
-  const [session, setSession] = useState<DedicatedExamSession | null>();
+  const [params, setParams] = useSearchParams();
+  const originalId = params.get('original');
+  const retakeId = params.get('retake');
+  const [saved, setSaved] = useState<{
+    requestedId: string | null;
+    original: DedicatedExamSession | null;
+    retakes: DedicatedExamRetake[];
+  }>();
+  const loaded = saved?.requestedId === originalId ? saved : undefined;
+  const session = loaded
+    ? retakeId
+      ? (loaded.retakes.find((retake) => retake.id === retakeId) ?? null)
+      : loaded.original
+    : undefined;
+  const isRetake = !!session?.retakeOf;
+  const activeRetake = loaded?.retakes.find((retake) => retake.status === 'active');
   const [now, setNow] = useState(Date.now);
-  const [taking, setTaking] = useState(false);
+  const [takingId, setTakingId] = useState<string>();
+  const taking = !!session && takingId === session.id;
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -166,27 +185,38 @@ function DedicatedExam({
   const onlyMissed = !!session && filterSessionId === session.id;
   const running = useRef(false);
   const quiz = useRef<HTMLElement>(null);
+  const retakeResultHeading = useRef<HTMLHeadingElement>(null);
   const reviewHeading = useRef<HTMLHeadingElement>(null);
   const reviewNavigator = useRef<HTMLDetailsElement>(null);
   const resultFilterButton = useRef<HTMLButtonElement>(null);
   const items = useMemo(() => new Map(pack.items.map((item) => [item.id, item])), [pack]);
 
   useEffect(() => {
-    const subscription = liveQuery(() => database.sessionFor(pack)).subscribe({
+    const subscription = liveQuery(async () => {
+      const original = originalId
+        ? await database.sessionById(pack, originalId)
+        : await database.sessionFor(pack);
+      const retakes =
+        original?.status === 'completed' ? await database.missedRetakesFor(pack, original.id) : [];
+      return { requestedId: originalId, original: original ?? null, retakes };
+    }).subscribe({
       next: (value) => {
-        setSession(value ?? null);
+        setSaved(value);
         setNow(Date.now());
       },
       error: () => setError('模試の保存データを読み込めませんでした。'),
     });
     return () => subscription.unsubscribe();
-  }, [database, pack]);
+  }, [database, pack, originalId]);
+
+  const timed = !!session && session.deadlineAt !== null;
+  const paused = session?.pausedRemainingMs !== undefined;
 
   useEffect(() => {
-    if (session?.status !== 'active') return;
+    if (session?.status !== 'active' || !timed || paused) return;
     const interval = window.setInterval(() => setNow(Date.now()), 250);
     return () => window.clearInterval(interval);
-  }, [session?.status]);
+  }, [session?.status, timed, paused]);
 
   useEffect(() => {
     if (taking && quiz.current) {
@@ -194,6 +224,12 @@ function DedicatedExam({
       quiz.current.querySelector('h1')?.focus({ preventScroll: true });
     }
   }, [taking, session?.index]);
+
+  useEffect(() => {
+    if (!isRetake || session?.status !== 'completed') return;
+    retakeResultHeading.current?.scrollIntoView({ block: 'start' });
+    retakeResultHeading.current?.focus({ preventScroll: true });
+  }, [isRetake, session?.id, session?.status]);
 
   function focusReview() {
     reviewHeading.current?.scrollIntoView({ block: 'start' });
@@ -260,7 +296,9 @@ function DedicatedExam({
     selectReview(incorrect ?? unanswered ?? reviewIndices[0]);
   }
 
-  const seconds = session?.status === 'active' ? remainingDedicatedSeconds(session, now) : 0;
+  const seconds =
+    session?.status === 'active' && timed ? remainingDedicatedSeconds(session, now) : 0;
+  const expired = timed && !paused && seconds === 0;
 
   async function save(action: () => Promise<unknown>) {
     if (running.current) return;
@@ -280,12 +318,13 @@ function DedicatedExam({
 
   const finishRequested = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (!session || session.status !== 'active' || seconds !== 0 || busy) return;
-    if (finishRequested.current === session.id) return;
-    finishRequested.current = session.id;
+    if (!session || session.status !== 'active' || !expired || busy) return;
+    const requestKey = `${session.id}:${session.deadlineAt}`;
+    if (finishRequested.current === requestKey) return;
+    finishRequested.current = requestKey;
     setConfirming(false);
     void save(() => database.finish(pack, session.id, 'timeout'));
-  }, [database, pack, session, seconds, busy]);
+  }, [database, pack, session, expired, busy]);
 
   const label =
     access === 'preview'
@@ -295,15 +334,53 @@ function DedicatedExam({
   const update = (action: Parameters<DedicatedExamDB['update']>[2]) => {
     if (session) void save(() => database.update(pack, session.id, action));
   };
+  const viewParams = (source?: string, retake?: string) => {
+    const next = new URLSearchParams(params);
+    next.delete('original');
+    next.delete('retake');
+    if (source) next.set('original', source);
+    if (retake) next.set('retake', retake);
+    return next;
+  };
+  const viewLink = (source?: string, retake?: string) => ({
+    search: viewParams(source, retake).toString(),
+  });
   const start = () =>
     void save(async () => {
       const next = await database.start(pack);
-      setSession(next);
-      setTaking(true);
+      setSaved({ requestedId: null, original: next, retakes: [] });
+      if (originalId || retakeId) setParams(viewParams());
+      setTakingId(next.id);
       setConfirming(false);
       setReview(undefined);
       setFilterSessionId(undefined);
     });
+  const startRetake = () =>
+    void save(async () => {
+      if (!session || session.status !== 'completed' || isRetake) return;
+      const next = await database.startMissedRetake(pack, session.id);
+      setTakingId(next.id);
+      setConfirming(false);
+      setParams(viewParams(session.id, next.id));
+    });
+  const interrupt = () =>
+    void save(async () => {
+      if (!session) return;
+      if (timed) await database.pause(pack, session.id);
+      setTakingId(undefined);
+      setConfirming(false);
+    });
+  const resume = () =>
+    void save(async () => {
+      if (!session) return;
+      if (timed) await database.resume(pack, session.id);
+      setTakingId(session.id);
+      setConfirming(false);
+    });
+  const retakeCount =
+    session?.status === 'completed' && !isRetake
+      ? dedicatedMissedQuestionIds(pack, session).length
+      : 0;
 
   return (
     <div className="dedicated-workspace">
@@ -325,8 +402,39 @@ function DedicatedExam({
       {session === undefined && !error && <p role="status">模試を読み込んでいます。</p>}
       {session?.status === 'completed' && session.result ? (
         <section className="panel">
-          <h1>専用模試の結果</h1>
-          <p>{session.finishedReason === 'timeout' ? '制限時間終了' : '提出済み'}</p>
+          <h1 ref={retakeResultHeading} tabIndex={isRetake ? -1 : undefined}>
+            {isRetake ? '模試の解き直し結果' : '専用模試の結果'}
+          </h1>
+          <p>
+            {isRetake
+              ? '元の模試で不正解・未回答だった問題の解き直し成績です。'
+              : session.finishedReason === 'timeout'
+                ? '制限時間終了'
+                : '提出済み'}
+          </p>
+          {isRetake ? (
+            <p>
+              <Link className="button secondary" to={viewLink(session.retakeOf)}>
+                元の模試結果へ
+              </Link>
+            </p>
+          ) : retakeCount > 0 ? (
+            <div className="exam-review-actions">
+              <button
+                className="button primary"
+                type="button"
+                onClick={startRetake}
+                disabled={busy}
+              >
+                {activeRetake ? '解き直しを再開する' : '不正解・未回答を解き直す'}
+              </button>
+              <span className="muted small-text">
+                解き直しの対象 {retakeCount} 問 · 時間制限なし
+              </span>
+            </div>
+          ) : (
+            <p className="muted small-text">解き直しの対象はありません。</p>
+          )}
           <div className="exam-review-actions">
             <button
               className="button primary"
@@ -349,24 +457,28 @@ function DedicatedExam({
           </p>
           <div className="result-stats">
             <div>
-              <span>採点対象の得点</span>
+              <span>{isRetake ? '解き直しの得点' : '採点対象の得点'}</span>
               <b>
                 {session.result.correct} / {session.result.total} 問
               </b>
             </div>
             <div>
-              <span>採点対象の正答率</span>
+              <span>{isRetake ? '解き直しの正答率' : '採点対象の正答率'}</span>
               <b>{session.result.rate}%</b>
             </div>
             <div>
-              <span>採点対象の未回答</span>
+              <span>{isRetake ? '解き直しの未回答' : '採点対象の未回答'}</span>
               <b>{session.result.unanswered} 問</b>
             </div>
           </div>
-          <p>
-            採点対象外15問の回答は得点に含みません。全155問の回答数は{' '}
-            {Object.keys(session.answers).length} 問です。
-          </p>
+          {isRetake ? (
+            <p>解き直しでは対象の全問題を採点します。</p>
+          ) : (
+            <p>
+              採点対象外15問の回答は得点に含みません。全155問の回答数は{' '}
+              {Object.keys(session.answers).length} 問です。
+            </p>
+          )}
           {reviewIndices.length > 0 && (
             <QuestionNavigator
               session={session}
@@ -389,6 +501,7 @@ function DedicatedExam({
               previousIndex={reviewIndices[reviewPosition - 1]}
               nextIndex={reviewIndices[reviewPosition + 1]}
               onlyMissed={onlyMissed}
+              isRetake={isRetake}
               headingRef={reviewHeading}
               onSelect={selectReview}
               onShowQuestionList={showQuestionList}
@@ -401,7 +514,7 @@ function DedicatedExam({
                 <tr>
                   <th>分野</th>
                   <th>正答</th>
-                  <th>採点対象</th>
+                  <th>{isRetake ? '解き直し対象' : '採点対象'}</th>
                   <th>未回答</th>
                 </tr>
               </thead>
@@ -417,26 +530,49 @@ function DedicatedExam({
               </tbody>
             </table>
           </div>
-          <button className="button secondary" type="button" onClick={start} disabled={busy}>
-            同じセットで再受験する
-          </button>
+          {!isRetake && (
+            <>
+              {loaded?.retakes.some((retake) => retake.result) && (
+                <section aria-label="解き直しの記録">
+                  <h2>解き直しの記録</h2>
+                  {loaded.retakes.map(
+                    (retake) =>
+                      retake.result && (
+                        <div className="list-row" key={retake.id}>
+                          <span>
+                            第{retake.retakeNumber}回 · {retake.result.correct} /{' '}
+                            {retake.result.total} 問正解
+                          </span>
+                          <Link className="text-link" to={viewLink(session.id, retake.id)}>
+                            解き直し結果を見る
+                          </Link>
+                        </div>
+                      ),
+                  )}
+                </section>
+              )}
+              <button className="button secondary" type="button" onClick={start} disabled={busy}>
+                同じセットで再受験する
+              </button>
+            </>
+          )}
         </section>
-      ) : session?.status === 'active' && taking && item ? (
+      ) : session?.status === 'active' && taking && !paused && item ? (
         <section className="panel dedicated-run" ref={quiz}>
           <div className="quiz-top">
             <span className="pill">
-              問題 {session.index + 1} / {session.questionIds.length}
+              {isRetake ? '解き直し' : '問題'} {session.index + 1} / {session.questionIds.length}
             </span>
-            <span role="timer" aria-label="残り時間">
-              {timeLabel(seconds)}
-            </span>
+            {timed && (
+              <span role="timer" aria-label="残り時間">
+                {timeLabel(seconds)}
+              </span>
+            )}
             <button
               className="button secondary"
               type="button"
-              onClick={() => {
-                setTaking(false);
-                setConfirming(false);
-              }}
+              disabled={busy || expired}
+              onClick={interrupt}
             >
               中断する
             </button>
@@ -453,7 +589,7 @@ function DedicatedExam({
                   key={choiceId}
                   className={`choice${selected ? ' selected' : ''}`}
                   aria-pressed={selected}
-                  disabled={busy || seconds === 0}
+                  disabled={busy || expired}
                   onClick={() => update({ type: 'answer', questionId: item.id, choiceId })}
                 >
                   <span aria-hidden="true">{String.fromCharCode(65 + position)}</span>
@@ -466,7 +602,7 @@ function DedicatedExam({
             <button
               type="button"
               className="button secondary"
-              disabled={busy || seconds === 0 || session.index === 0}
+              disabled={busy || expired || session.index === 0}
               onClick={() => update({ type: 'navigate', index: session.index - 1 })}
             >
               前の問題へ
@@ -474,7 +610,7 @@ function DedicatedExam({
             <button
               type="button"
               className="button secondary"
-              disabled={busy || seconds === 0}
+              disabled={busy || expired}
               aria-pressed={session.flags.includes(item.id)}
               onClick={() =>
                 update({
@@ -489,7 +625,7 @@ function DedicatedExam({
             <button
               type="button"
               className="button primary"
-              disabled={busy || seconds === 0 || session.index === session.questionIds.length - 1}
+              disabled={busy || expired || session.index === session.questionIds.length - 1}
               onClick={() => update({ type: 'navigate', index: session.index + 1 })}
             >
               次の問題へ
@@ -501,7 +637,7 @@ function DedicatedExam({
           <QuestionNavigator
             session={session}
             index={session.index}
-            disabled={busy || seconds === 0}
+            disabled={busy || expired}
             onSelect={(index) => update({ type: 'navigate', index })}
           />
           {confirming ? (
@@ -520,13 +656,13 @@ function DedicatedExam({
               <button
                 type="button"
                 className="button primary"
-                disabled={busy || seconds === 0}
+                disabled={busy || expired}
                 onClick={() => void save(() => database.finish(pack, session.id, 'submitted'))}
               >
                 提出して採点する
               </button>
             </div>
-          ) : seconds === 0 ? (
+          ) : expired ? (
             <button
               type="button"
               className="button secondary"
@@ -542,31 +678,49 @@ function DedicatedExam({
               disabled={busy}
               onClick={() => setConfirming(true)}
             >
-              受験を終了する
+              {isRetake ? '解き直しを終了する' : '受験を終了する'}
             </button>
           )}
         </section>
+      ) : session === null && (originalId || retakeId) ? (
+        <section className="panel">
+          <h1>指定された記録が見つかりません</h1>
+          <Link className="button secondary" to={viewLink()}>
+            現在の専用模試へ
+          </Link>
+        </section>
       ) : session !== undefined ? (
         <section className="panel">
-          <h1>{label}</h1>
-          <p>155問・180分・3択。採点対象は140問です。中断中も時計は進みます。</p>
+          <h1>{isRetake ? '模試の解き直し' : label}</h1>
+          <p>
+            {isRetake
+              ? `${session?.questionIds.length}問・時間制限なし。`
+              : '155問・180分・3択。採点対象は140問です。中断すると時計は停止します。'}
+          </p>
           {session?.status === 'active' ? (
             <>
-              <p>
-                残り時間{' '}
-                <span role="timer" aria-label="残り時間">
-                  {timeLabel(seconds)}
-                </span>
-              </p>
+              {timed && (
+                <p>
+                  {paused ? '中断中 · ' : ''}残り時間{' '}
+                  <span role="timer" aria-label="残り時間">
+                    {timeLabel(seconds)}
+                  </span>
+                </p>
+              )}
               <button
                 type="button"
                 className="button primary"
-                disabled={busy || seconds === 0}
-                onClick={() => setTaking(true)}
+                disabled={busy || expired}
+                onClick={resume}
               >
-                保存した模試を再開する
+                {isRetake ? '解き直しを再開する' : '保存した模試を再開する'}
               </button>
-              {seconds === 0 && (
+              {isRetake && (
+                <Link className="button secondary" to={viewLink(session.retakeOf)}>
+                  元の模試結果へ
+                </Link>
+              )}
+              {expired && (
                 <button
                   type="button"
                   className="button secondary"
@@ -598,6 +752,7 @@ function ReviewedItem({
   previousIndex,
   nextIndex,
   onlyMissed,
+  isRetake,
   headingRef,
   onSelect,
   onShowQuestionList,
@@ -612,6 +767,7 @@ function ReviewedItem({
   previousIndex?: number;
   nextIndex?: number;
   onlyMissed: boolean;
+  isRetake: boolean;
   headingRef: Ref<HTMLHeadingElement>;
   onSelect: (index: number) => void;
   onShowQuestionList: () => void;
@@ -634,7 +790,7 @@ function ReviewedItem({
           tabIndex={-1}
           aria-describedby="dedicated-review-verdict"
         >
-          問題 {index + 1} · {item.scored ? '採点対象' : '採点対象外'}
+          問題 {index + 1} · {isRetake ? '解き直し' : item.scored ? '採点対象' : '採点対象外'}
         </h2>
         <span id="dedicated-review-verdict">
           <ExamVerdict status={verdict} />

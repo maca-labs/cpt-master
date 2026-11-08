@@ -30,6 +30,7 @@ import {
 } from '../content/release';
 import { focusMock } from '../content/focus-mock';
 import { isInPracticeBatch } from '../content/batches';
+import { mockRetakeQuestionIds } from '../engines/learning';
 export interface Favorite {
   questionId: string;
 }
@@ -187,6 +188,7 @@ const session = z
     startedAt: date,
     completedAt: date.optional(),
     firstSeenByQuestion: z.record(id, z.boolean()),
+    mockRetakeOf: id.optional(),
     practice: z
       .object({
         batch: z.enum(practiceBatchValues),
@@ -203,6 +205,10 @@ const session = z
         limitSeconds: z.number().int().min(1).max(21600),
         remainingSeconds: z.number().int().min(0).max(21600),
         deadlineAt: date.nullable(),
+        clockAnchor: z
+          .object({ at: date, remainingMs: z.number().int().min(0).max(21600000) })
+          .strict()
+          .optional(),
         paused: z.boolean(),
         flags: z.array(id).max(155),
         draftAnswers: z.record(
@@ -391,6 +397,7 @@ export function validateBackup(text: string): Backup {
   const sessionsById = new Map(backup.data.sessions.map((s) => [s.id, s]));
   const activeStrictGroups = new Set<string>();
   const answeredPairs = new Set<string>();
+  const attemptsBySession = new Map<string, Attempt[]>();
   for (const a of backup.data.attempts) {
     const q = qMap.get(a.questionId);
     const session = sessionsById.get(a.sessionId);
@@ -407,6 +414,7 @@ export function validateBackup(text: string): Backup {
       q.correctChoiceId !== a.correctChoiceId ||
       !q.choices.some((c) => c.id === a.selectedChoiceId) ||
       a.correct !== (a.selectedChoiceId === q.correctChoiceId) ||
+      (session?.mockRetakeOf && a.firstSeen) ||
       !sessionIds.has(a.sessionId) ||
       !session?.questionIds.includes(a.questionId) ||
       a.choiceOrder.some(
@@ -417,8 +425,22 @@ export function validateBackup(text: string): Backup {
       q.choices.some((c) => !a.choiceOrder.includes(c.id))
     )
       throw new Error('解答履歴と教材の対応が不正です。');
+    const records = attemptsBySession.get(a.sessionId) ?? [];
+    records.push(a);
+    attemptsBySession.set(a.sessionId, records);
   }
   for (const s of backup.data.sessions) {
+    if (s.mockRetakeOf) {
+      const original = sessionsById.get(s.mockRetakeOf);
+      if (s.mode !== 'review' || original?.mode !== 'mock' || original.status !== 'completed')
+        throw new Error('模試の解き直しに対応する元の模試結果がありません。');
+      const missed = mockRetakeQuestionIds(original, attemptsBySession.get(original.id) ?? []);
+      if (
+        missed.length !== s.questionIds.length ||
+        missed.some((qid, index) => s.questionIds[index] !== qid || s.firstSeenByQuestion[qid])
+      )
+        throw new Error('模試の解き直し対象が元の結果と一致しません。');
+    }
     if (s.practice) {
       if (s.mode !== 'practice' || s.questionIds.length > s.practice.requestedCount)
         throw new Error('演習条件とセッションの形式・件数が一致しません。');
@@ -476,8 +498,8 @@ export function validateBackup(text: string): Backup {
         m.flags.some((qid) => !s.questionIds.includes(qid))
       )
         throw new Error('短縮模試の件数・時間・フラグが不正です。');
-      if (m.timeMode === 'continuous' && m.paused)
-        throw new Error('時間継続モードは停止できません。');
+      if (m.timeMode === 'continuous' && m.paused && !m.clockAnchor)
+        throw new Error('模試の中断時の残り時間の記録がありません。');
       if (
         s.status === 'active' &&
         (s.completedAt !== undefined ||
@@ -494,11 +516,25 @@ export function validateBackup(text: string): Backup {
           (m.finishedReason === 'timeout' && m.remainingSeconds !== 0))
       )
         throw new Error('完了した短縮模試の時計が不正です。');
+      const anchor = m.clockAnchor;
+      if (
+        anchor &&
+        (Date.parse(anchor.at) < Date.parse(s.startedAt) ||
+          (s.completedAt && Date.parse(anchor.at) > Date.parse(s.completedAt)) ||
+          anchor.remainingMs > m.limitSeconds * 1000 ||
+          m.remainingSeconds > Math.ceil(anchor.remainingMs / 1000) ||
+          (m.paused && m.remainingSeconds !== Math.ceil(anchor.remainingMs / 1000)))
+      )
+        throw new Error('模試の中断・再開時刻と残り時間の記録が不正です。');
+      const anchoredDeadline = anchor
+        ? Date.parse(anchor.at) + anchor.remainingMs
+        : m.timeMode === 'continuous'
+          ? Date.parse(s.startedAt) + m.limitSeconds * 1000
+          : undefined;
       if (
         m.deadlineAt &&
         (Date.parse(m.deadlineAt) < Date.parse(s.startedAt) ||
-          (m.timeMode === 'continuous' &&
-            Date.parse(m.deadlineAt) !== Date.parse(s.startedAt) + m.limitSeconds * 1000))
+          (anchoredDeadline !== undefined && Date.parse(m.deadlineAt) !== anchoredDeadline))
       )
         throw new Error('短縮模試の締切が不正です。');
       for (const [qid, draft] of Object.entries(m.draftAnswers)) {
@@ -511,7 +547,7 @@ export function validateBackup(text: string): Backup {
         )
           throw new Error('短縮模試の下書き回答が不正です。');
       }
-      const records = backup.data.attempts.filter((a) => a.sessionId === s.id);
+      const records = attemptsBySession.get(s.id) ?? [];
       if (s.status === 'active' && records.length)
         throw new Error('採点前の短縮模試に採点済み回答があります。');
       if (
@@ -630,7 +666,7 @@ export async function restoreBackup(candidate: Backup, database: LearningDB = db
   const backup = validateBackup(JSON.stringify(candidate));
   await database.transaction('rw', database.tables, async () => {
     const localSessions = new Map((await database.sessions.toArray()).map((s) => [s.id, s]));
-    // A mock session and its graded ledger form one record of a submission.
+    // A mock or its retake and the graded ledger form one record of a submission.
     // Keeping a local draft while adding a remote completed ledger would make
     // it impossible to resume or export. Preserve the local session as a unit.
     const protectedIds = new Set(
@@ -638,7 +674,10 @@ export async function restoreBackup(candidate: Backup, database: LearningDB = db
         .filter(
           (s) =>
             localSessions.has(s.id) &&
-            (s.mode === 'mock' || localSessions.get(s.id)!.mode === 'mock'),
+            (s.mode === 'mock' ||
+              localSessions.get(s.id)!.mode === 'mock' ||
+              s.mockRetakeOf ||
+              localSessions.get(s.id)!.mockRetakeOf),
         )
         .map((s) => s.id),
     );

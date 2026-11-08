@@ -87,6 +87,7 @@ for (const [setIndex, pack] of packs.entries()) {
     await page.getByRole('button', { name: '155問の模試を始める' }).click();
     await expect(page.getByRole('timer', { name: '残り時間' })).toBeVisible();
     const session = await savedSession(page, pack);
+    if (session.deadlineAt === null) throw new Error('専用模試の締切がありません。');
     expect(session.deadlineAt - session.startedAt).toBe(blueprint.durationMinutes * 60_000);
     expect(new Set(session.questionIds).size).toBe(155);
     expect(session.questionIds).not.toEqual(pack.items.map((item) => item.id));
@@ -136,15 +137,23 @@ for (const [setIndex, pack] of packs.entries()) {
     await flag.click();
     await expect(flag).toHaveAttribute('aria-pressed', 'true');
     await page.getByRole('button', { name: '中断する' }).click();
+    await expect
+      .poll(async () => (await savedSession(page, pack)).pausedRemainingMs ?? 0)
+      .toBeGreaterThan(0);
+    const paused = await savedSession(page, pack);
+    expect(paused.deadlineAt).toBe(session.deadlineAt);
     await page.clock.fastForward(45_000);
     await page.reload();
     await expect(selector).toHaveValue(pack.id);
+    expect((await savedSession(page, pack)).pausedRemainingMs).toBe(paused.pausedRemainingMs);
     await page.getByRole('button', { name: '保存した模試を再開する' }).click();
     await expect(draftOption).toHaveAttribute('aria-pressed', 'true');
     await expect(flag).toHaveAttribute('aria-pressed', 'true');
     const resumed = await savedSession(page, pack);
+    if (resumed.deadlineAt === null) throw new Error('再開後の締切がありません。');
     expect(resumed.questionIds).toEqual(session.questionIds);
-    expect(resumed.deadlineAt).toBe(session.deadlineAt);
+    expect(resumed.pausedRemainingMs).toBeUndefined();
+    expect(resumed.deadlineAt - session.deadlineAt).toBeGreaterThanOrEqual(45_000);
     expect(resumed.index).toBe(draft.index);
     expect(await page.evaluate(() => Date.now())).toBeGreaterThanOrEqual(
       session.startedAt + 45_000,

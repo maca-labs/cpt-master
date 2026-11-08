@@ -125,7 +125,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.6.5</small>
+          <small>教材版 {contentVersion} · アプリ 0.6.6</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>

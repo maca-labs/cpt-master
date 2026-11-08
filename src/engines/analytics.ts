@@ -44,6 +44,7 @@ export interface SessionPerformance {
   medianResponseMs: number | null;
   mockTimeMode: 'study' | 'continuous' | null;
   mockFormat?: NonNullable<Session['mock']>['format'] | null;
+  mockRetakeOf?: string;
   practice?: Session['practice'];
   evaluatedTotal?: number;
   excludedCount?: number;
@@ -181,6 +182,7 @@ export function completedSessionPerformance(
         medianResponseMs: median(responses.map((attempt) => attempt.elapsedMs)),
         mockTimeMode: session.mode === 'mock' ? (session.mock?.timeMode ?? null) : null,
         mockFormat: session.mode === 'mock' ? (session.mock?.format ?? 'short') : null,
+        ...(session.mockRetakeOf ? { mockRetakeOf: session.mockRetakeOf } : {}),
         practice: session.practice,
         evaluatedTotal,
         excludedCount: strict ? responses.length - evaluated.length : 0,
@@ -198,6 +200,7 @@ function sessionOrder(a: SessionPerformance, b: SessionPerformance) {
 
 function sameFormat(a: SessionPerformance, b: SessionPerformance): boolean {
   if (a.mode !== b.mode) return false;
+  if (a.mockRetakeOf || b.mockRetakeOf) return a.mockRetakeOf === b.mockRetakeOf;
   if (a.mode === 'mock')
     return (
       a.total === b.total &&

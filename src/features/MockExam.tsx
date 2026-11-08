@@ -24,6 +24,7 @@ import {
   recordMockDisplay,
   selectThrough,
   startFocusMock,
+  startMockRetake,
   type MockDisplay,
 } from '../engines/mock';
 import { partitionAttempts, rate } from '../engines/learning';
@@ -37,6 +38,7 @@ const timeText = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
 const mockLabels = { short: '短縮模試', through: '学習用通し演習', focus: '集中模試' };
+const mockTimeLabels = { study: '学習用', continuous: '時間配分練習用' };
 
 function Composition({ counts }: { counts: ReturnType<typeof mockComposition> }) {
   return (
@@ -176,7 +178,7 @@ export default function MockExamHome() {
         <h2>専用模試 · 155問・180分 × 3セット</h2>
         <p>
           通常学習とは別の専用問題です。各セットは採点対象140問と採点対象外15問で、
-          中断中も時計は進みます。
+          保存して中断すると時計も停止します。
         </p>
         <p className="muted small-text">
           AIによる出典照合済みです。人間の専門家レビューは未実施です。
@@ -242,22 +244,20 @@ export default function MockExamHome() {
             </select>
           </label>
           <label className="field-label">
-            時間の扱い
+            演習の区分
             <select
               aria-label="短縮模試の時間モード"
               value={timeMode}
               onChange={(event) => setTimeMode(event.target.value as typeof timeMode)}
             >
-              <option value="study">学習用：一時停止できる</option>
-              <option value="continuous">時間配分練習：中断中も時間が進む</option>
+              <option value="study">{mockTimeLabels.study}</option>
+              <option value="continuous">{mockTimeLabels.continuous}</option>
             </select>
           </label>
         </div>
         <p>
           制限時間の目安 {timeText(count * 70)}（1問70秒の独自設定）。
-          {timeMode === 'study'
-            ? '保存して中断すると時計も停止します。'
-            : 'タブを閉じても時計は進み、期限を過ぎた再開時に自動採点します。'}
+          保存して中断すると時計も停止します。中断せずにタブを閉じた場合は時間が進みます。
         </p>
         {!unlocked && (
           <div className="notice">
@@ -309,7 +309,7 @@ export default function MockExamHome() {
         <h2>155問・180分の学習用通し演習</h2>
         <p>
           通常学習の{questions.length}
-          問から、セッション内で同じ問題グループを重複せず選びます。専用模試や初見専用の評価ではありません。中断・タブを閉じている間も時計が進みます。
+          問から、セッション内で同じ問題グループを重複せず選びます。専用模試や初見専用の評価ではありません。保存して中断すると時計も停止します。
         </p>
         <p>
           学習用配分は面談・評価35問、計画50問、技術48問、安全22問。整数32・45・43・20の比を155問へ最大剰余方式で配分します。
@@ -493,9 +493,11 @@ export function MockExamSession() {
     }
   };
   useEffect(() => {
+    if (session?.status !== 'active' || session.mock?.paused) return;
+    setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [session?.id, session?.status, session?.mock?.paused]);
   useEffect(() => {
     setSelected(savedDraft?.choiceId ?? '');
     setCanExplain(savedDraft?.canExplain ?? false);
@@ -570,11 +572,7 @@ export function MockExamSession() {
         setConfirm(false);
       },
     );
-  const interrupt = () =>
-    update(
-      (fresh) => (fresh.mock!.timeMode === 'study' ? pauseMock(fresh) : fresh),
-      () => navigate('/exam'),
-    );
+  const interrupt = () => update(pauseMock, () => navigate('/exam'));
   if (!session?.mock || !question)
     return (
       <Empty title="短縮模試が見つかりません" body="短縮模試の一覧から選んでください。">
@@ -611,20 +609,18 @@ export function MockExamSession() {
       </div>
       <p className="muted small-text">
         {isThrough && '155問・180分の時間配分練習。既出問題を含み、全155問を学習上採点します。'}
-        {state.timeMode === 'study'
-          ? '学習用：一時停止できます。'
-          : '時間配分練習：中断中も時間は進みます。'}{' '}
-        · AIによる出典照合済み問題 · 下書き回答 {answered}問
+        保存して中断すると時計も停止します。中断せずにタブを閉じた場合は時間が進みます。 ·
+        AIによる出典照合済み問題 · 下書き回答 {answered}問
       </p>
       <div className="hero-actions">
         <button className="button small secondary" onClick={() => setShowReview(!showReview)}>
           解答を見直す
         </button>
-        {state.timeMode === 'study' && !state.paused && (
+        {!state.paused && (
           <button
             className="button small ghost"
             disabled={busy}
-            onClick={() => void update((fresh) => pauseMock(fresh))}
+            onClick={() => void update(pauseMock)}
           >
             <Pause size={15} />
             一時停止
@@ -699,7 +695,7 @@ export function MockExamSession() {
           <button
             className="button primary"
             disabled={busy || remaining === 0}
-            onClick={() => void update((fresh) => resumeMock(fresh))}
+            onClick={() => void update(resumeMock)}
           >
             <Play size={16} />
             模試を再開する
@@ -808,12 +804,14 @@ export function MockExamSession() {
 
 export function MockExamResults() {
   const { id } = useParams(),
-    { data, run } = useLearning();
+    { data, run, refresh } = useLearning();
+  const navigate = useNavigate();
   const session = data.sessions.find(
     (s) => s.id === id && s.mode === 'mock' && s.status === 'completed',
   );
   const [opened, setOpened] = useState<{ sessionId: string; questionId: string }>();
   const [filteredSession, setFilteredSession] = useState<string>();
+  const [retakeStarting, setRetakeStarting] = useState(false);
   const summaryFilter = useRef<HTMLButtonElement>(null);
   const reviewHeading = useRef<HTMLHeadingElement>(null);
   const reviewPending = useRef(false);
@@ -916,6 +914,26 @@ export function MockExamResults() {
       }
     });
   }
+  const retakes = data.sessions.filter((item) => item.mockRetakeOf === session.id);
+  const activeRetake = retakes.find((item) => item.status === 'active');
+  const completedRetakes = retakes
+    .filter((item) => item.status === 'completed')
+    .sort((a, b) => (b.completedAt ?? b.startedAt).localeCompare(a.completedAt ?? a.startedAt));
+
+  async function startRetake() {
+    if (!session || !canReview || retakeStarting) return;
+    setRetakeStarting(true);
+    try {
+      await run(async () => {
+        const retake = await startMockRetake(session.id);
+        await refresh();
+        navigate(`/session/${retake.id}`);
+      });
+    } finally {
+      setRetakeStarting(false);
+    }
+  }
+
   const first = partitionAttempts(data.attempts, data.exposures).first.filter(
     (a) => a.sessionId === session.id,
   );
@@ -963,6 +981,44 @@ export function MockExamResults() {
           </div>
         )}
       </PageTitle>
+      {canReview && missedRows.length > 0 && (
+        <section className="panel" aria-labelledby="mock-retake-heading">
+          <h2 id="mock-retake-heading">模試の解き直し</h2>
+          <p>
+            対象は不正解・未回答の{missedRows.length}
+            問です。解き直しの結果は元の成績と別に保存します。
+          </p>
+          <div className="hero-actions">
+            {activeRetake ? (
+              <Link className="button primary" to={`/session/${activeRetake.id}`}>
+                解き直しを再開する
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            ) : (
+              <button
+                className="button primary"
+                type="button"
+                disabled={retakeStarting}
+                onClick={() => void startRetake()}
+              >
+                不正解・未回答を解き直す
+                <ArrowRight size={16} aria-hidden="true" />
+              </button>
+            )}
+          </div>
+          {completedRetakes.map((retake) => (
+            <div className="list-row" key={retake.id}>
+              <time dateTime={retake.completedAt ?? retake.startedAt}>
+                {new Date(retake.completedAt ?? retake.startedAt).toLocaleString('ja-JP')}
+              </time>
+              <Link className="text-link" to={`/results/${retake.id}`}>
+                解き直し結果を見る
+                <ArrowRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+          ))}
+        </section>
+      )}
       {session.mock.format === 'focus' && (
         <p className="notice">{focusMock.title}。計画10問と安全管理10問の学習結果です。</p>
       )}
@@ -981,8 +1037,7 @@ export function MockExamResults() {
         {session.mock.finishedReason === 'timeout'
           ? '制限時間に達したため自動採点しました。'
           : '提出した回答を採点しました。'}{' '}
-        · {session.questionIds.length}問 ·{' '}
-        {session.mock.timeMode === 'study' ? '一時停止できる学習用' : '時間が進み続ける練習用'} ·
+        · {session.questionIds.length}問 · {mockTimeLabels[session.mock.timeMode]} ·
         AIによる出典照合済み問題
       </div>
       <div className="result-stats">
@@ -1179,7 +1234,7 @@ export function MockExamResults() {
             <Link className="list-row" key={s.id} to={`/exam-results/${s.id}`}>
               <span>
                 {new Date(s.startedAt).toLocaleString('ja-JP')} ·{' '}
-                {s.mock?.timeMode === 'study' ? '停止可' : '時間継続'}
+                {mockTimeLabels[s.mock?.timeMode ?? 'study']}
               </span>
               <b>{mockSummary(s, data.attempts).rate}%</b>
             </Link>

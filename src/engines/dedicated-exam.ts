@@ -57,7 +57,7 @@ export interface DedicatedExamResult extends Score {
   domains: (Score & { id: DomainId })[];
 }
 
-export interface DedicatedExamSession {
+interface DedicatedExamSessionBase {
   id: string;
   packKey: string;
   status: 'active' | 'completed';
@@ -67,11 +67,25 @@ export interface DedicatedExamSession {
   flags: string[];
   answers: Record<string, string>;
   startedAt: number;
-  deadlineAt: number;
   completedAt?: number;
   finishedReason?: 'submitted' | 'timeout';
   result?: DedicatedExamResult;
 }
+
+type DedicatedExamAttempt = DedicatedExamSessionBase & {
+  deadlineAt: number;
+  pausedRemainingMs?: number;
+  retakeOf?: never;
+};
+
+export type DedicatedExamRetake = DedicatedExamSessionBase & {
+  deadlineAt: null;
+  pausedRemainingMs?: never;
+  retakeOf: string;
+  retakeNumber: number;
+};
+
+export type DedicatedExamSession = DedicatedExamAttempt | DedicatedExamRetake;
 
 export type DedicatedExamAction =
   | { type: 'answer'; questionId: string; choiceId: string }
@@ -214,21 +228,22 @@ export function dedicatedExamPackKey(pack: DedicatedExamPack) {
   return pack.id + ':' + pack.revision;
 }
 
-export function createDedicatedExamSession(
+function createSession(
   pack: DedicatedExamPack,
+  items: DedicatedExamItem[],
   now: number,
-  rng: () => number = Math.random,
-): DedicatedExamSession {
+  rng: () => number,
+): DedicatedExamSessionBase {
   return {
     id: crypto.randomUUID(),
     packKey: dedicatedExamPackKey(pack),
     status: 'active',
     questionIds: shuffle(
-      pack.items.map((item) => item.id),
+      items.map((item) => item.id),
       rng,
     ),
     choiceOrders: Object.fromEntries(
-      pack.items.map((item) => [
+      items.map((item) => [
         item.id,
         shuffle(
           item.choices.map((choice) => choice.id),
@@ -240,13 +255,65 @@ export function createDedicatedExamSession(
     flags: [],
     answers: {},
     startedAt: now,
+  };
+}
+
+export function createDedicatedExamSession(
+  pack: DedicatedExamPack,
+  now: number,
+  rng: () => number = Math.random,
+): DedicatedExamAttempt {
+  return {
+    ...createSession(pack, pack.items, now, rng),
     deadlineAt: now + dedicatedExamLimitMs,
   };
 }
 
-export function remainingDedicatedSeconds(session: DedicatedExamSession, now = Date.now()) {
+export function dedicatedMissedQuestionIds(pack: DedicatedExamPack, source: DedicatedExamSession) {
+  if (
+    source.status !== 'completed' ||
+    source.retakeOf ||
+    source.packKey !== dedicatedExamPackKey(pack)
+  )
+    return [];
+
+  const answers = new Map(pack.items.map((item) => [item.id, item.correctChoiceId]));
+  return source.questionIds.filter(
+    (id) => answers.has(id) && source.answers[id] !== answers.get(id),
+  );
+}
+
+export function createDedicatedMissedRetake(
+  pack: DedicatedExamPack,
+  source: DedicatedExamSession,
+  retakeNumber: number,
+  now: number,
+  rng: () => number = Math.random,
+): DedicatedExamRetake {
+  const missed = new Set(dedicatedMissedQuestionIds(pack, source));
+  if (!missed.size) throw new Error('解き直しの対象になる不正解・未回答の問題はありません。');
+  return {
+    ...createSession(
+      pack,
+      pack.items.filter((item) => missed.has(item.id)),
+      now,
+      rng,
+    ),
+    deadlineAt: null,
+    retakeOf: source.id,
+    retakeNumber,
+  };
+}
+
+export function remainingDedicatedMilliseconds(session: DedicatedExamSession, now = Date.now()) {
+  if (session.deadlineAt === null) return 0;
+  if (session.pausedRemainingMs !== undefined) return session.pausedRemainingMs;
   const until = Math.max(session.startedAt, session.completedAt ?? now);
-  return Math.max(0, Math.ceil((session.deadlineAt - until) / 1000));
+  return Math.max(0, Math.min(dedicatedExamLimitMs, session.deadlineAt - until));
+}
+
+export function remainingDedicatedSeconds(session: DedicatedExamSession, now = Date.now()) {
+  return Math.ceil(remainingDedicatedMilliseconds(session, now) / 1000);
 }
 
 function score(items: DedicatedExamItem[], answers: Record<string, string>): Score {
@@ -266,8 +333,10 @@ function score(items: DedicatedExamItem[], answers: Record<string, string>): Sco
 export function scoreDedicatedExam(
   pack: DedicatedExamPack,
   answers: Record<string, string>,
+  retakeQuestionIds?: readonly string[],
 ): DedicatedExamResult {
-  const scored = pack.items.filter((item) => item.scored);
+  const retakeIds = retakeQuestionIds ? new Set(retakeQuestionIds) : undefined;
+  const scored = pack.items.filter((item) => (retakeIds ? retakeIds.has(item.id) : item.scored));
   return {
     ...score(scored, answers),
     domains: domainIds.map((id) => ({

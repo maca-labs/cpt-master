@@ -1,11 +1,14 @@
 import 'fake-indexeddb/auto';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import Dexie from 'dexie';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { allQuestions } from '../src/content';
 import { blueprint, domainIds } from '../src/content/blueprints';
 import {
+  createDedicatedExamSession,
   dedicatedExamLimitMs,
+  dedicatedMissedQuestionIds,
   remainingDedicatedSeconds,
   validateDedicatedExamPack,
   type DedicatedExamItem,
@@ -271,6 +274,111 @@ describe('専用模試の保存と採点', () => {
     const newSession = await database.start(pack);
     expect(newSession.id).not.toBe(session.id);
     expect(newSession.deadlineAt).toBe(now + dedicatedExamLimitMs);
+  });
+
+  it('v1の受験を保持し、中断した時間を再開後の締切から除く', async () => {
+    const legacyDatabase = new Dexie(database.name);
+    legacyDatabase.version(1).stores({ sessions: 'id', current: 'packKey' });
+    const original = createDedicatedExamSession(pack, startedAt);
+    await legacyDatabase.table('sessions').add(original);
+    await legacyDatabase
+      .table('current')
+      .add({ packKey: original.packKey, sessionId: original.id });
+    legacyDatabase.close();
+
+    expect(await database.sessionFor(pack)).toEqual(original);
+    now += 15_250;
+    const paused = await database.pause(pack, original.id);
+    const frozen = dedicatedExamLimitMs - 15_250;
+    expect(paused.pausedRemainingMs).toBe(frozen);
+
+    now += dedicatedExamLimitMs;
+    database.close();
+    await database.open();
+    expect(await database.start(pack)).toEqual(paused);
+    expect(remainingDedicatedSeconds(paused, now)).toBe(Math.ceil(frozen / 1000));
+    expect(await otherTab.finish(pack, original.id, 'timeout')).toEqual(paused);
+    const questionId = original.questionIds[0];
+    await expect(
+      otherTab.update(pack, original.id, { type: 'answer', questionId, choiceId: 'a' }),
+    ).rejects.toThrow('再開');
+    await expect(otherTab.finish(pack, original.id, 'submitted')).rejects.toThrow('再開');
+
+    const resumed = await database.resume(pack, original.id);
+    expect(resumed.pausedRemainingMs).toBeUndefined();
+    expect(resumed.deadlineAt).toBe(now + frozen);
+    expect(await otherTab.resume(pack, original.id)).toEqual(resumed);
+    await otherTab.update(pack, original.id, { type: 'answer', questionId, choiceId: 'a' });
+    now += frozen;
+    expect(await database.finish(pack, original.id, 'timeout')).toMatchObject({
+      status: 'completed',
+      finishedReason: 'timeout',
+      completedAt: resumed.deadlineAt,
+      answers: { [questionId]: 'a' },
+    });
+  });
+
+  it('不正解・未回答だけを別の解き直しに保存し、元の成績と履歴を保持する', async () => {
+    const full = await database.start(pack);
+    await expect(database.startMissedRetake(pack, full.id)).rejects.toThrow('完了した専用模試');
+    const scoredCorrect = pack.items.find((item) => item.scored)!;
+    const unscoredCorrect = pack.items.find((item) => !item.scored)!;
+    const missed = pack.items.find((item) => item.id !== scoredCorrect.id && item.scored)!;
+    const missedUnscored = pack.items.find(
+      (item) => item.id !== unscoredCorrect.id && !item.scored,
+    )!;
+    for (const item of [scoredCorrect, unscoredCorrect])
+      await database.update(pack, full.id, { type: 'answer', questionId: item.id, choiceId: 'a' });
+    await database.update(pack, full.id, { type: 'answer', questionId: missed.id, choiceId: 'b' });
+    const original = await database.finish(pack, full.id, 'submitted');
+    const questionIds = dedicatedMissedQuestionIds(pack, original);
+    expect(questionIds).toHaveLength(153);
+    expect(questionIds).toEqual(
+      full.questionIds.filter((id) => id !== scoredCorrect.id && id !== unscoredCorrect.id),
+    );
+
+    const [first, other] = await Promise.all([
+      database.startMissedRetake(pack, full.id),
+      otherTab.startMissedRetake(pack, full.id),
+    ]);
+    expect(first).toEqual(other);
+    expect(first).toMatchObject({ retakeOf: full.id, retakeNumber: 1, deadlineAt: null });
+    expect(new Set(first.questionIds)).toEqual(new Set(questionIds));
+    expect(new Set(Object.keys(first.choiceOrders))).toEqual(new Set(questionIds));
+    await expect(
+      database.update(pack, first.id, {
+        type: 'answer',
+        questionId: scoredCorrect.id,
+        choiceId: 'a',
+      }),
+    ).rejects.toThrow('含まれない');
+
+    now += dedicatedExamLimitMs + 1000;
+    await otherTab.update(pack, first.id, { type: 'answer', questionId: missed.id, choiceId: 'a' });
+    await database.update(pack, first.id, {
+      type: 'answer',
+      questionId: missedUnscored.id,
+      choiceId: 'a',
+    });
+    expect(await database.missedRetakesFor(pack, full.id)).toMatchObject([
+      { id: first.id, status: 'active', answers: { [missed.id]: 'a', [missedUnscored.id]: 'a' } },
+    ]);
+    const retaken = await database.finish(pack, first.id, 'submitted');
+    expect(retaken.result).toMatchObject({ correct: 2, total: 153, answered: 2, unanswered: 151 });
+    expect(retaken.result?.domains[0]).toMatchObject({ correct: 2, total: 33 });
+    expect((await database.sessionFor(pack))?.result).toEqual(original.result);
+    await expect(database.startMissedRetake(pack, first.id)).rejects.toThrow('完了した専用模試');
+
+    const second = await database.startMissedRetake(pack, full.id);
+    expect(second).toMatchObject({ retakeOf: full.id, retakeNumber: 2, answers: {} });
+    const nextOriginal = await database.start(pack);
+    expect((await database.sessionFor(pack))?.id).toBe(nextOriginal.id);
+    expect(await database.sessionById(pack, full.id)).toEqual(original);
+    expect(await database.sessionById({ ...pack, revision: 2 }, full.id)).toBeUndefined();
+    expect((await database.missedRetakesFor(pack, full.id)).map(({ id }) => id)).toEqual([
+      second.id,
+      first.id,
+    ]);
   });
 
   it('公開側は準備中のセットを拒否し、学習用公開版の受験を保存して採点する', async () => {

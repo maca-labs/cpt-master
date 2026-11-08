@@ -52,12 +52,13 @@ function resultUrl(session: SessionPerformance) {
 function timerLabel(session: SessionPerformance) {
   if (session.mode !== 'mock') return '';
   return session.mockTimeMode === 'continuous'
-    ? '連続タイマー'
+    ? '時間配分練習'
     : session.mockTimeMode === 'study'
       ? '中断できるタイマー'
       : '時間方式の記録なし';
 }
 function sessionLabel(session: SessionPerformance) {
+  if (session.mockRetakeOf) return '模試の解き直し';
   if (session.mode === 'mock')
     return { short: '短縮模試', through: '学習用通し演習', focus: '集中模試' }[
       session.mockFormat ?? 'short'

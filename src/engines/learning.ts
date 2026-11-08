@@ -103,6 +103,15 @@ export function createSession(
     startedAt: new Date().toISOString(),
   };
 }
+export function mockRetakeQuestionIds(source: Session, attempts: readonly Attempt[]) {
+  const correctIds = new Set(
+    attempts
+      .filter((attempt) => attempt.sessionId === source.id && attempt.correct)
+      .map((attempt) => attempt.questionId),
+  );
+  return source.questionIds.filter((id) => !correctIds.has(id));
+}
+
 export function scoreAnswer(q: Question, choiceId: string) {
   if (!q.choices.some((c) => c.id === choiceId)) throw new Error('選択肢が不正です。');
   return choiceId === q.correctChoiceId;

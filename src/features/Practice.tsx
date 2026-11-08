@@ -283,8 +283,14 @@ export function Practice() {
           {active.map((s) => (
             <Link className="list-row" to={`/session/${s.id}`} key={s.id}>
               <span>
-                {s.mode === 'diagnostic' ? '実力診断' : s.mode === 'review' ? '復習' : '問題演習'} ·{' '}
-                {s.index + 1} / {s.questionIds.length}問目
+                {s.mockRetakeOf
+                  ? '模試の解き直し'
+                  : s.mode === 'diagnostic'
+                    ? '実力診断'
+                    : s.mode === 'review'
+                      ? '復習'
+                      : '問題演習'}{' '}
+                · {s.index + 1} / {s.questionIds.length}問目
                 {s.practice && (
                   <small>
                     {practiceBatchLabel(s.practice.batch)} ·{' '}
@@ -308,8 +314,14 @@ export function Practice() {
           .map((s) => (
             <Link className="list-row" key={s.id} to={`/results/${s.id}`}>
               <span>
-                {s.mode === 'diagnostic' ? '診断' : s.mode === 'review' ? '復習' : '演習'} ·{' '}
-                {new Date(s.startedAt).toLocaleDateString('ja-JP')}
+                {s.mockRetakeOf
+                  ? '模試の解き直し'
+                  : s.mode === 'diagnostic'
+                    ? '診断'
+                    : s.mode === 'review'
+                      ? '復習'
+                      : '演習'}{' '}
+                · {new Date(s.startedAt).toLocaleDateString('ja-JP')}
                 {s.practice && (
                   <small>
                     {practiceBatchLabel(s.practice.batch)} ·{' '}
@@ -535,18 +547,29 @@ export function Quiz() {
   return (
     <>
       <div className="quiz-top">
-        <Link to={diag ? '/diagnostic' : '/practice'} className="back-link">
+        <Link
+          to={
+            session.mockRetakeOf
+              ? `/exam-results/${session.mockRetakeOf}`
+              : diag
+                ? '/diagnostic'
+                : '/practice'
+          }
+          className="back-link"
+        >
           <ArrowLeft size={15} />
           保存して中断
         </Link>
         <Pill>
-          {diag
-            ? '実力診断'
-            : session.practice?.selection === 'strict_unseen'
-              ? '厳密な未見評価'
-              : session.mode === 'review'
-                ? '復習'
-                : '確認問題'}{' '}
+          {session.mockRetakeOf
+            ? '模試の解き直し'
+            : diag
+              ? '実力診断'
+              : session.practice?.selection === 'strict_unseen'
+                ? '厳密な未見評価'
+                : session.mode === 'review'
+                  ? '復習'
+                  : '確認問題'}{' '}
           · {session.index + 1} / {session.questionIds.length}
         </Pill>
       </div>
@@ -882,12 +905,24 @@ export function Results() {
       <PageTitle
         eyebrow="YOUR LEARNING INSIGHTS"
         title={
-          session.mode === 'diagnostic'
-            ? '学ぶ場所が、見えてきました。'
-            : 'ひとつ、理解が深まりました。'
+          session.mockRetakeOf
+            ? '模試の解き直し結果'
+            : session.mode === 'diagnostic'
+              ? '学ぶ場所が、見えてきました。'
+              : 'ひとつ、理解が深まりました。'
         }
-        description="この結果は学習の参考値です。公式換算スコア・合格確率は算出しません。"
-      />
+        description={
+          session.mockRetakeOf
+            ? '元の模試で不正解・未回答だった問題の解き直し成績です。'
+            : 'この結果は学習の参考値です。公式換算スコア・合格確率は算出しません。'
+        }
+      >
+        {session.mockRetakeOf && (
+          <Link className="button secondary" to={`/exam-results/${session.mockRetakeOf}`}>
+            <ArrowLeft size={16} /> 元の模試結果へ
+          </Link>
+        )}
+      </PageTitle>
       {session.practice && (
         <p className="notice">
           {practiceBatchLabel(session.practice.batch)} ·{' '}
@@ -904,7 +939,13 @@ export function Results() {
       )}
       <div className="result-stats">
         <div>
-          <span>{strict ? '厳密な未見評価の正答率' : '今回の正答率'}</span>
+          <span>
+            {session.mockRetakeOf
+              ? '解き直しの正答率'
+              : strict
+                ? '厳密な未見評価の正答率'
+                : '今回の正答率'}
+          </span>
           <b>
             {rate(evaluated) ?? '—'}
             <small>{evaluated.length ? '%' : ''}</small>

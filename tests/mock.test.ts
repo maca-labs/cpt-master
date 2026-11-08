@@ -99,12 +99,20 @@ describe('persistable mock clock and drafts', () => {
     const resumed = resumeMock(paused, after(3600));
     expect(remainingMockSeconds(resumed, after(3610))).toBe(1267);
   });
-  it('continues time across reloads and refuses pausing in continuous mode', () => {
+  it('continues across reloads until explicitly paused and preserves fractional remaining time', () => {
     const session = createMockSession(questions, 20, false, 'continuous', [], [], now);
-    expect(() => pauseMock(session, after(10))).toThrow(/停止できません/);
     const restored = JSON.parse(JSON.stringify(session));
     expect(remainingMockSeconds(restored, after(1399))).toBe(1);
     expect(remainingMockSeconds(restored, after(1401))).toBe(0);
+    expect(pauseMock(restored, after(1401))).toBe(restored);
+
+    const paused = pauseMock(restored, after(10.25));
+    expect(paused.mock?.clockAnchor?.remainingMs).toBe(1389750);
+    expect(remainingMockSeconds(paused, after(2500))).toBe(1390);
+    const resumed = resumeMock(paused, after(2500));
+    expect(resumed.mock?.deadlineAt).toBe(after(3889.75).toISOString());
+    const pausedAgain = pauseMock(resumed, after(2500.35));
+    expect(pausedAgain.mock?.clockAnchor?.remainingMs).toBe(1389400);
   });
   it('keeps choice IDs and reasoning confidence in a draft without grading', () => {
     const session = createMockSession(questions, 20, false, 'study', [], [], now);

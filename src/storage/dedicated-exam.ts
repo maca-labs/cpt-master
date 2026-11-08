@@ -1,13 +1,15 @@
 import Dexie, { type Table } from 'dexie';
 import {
   createDedicatedExamSession,
+  createDedicatedMissedRetake,
   dedicatedExamPackKey,
-  remainingDedicatedSeconds,
+  remainingDedicatedMilliseconds,
   scoreDedicatedExam,
   validateDedicatedExamPack,
   type DedicatedExamAccess,
   type DedicatedExamAction,
   type DedicatedExamPack,
+  type DedicatedExamRetake,
   type DedicatedExamSession,
 } from '../engines/dedicated-exam';
 
@@ -27,11 +29,41 @@ export class DedicatedExamDB extends Dexie {
   ) {
     super(name);
     this.version(1).stores({ sessions: 'id', current: 'packKey' });
+    this.version(2).stores({ sessions: 'id,retakeOf' });
   }
 
   sessionFor(pack: DedicatedExamPack) {
     this.requireEligiblePack(pack);
     return this.transaction('r', [this.sessions, this.current], () => this.readCurrent(pack));
+  }
+
+  sessionById(pack: DedicatedExamPack, sessionId: string) {
+    this.requireEligiblePack(pack);
+    return this.readSession(pack, sessionId);
+  }
+
+  missedRetakesFor(pack: DedicatedExamPack, sourceSessionId: string) {
+    this.requireEligiblePack(pack);
+    return this.readMissedRetakes(pack, sourceSessionId);
+  }
+
+  startMissedRetake(pack: DedicatedExamPack, sourceSessionId: string) {
+    this.requireEligiblePack(pack);
+    return this.transaction('rw', this.sessions, async () => {
+      const source = await this.requireSession(pack, sourceSessionId);
+      if (source.status !== 'completed' || source.retakeOf)
+        throw new Error('完了した専用模試から解き直しを始めてください。');
+      const [latest] = await this.readMissedRetakes(pack, source.id);
+      if (latest?.status === 'active') return latest;
+      const retake = createDedicatedMissedRetake(
+        pack,
+        source,
+        (latest?.retakeNumber ?? 0) + 1,
+        this.clock(),
+      );
+      await this.sessions.add(retake);
+      return retake;
+    });
   }
 
   start(pack: DedicatedExamPack) {
@@ -40,7 +72,7 @@ export class DedicatedExamDB extends Dexie {
       const current = await this.readCurrent(pack);
       const now = this.clock();
       if (current?.status === 'active') {
-        return remainingDedicatedSeconds(current, now) === 0
+        return remainingDedicatedMilliseconds(current, now) === 0
           ? this.complete(pack, current, 'timeout', now)
           : current;
       }
@@ -51,13 +83,45 @@ export class DedicatedExamDB extends Dexie {
     });
   }
 
+  pause(pack: DedicatedExamPack, sessionId: string) {
+    this.requireEligiblePack(pack);
+    return this.transaction('rw', this.sessions, async () => {
+      const session = await this.requireSession(pack, sessionId);
+      if (
+        session.status === 'completed' ||
+        session.deadlineAt === null ||
+        session.pausedRemainingMs !== undefined
+      )
+        return session;
+      const now = this.clock();
+      const remaining = remainingDedicatedMilliseconds(session, now);
+      if (!remaining) return this.complete(pack, session, 'timeout', now);
+      session.pausedRemainingMs = remaining;
+      await this.sessions.put(session);
+      return session;
+    });
+  }
+
+  resume(pack: DedicatedExamPack, sessionId: string) {
+    this.requireEligiblePack(pack);
+    return this.transaction('rw', this.sessions, async () => {
+      const session = await this.requireSession(pack, sessionId);
+      if (session.status === 'completed' || session.pausedRemainingMs === undefined) return session;
+      session.deadlineAt = this.clock() + session.pausedRemainingMs;
+      delete session.pausedRemainingMs;
+      await this.sessions.put(session);
+      return session;
+    });
+  }
+
   update(pack: DedicatedExamPack, sessionId: string, action: DedicatedExamAction) {
     this.requireEligiblePack(pack);
     return this.transaction('rw', this.sessions, async () => {
       const session = await this.requireSession(pack, sessionId);
       if (session.status === 'completed') return session;
+      if (session.pausedRemainingMs !== undefined) throw new Error('模試を再開してください。');
       const now = this.clock();
-      if (remainingDedicatedSeconds(session, now) === 0)
+      if (session.deadlineAt !== null && remainingDedicatedMilliseconds(session, now) === 0)
         return this.complete(pack, session, 'timeout', now);
 
       if (action.type === 'navigate') {
@@ -90,8 +154,13 @@ export class DedicatedExamDB extends Dexie {
     return this.transaction('rw', this.sessions, async () => {
       const session = await this.requireSession(pack, sessionId);
       if (session.status === 'completed') return session;
+      if (session.pausedRemainingMs !== undefined) {
+        if (reason === 'timeout') return session;
+        throw new Error('模試を再開してから提出してください。');
+      }
       const now = this.clock();
-      const expired = remainingDedicatedSeconds(session, now) === 0;
+      const expired =
+        session.deadlineAt !== null && remainingDedicatedMilliseconds(session, now) === 0;
       if (!expired && reason === 'timeout') throw new Error('まだ制限時間内です。');
       return this.complete(pack, session, expired ? 'timeout' : reason, now);
     });
@@ -99,7 +168,23 @@ export class DedicatedExamDB extends Dexie {
 
   private async readCurrent(pack: DedicatedExamPack) {
     const pointer = await this.current.get(dedicatedExamPackKey(pack));
-    return pointer ? this.sessions.get(pointer.sessionId) : undefined;
+    const session = pointer ? await this.readSession(pack, pointer.sessionId) : undefined;
+    return session?.deadlineAt !== null ? session : undefined;
+  }
+
+  private async readSession(pack: DedicatedExamPack, sessionId: string) {
+    const session = await this.sessions.get(sessionId);
+    return session?.packKey === dedicatedExamPackKey(pack) ? session : undefined;
+  }
+
+  private async readMissedRetakes(pack: DedicatedExamPack, sourceSessionId: string) {
+    const packKey = dedicatedExamPackKey(pack);
+    return (await this.sessions.where('retakeOf').equals(sourceSessionId).toArray())
+      .filter(
+        (session): session is DedicatedExamRetake =>
+          session.packKey === packKey && session.deadlineAt === null,
+      )
+      .sort((a, b) => b.retakeNumber - a.retakeNumber);
   }
 
   private requireEligiblePack(pack: DedicatedExamPack) {
@@ -108,9 +193,8 @@ export class DedicatedExamDB extends Dexie {
   }
 
   private async requireSession(pack: DedicatedExamPack, sessionId: string) {
-    const session = await this.sessions.get(sessionId);
-    if (!session || session.packKey !== dedicatedExamPackKey(pack))
-      throw new Error('この専用模試の受験記録が見つかりません。');
+    const session = await this.readSession(pack, sessionId);
+    if (!session) throw new Error('この専用模試の受験記録が見つかりません。');
     return session;
   }
 
@@ -120,12 +204,17 @@ export class DedicatedExamDB extends Dexie {
     reason: 'submitted' | 'timeout',
     now: number,
   ) {
+    const end = Math.max(now, session.startedAt);
     const completed: DedicatedExamSession = {
       ...session,
       status: 'completed',
-      completedAt: Math.min(session.deadlineAt, Math.max(now, session.startedAt)),
+      completedAt: session.deadlineAt === null ? end : Math.min(session.deadlineAt, end),
       finishedReason: reason,
-      result: scoreDedicatedExam(pack, session.answers),
+      result: scoreDedicatedExam(
+        pack,
+        session.answers,
+        session.retakeOf ? session.questionIds : undefined,
+      ),
     };
     await this.sessions.put(completed);
     return completed;

@@ -15,6 +15,7 @@ import {
   pauseMock,
   previewComposition,
   remainingMockSeconds,
+  resumeMock,
   recordMockDisplay,
   selectThrough,
   withMockDraft,
@@ -240,11 +241,16 @@ describe('155-question continuous learning format', () => {
     };
     expect(() => selectThrough([...bank, exam, draft], true)).toThrow(/不足/);
   });
-  it('cannot pause its deadline, even when the tab is closed and reopened', () => {
+  it('keeps its 180-minute deadline until explicitly paused, then resumes from the saved time', () => {
     const session = createThroughSession(questions, true, [], [], [], now, () => 0.4);
     expect(remainingMockSeconds(session, after(60))).toBe(10740);
     expect(remainingMockSeconds(session, after(10801))).toBe(0);
-    expect(() => pauseMock(session, after(60))).toThrow(/停止できません/);
+
+    const paused = pauseMock(session, after(60));
+    expect(remainingMockSeconds(paused, after(12000))).toBe(10740);
+    const resumed = resumeMock(paused, after(12000));
+    expect(resumed.mock?.deadlineAt).toBe(after(22740).toISOString());
+    expect(remainingMockSeconds(resumed, after(12010))).toBe(10730);
   });
   it('round-trips flags, selected order and drafts, then grades all 155 as the denominator exactly once', async () => {
     const source = db(),

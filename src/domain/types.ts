@@ -148,6 +148,7 @@ export interface Session {
   startedAt: string;
   completedAt?: string;
   firstSeenByQuestion: Record<string, boolean>;
+  mockRetakeOf?: string;
   practice?: {
     batch: PracticeBatch;
     selection: 'unseen_first' | 'strict_unseen' | 'review';
@@ -160,6 +161,7 @@ export interface Session {
     limitSeconds: number;
     remainingSeconds: number;
     deadlineAt: string | null;
+    clockAnchor?: { at: string; remainingMs: number };
     paused: boolean;
     flags: string[];
     draftAnswers: Record<

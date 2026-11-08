@@ -144,14 +144,25 @@ test('flags, draft choices and paused time survive interruption and reload', asy
   await expect(page.locator('.result-stats')).toContainText('1 / 20問 正解');
 });
 
-test('continuous mode times out on reopening and records unanswered questions without empty attempts', async ({
+test('a paused continuous mock survives its old deadline and times out after resuming', async ({
   page,
 }) => {
   await page.clock.install({ time: new Date('2026-11-04T09:00:00.000Z') });
   const id = await start(page, 10, 'continuous');
-  await expect(page.getByRole('button', { name: '一時停止', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '一時停止', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: '保存して中断', exact: true }).click();
   await expect(page.getByRole('heading', { name: '中断中の短縮模試', exact: true })).toBeVisible();
+  await page.locator(`a[href="#/exam/${id}"]`).click();
+  const timer = page.getByRole('timer');
+  await expect(timer).toContainText('停止中');
+  const frozen = await timer.innerText();
+  await page.clock.fastForward(701000);
+  await page.reload();
+  await expect(timer).toHaveText(frozen);
+  await page.getByRole('button', { name: '模試を再開する', exact: true }).click();
+  await expect(page.locator('.quiz-card h1')).toBeVisible();
+
+  await open(page);
   await page.clock.fastForward(701000);
   await page.locator(`a[href="#/exam/${id}"]`).click();
   await expect(page.getByRole('heading', { name: '短縮模試の結果', exact: true })).toBeVisible();

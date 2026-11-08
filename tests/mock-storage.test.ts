@@ -8,6 +8,8 @@ import {
   finishMock,
   mockSummary,
   pauseMock,
+  resumeMock,
+  startMockRetake,
   withMockDraft,
 } from '../src/engines/mock';
 import {
@@ -42,6 +44,78 @@ async function setup(mode: 'study' | 'continuous' = 'study', answered = 0): Prom
   await database.sessions.add(session);
   return session;
 }
+
+describe('mock retakes', () => {
+  it('creates one active retake of missed questions without modifying the original session', async () => {
+    const source = await setup('study', 2);
+    const original = await finishMock(source.id, 'submitted', database, after(60));
+    const before = await snapshot(database);
+    const [first, concurrent] = await Promise.all([
+      startMockRetake(source.id, database),
+      startMockRetake(source.id, database),
+    ]);
+
+    expect(first).toEqual(concurrent);
+    expect(first).toMatchObject({
+      mode: 'review',
+      status: 'active',
+      mockRetakeOf: source.id,
+      questionIds: source.questionIds.slice(1),
+    });
+    expect(first.id).not.toBe(source.id);
+    expect(Object.values(first.firstSeenByQuestion)).toEqual(Array(19).fill(false));
+    expect(await snapshot(database)).toEqual({
+      ...before,
+      sessions: expect.arrayContaining([original, first]),
+    });
+    expect(await database.sessions.count()).toBe(2);
+
+    const backup = validateBackup(JSON.stringify(await exportBackup(database)));
+    await restoreBackup(backup, target);
+    expect(await snapshot(target)).toEqual(await snapshot(database));
+    backup.data.sessions.find((session) => session.id === first.id)!.questionIds.reverse();
+    expect(() => validateBackup(JSON.stringify(backup))).toThrow(/解き直し/);
+
+    await database.sessions.update(first.id, { status: 'completed' });
+    const next = await startMockRetake(source.id, database);
+    expect(next.id).not.toBe(first.id);
+    expect(next.questionIds).toEqual(first.questionIds);
+  });
+
+  it('blocks ungraded or reserved sessions without making a partial retake', async () => {
+    const source = await setup('study', 2);
+    await expect(startMockRetake(source.id, database)).rejects.toThrow(/採点済み/);
+    await finishMock(source.id, 'submitted', database, after(60));
+    const reserved = questions.find((question) => question.id === source.questionIds[1])!;
+    await database.sessions.add({
+      ...createSession('practice', [reserved], [], []),
+      practice: { batch: 'all', selection: 'strict_unseen', requestedCount: 10 },
+    });
+    await expect(startMockRetake(source.id, database)).rejects.toThrow(/予約中/);
+    expect(await database.sessions.count()).toBe(2);
+  });
+
+  it('does not start a retake of an all-correct session', async () => {
+    let source = await setup();
+    for (const [index, id] of source.questionIds.entries()) {
+      const question = questions.find((item) => item.id === id)!;
+      source = withMockDraft(
+        source,
+        question,
+        question.correctChoiceId,
+        true,
+        1000,
+        after(index + 1),
+      );
+    }
+    await database.sessions.put(source);
+    await finishMock(source.id, 'submitted', database, after(60));
+    await expect(startMockRetake(source.id, database)).rejects.toThrow(
+      /不正解・未回答の問題はありません/,
+    );
+    expect(await database.sessions.count()).toBe(1);
+  });
+});
 
 describe('atomic short mock grading and backup', () => {
   it('stores drafts without attempts, then grades answered questions and schedules all missed questions', async () => {
@@ -120,6 +194,23 @@ describe('atomic short mock grading and backup', () => {
     expect((await target.sessions.get(session.id))?.mock).toEqual(paused.mock);
     expect((await target.sessions.get(legacy.id))?.mock).toBeUndefined();
   });
+  it('round-trips an explicitly paused continuous session and its rebased deadline', async () => {
+    const source = await setup('continuous', 2);
+    const paused = pauseMock(source, after(30.25));
+    await database.sessions.put(paused);
+
+    const backup = validateBackup(JSON.stringify(await exportBackup(database)));
+    await restoreBackup(backup, target);
+    expect(await target.sessions.get(source.id)).toEqual(paused);
+
+    const resumed = resumeMock(paused, after(2500));
+    await target.sessions.put(resumed);
+    const running = validateBackup(JSON.stringify(await exportBackup(target)));
+    expect(running.data.sessions).toEqual([resumed]);
+    running.data.sessions[0].mock!.deadlineAt = after(3900).toISOString();
+    expect(() => validateBackup(JSON.stringify(running))).toThrow();
+  });
+
   const corruptions: { name: string; mutate: (b: Backup) => void }[] = [
     {
       name: 'missing mock data',
@@ -178,7 +269,7 @@ describe('atomic short mock grading and backup', () => {
       },
     },
     {
-      name: 'continuous mode marked paused',
+      name: 'legacy continuous mode marked paused without a saved clock',
       mutate: (b) => {
         const m = b.data.sessions[0].mock!;
         m.timeMode = 'continuous';

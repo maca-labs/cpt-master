@@ -2,7 +2,14 @@ import type { Attempt, DomainId, Exposure, Question, Session } from '../domain/t
 import { allQuestions } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import { focusMock, focusMockQuestions } from '../content/focus-mock';
-import { createSession, eligible, isFirstSeen, nextReview, shuffle } from './learning';
+import {
+  createSession,
+  eligible,
+  isFirstSeen,
+  mockRetakeQuestionIds,
+  nextReview,
+  shuffle,
+} from './learning';
 import { db, recordExposure, type LearningDB } from '../storage/db';
 import { reservedStrictGroups } from './practice-selection';
 
@@ -312,48 +319,51 @@ function startTimedMock(
     },
   };
 }
+function remainingMockMilliseconds(state: MockState, now: Date) {
+  if (state.paused) return state.clockAnchor?.remainingMs ?? state.remainingSeconds * 1000;
+  if (!state.deadlineAt) return state.remainingSeconds * 1000;
+  return Math.max(
+    0,
+    Math.min(
+      state.clockAnchor?.remainingMs ?? state.limitSeconds * 1000,
+      Date.parse(state.deadlineAt) - now.getTime(),
+    ),
+  );
+}
 export function remainingMockSeconds(session: Session, now = new Date()) {
-  const state = session.mock;
-  if (!state) throw new Error('短縮模試の設定がありません。');
-  return state.paused || !state.deadlineAt
-    ? state.remainingSeconds
-    : Math.max(
-        0,
-        Math.min(
-          state.limitSeconds,
-          Math.ceil((Date.parse(state.deadlineAt) - now.getTime()) / 1000),
-        ),
-      );
+  if (!session.mock) throw new Error('模試の設定がありません。');
+  return Math.ceil(remainingMockMilliseconds(session.mock, now) / 1000);
 }
 export function pauseMock(session: Session, now = new Date()): Session {
   if (!session.mock || session.mode !== 'mock' || session.status !== 'active')
-    throw new Error('進行中の短縮模試ではありません。');
-  if (session.mock.format === 'through' || session.mock.timeMode !== 'study')
-    throw new Error('時間継続モードでは停止できません。');
+    throw new Error('進行中の模試ではありません。');
+  if (session.mock.paused) return session;
+
+  const remainingMs = remainingMockMilliseconds(session.mock, now);
+  if (remainingMs === 0) return session;
   return {
     ...session,
     mock: {
       ...session.mock,
       paused: true,
-      remainingSeconds: remainingMockSeconds(session, now),
+      remainingSeconds: Math.ceil(remainingMs / 1000),
       deadlineAt: null,
+      clockAnchor: { at: now.toISOString(), remainingMs },
     },
   };
 }
 export function resumeMock(session: Session, now = new Date()): Session {
-  if (
-    !session.mock ||
-    session.mock.format === 'through' ||
-    session.status !== 'active' ||
-    !session.mock.paused
-  )
-    throw new Error('停止中の短縮模試ではありません。');
+  if (!session.mock?.paused || session.mode !== 'mock' || session.status !== 'active')
+    throw new Error('停止中の模試ではありません。');
+
+  const remainingMs = remainingMockMilliseconds(session.mock, now);
   return {
     ...session,
     mock: {
       ...session.mock,
       paused: false,
-      deadlineAt: new Date(now.getTime() + session.mock.remainingSeconds * 1000).toISOString(),
+      deadlineAt: new Date(now.getTime() + remainingMs).toISOString(),
+      clockAnchor: { at: now.toISOString(), remainingMs },
     },
   };
 }
@@ -430,6 +440,40 @@ export function mockSummary(
       };
     }),
   };
+}
+
+export async function startMockRetake(sourceSessionId: string, database: LearningDB = db) {
+  return database.transaction('rw', [database.sessions, database.attempts], async () => {
+    const source = await database.sessions.get(sourceSessionId);
+    if (!source?.mock || source.mode !== 'mock' || source.status !== 'completed')
+      throw new Error('採点済みの模試が見つかりません。');
+
+    const attempts = await database.attempts.where('sessionId').equals(source.id).toArray();
+    const questionIds = mockRetakeQuestionIds(source, attempts);
+    if (!questionIds.length) throw new Error('不正解・未回答の問題はありません。');
+    const selected = questionIds.map((id) => {
+      const question = allQuestions.find((item) => item.id === id);
+      if (!question) throw new Error('教材と模試の対応を確認できません。');
+      return question;
+    });
+    const active = await database.sessions.where('status').equals('active').toArray();
+    const reserved = reservedStrictGroups(active, allQuestions);
+    if (selected.some((question) => reserved.has(question.groupId)))
+      throw new Error(
+        '厳密な未見評価で予約中の問題があります。先に予約中の評価を完了してください。',
+      );
+
+    const existing = active.find((session) => session.mockRetakeOf === source.id);
+    if (existing) return existing;
+
+    const retake: Session = {
+      ...createSession('review', selected, [], []),
+      mockRetakeOf: source.id,
+      firstSeenByQuestion: Object.fromEntries(questionIds.map((id) => [id, false])),
+    };
+    await database.sessions.add(retake);
+    return retake;
+  });
 }
 
 /** One transaction makes grading idempotent across reloads and competing tabs. */

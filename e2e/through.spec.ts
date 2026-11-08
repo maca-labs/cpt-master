@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { questions } from '../src/content';
 import type { Attempt, Exposure, Session } from '../src/domain/types';
 
+const appBase = process.env.E2E_PUBLISHED_URL ?? '/';
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 async function rows<T>(page: Page, name: string): Promise<T[]> {
   return page.evaluate(
@@ -26,7 +27,7 @@ async function rows<T>(page: Page, name: string): Promise<T[]> {
   ) as Promise<T[]>;
 }
 async function startThrough(page: Page) {
-  await page.goto('/#/exam');
+  await page.goto(appBase + '#/exam');
   const panel = page.locator('#through-practice');
   await expect(panel.getByRole('heading', { name: '155問・180分の学習用通し演習' })).toBeVisible();
   await expect(panel).toContainText('全155問を採点し、未回答も分母に含めます。');
@@ -47,7 +48,7 @@ async function startThrough(page: Page) {
   await expect(page.locator('.quiz-card h1')).toBeVisible();
   await expect(page.locator('.quiz-top .pill')).toHaveText('学習用通し演習 · 1 / 155');
   await expect(page.getByRole('timer', { name: '学習用通し演習の残り時間' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '一時停止', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '一時停止', exact: true })).toBeEnabled();
   const id = page.url().split('/exam/')[1];
   const session = (await rows<Session>(page, 'sessions')).find((s) => s.id === id)!;
   expect(session.mock).toMatchObject({
@@ -66,7 +67,7 @@ async function startThrough(page: Page) {
   return id;
 }
 
-test('155-question learning practice preserves drafts, flags and its running deadline across reload', async ({
+test('155-question learning practice preserves drafts, flags and paused time across reload', async ({
   page,
 }, testInfo) => {
   await page.clock.install({ time: new Date('2026-11-05T00:00:00.000Z') });
@@ -88,15 +89,25 @@ test('155-question learning practice preserves drafts, flags and its running dea
   await expect(
     page.getByRole('heading', { name: '中断中の短縮模試・通し演習', exact: true }),
   ).toBeVisible();
+  const saved = (await rows<Session>(page, 'sessions')).find((session) => session.id === id)!.mock!;
+  expect(saved).toMatchObject({ paused: true, deadlineAt: null });
+  await page.locator(`a[href="#/exam/${id}"]`).click();
+  const timer = page.getByRole('timer');
+  await expect(timer).toContainText('停止中');
+  const frozen = await timer.innerText();
   await page.clock.fastForward(60000);
   await page.reload();
-  await page.locator(`a[href="#/exam/${id}"]`).click();
-  await expect(page.getByRole('timer')).toHaveText(/残り 17[89]:[0-5]\d/);
-  const timerText = await page.getByRole('timer').innerText();
-  const [minutes, seconds] = timerText.replace('残り ', '').split(':').map(Number);
-  expect(minutes * 60 + seconds).toBeLessThanOrEqual(10740);
-  expect(minutes * 60 + seconds).toBeGreaterThan(10710);
+  await expect(timer).toHaveText(frozen);
+  await page.getByRole('button', { name: '模試を再開する', exact: true }).click();
   await expect(page.locator('.quiz-card h1')).toBeVisible();
+  const resumed = (await rows<Session>(page, 'sessions')).find(
+    (session) => session.id === id,
+  )!.mock!;
+  expect(resumed.clockAnchor?.remainingMs).toBe(saved.clockAnchor?.remainingMs);
+  await expect(timer).not.toContainText('停止中');
+  const running = await timer.innerText();
+  await page.clock.fastForward(10000);
+  await expect(timer).not.toHaveText(running);
   await page.getByRole('button', { name: '解答を見直す', exact: true }).click();
   await page.getByRole('button', { name: '1問目 回答済み フラグ付き', exact: true }).click();
   await expect(page.locator('.quiz-card h1')).toHaveText(question.prompt);
@@ -135,15 +146,13 @@ test('155-question learning practice preserves drafts, flags and its running dea
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
-  await page.screenshot({ path: `artifacts/through-results-${testInfo.project.name}.png` });
+  await page.screenshot({ path: testInfo.outputPath('through-results.png') });
 });
 
-test('180-minute deadline grades all 155 questions after interruption without inventing answers', async ({
-  page,
-}) => {
+test('180-minute deadline still applies when leaving without pausing', async ({ page }) => {
   await page.clock.install({ time: new Date('2026-11-05T00:00:00.000Z') });
   const id = await startThrough(page);
-  await page.getByRole('button', { name: '保存して中断', exact: true }).click();
+  await page.goto(appBase + '#/exam');
   await expect(
     page.getByRole('heading', { name: '中断中の短縮模試・通し演習', exact: true }),
   ).toBeVisible();
