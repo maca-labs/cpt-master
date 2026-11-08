@@ -1546,6 +1546,72 @@ legend {
   background: var(--soft);
   color: var(--muted);
 }
+.practice-feedback {
+  border-top: 1px solid var(--line);
+  margin-top: 22px;
+  padding-top: 16px;
+}
+.practice-feedback-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.practice-feedback-header h2 {
+  margin: 0;
+}
+.practice-feedback-header .button {
+  min-height: 44px;
+}
+.quiz-card h1[tabindex],
+.practice-feedback-header h2 {
+  scroll-margin-top: 16px;
+  outline-offset: 4px;
+}
+.practice-feedback .answer-notice {
+  margin: 6px 0 10px;
+  padding: 0;
+}
+.practice-feedback .answer-notice small {
+  color: var(--muted);
+}
+.practice-feedback-answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.practice-feedback-answers div {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+}
+.practice-feedback-answers dt {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.practice-feedback-answers dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.practice-feedback .explanation {
+  margin-top: 12px;
+  padding-top: 10px;
+}
+.practice-feedback .explanation > p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+@media (max-width: 560px) {
+  .practice-feedback-answers {
+    grid-template-columns: 1fr;
+  }
+}
 .explanation {
   margin-top: 22px;
   border-top: 1px solid var(--line);

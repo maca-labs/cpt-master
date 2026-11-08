@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Flag, RotateCcw, Target } from 'lucide-react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLearning } from '../app/context';
 import {
   recordPracticeResultsDisplay,
@@ -21,6 +21,7 @@ import {
 } from '../engines/learning';
 import { db, recordExposure } from '../storage/db';
 import { Empty, FavoriteButton, PageTitle, Pill, SourceList } from '../components/Shared';
+import { ExamVerdict, takenChoiceLabel } from '../components/ExamVerdict';
 import { QuestionMedia } from '../components/QuestionMedia';
 import { practiceBatchLabel, type PracticeBatch } from '../content/batches';
 import {
@@ -356,7 +357,20 @@ export function Quiz() {
     [blocked, setBlocked] = useState<{ questionKey: string; sessionId: string } | null>(null),
     [displayRetry, setDisplayRetry] = useState(0);
   const began = useRef(Date.now());
+  const questionHeading = useRef<HTMLHeadingElement>(null);
+  const feedbackHeading = useRef<HTMLHeadingElement>(null);
+  const feedbackSession = useRef<string | undefined>(undefined);
   const attempt = data.attempts.find((a) => a.sessionId === id && a.questionId === q?.id);
+  const questionKey = session && q ? `${session.id}:${q.id}` : undefined;
+  useLayoutEffect(() => {
+    if (displayedKey !== questionKey || !session || session.mode === 'diagnostic') return;
+    const heading =
+      feedbackHeading.current ??
+      (feedbackSession.current === session.id ? questionHeading.current : null);
+    feedbackSession.current = feedbackHeading.current ? session.id : undefined;
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: 'start' });
+  }, [displayedKey, questionKey, attempt?.id, session?.mode]);
   useEffect(() => {
     let live = true;
     setSelected('');
@@ -437,7 +451,7 @@ export function Quiz() {
         </div>
       </section>
     );
-  if (displayedKey !== `${session.id}:${q.id}`)
+  if (displayedKey !== questionKey)
     return (
       <div className="panel" role="status">
         表示履歴を保存しています…
@@ -512,6 +526,12 @@ export function Quiz() {
       });
       setPeek(true);
     });
+  const nextButton = (
+    <button className="button primary" onClick={() => void next()}>
+      {session.index === session.questionIds.length - 1 ? '結果を見る' : '次の問題へ'}
+      <ArrowRight size={16} />
+    </button>
+  );
   return (
     <>
       <div className="quiz-top">
@@ -558,7 +578,9 @@ export function Quiz() {
           <FavoriteButton questionId={q.id} />
         </div>
         <small className="eyebrow">QUESTION {String(session.index + 1).padStart(2, '0')}</small>
-        <h1>{q.prompt}</h1>
+        <h1 ref={questionHeading} tabIndex={-1}>
+          {q.prompt}
+        </h1>
         <QuestionMedia question={q} />
         <div className="choices">
           {session.choiceOrders[q.id].map((cid, i) => {
@@ -615,20 +637,55 @@ export function Quiz() {
             )}
           </>
         )}
-        {attempt && (
-          <div
-            className={`answer-notice ${diag ? 'neutral' : attempt.correct ? 'good' : 'bad'}`}
-            role="status"
-          >
-            {diag
-              ? '回答を保存しました。解説は診断終了後に確認できます。'
-              : attempt.correct
-                ? '正解です。根拠も確認しましょう。'
-                : '不正解です。判断の理由を確認しましょう。'}{' '}
+        {attempt && diag && (
+          <div className="answer-notice neutral" role="status">
+            回答を保存しました。解説は診断終了後に確認できます。{' '}
             {!attempt.firstSeen && <small>この回答は解き直しとして記録しています。</small>}
           </div>
         )}
-        {((attempt && !diag) || peek) && (
+        {attempt && !diag && (
+          <section className="practice-feedback" aria-labelledby="practice-feedback-heading">
+            <div className="practice-feedback-header">
+              <h2
+                id="practice-feedback-heading"
+                ref={feedbackHeading}
+                tabIndex={-1}
+                aria-describedby="practice-feedback-verdict"
+              >
+                解答・解説
+              </h2>
+              {nextButton}
+            </div>
+            <div className="answer-notice">
+              <span id="practice-feedback-verdict">
+                <ExamVerdict status={attempt.correct ? 'correct' : 'incorrect'} />
+              </span>
+              {!attempt.firstSeen && <small>この回答は解き直しとして記録しています。</small>}
+            </div>
+            <dl className="practice-feedback-answers">
+              <div>
+                <dt>あなたの回答</dt>
+                <dd>{takenChoiceLabel(q, attempt.choiceOrder, attempt.selectedChoiceId)}</dd>
+              </div>
+              <div>
+                <dt>正答</dt>
+                <dd>{takenChoiceLabel(q, attempt.choiceOrder, q.correctChoiceId)}</dd>
+              </div>
+            </dl>
+            <Explanation
+              questionId={q.id}
+              sessionId={session.id}
+              showMedia={false}
+              showCorrectAnswer={false}
+            />
+            {attempt.questionRevision !== q.revision && (
+              <p className="muted small-text">
+                正誤は回答時の記録です。選択肢と解説は現在の問題に基づきます。
+              </p>
+            )}
+          </section>
+        )}
+        {!attempt && peek && (
           <Explanation questionId={q.id} sessionId={session.id} showMedia={false} />
         )}
         <div className="question-footer">
@@ -640,12 +697,7 @@ export function Quiz() {
                 ? 'AIによる出典照合済み'
                 : '未検証'}
           </small>
-          {attempt && (
-            <button className="button primary" onClick={() => void next()}>
-              {session.index === session.questionIds.length - 1 ? '結果を見る' : '次の問題へ'}
-              <ArrowRight size={16} />
-            </button>
-          )}
+          {attempt && diag && nextButton}
         </div>
       </section>
     </>

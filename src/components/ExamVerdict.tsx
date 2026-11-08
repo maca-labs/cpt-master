@@ -1,3 +1,5 @@
+import type { Question } from '../domain/types';
+
 export type ExamVerdictStatus = 'correct' | 'incorrect' | 'unanswered';
 
 export const examVerdictLabels: Record<ExamVerdictStatus, string> = {
@@ -27,4 +29,11 @@ export function ExamVerdict({ status }: { status: ExamVerdictStatus }) {
       {examVerdictLabels[status]}
     </span>
   );
+}
+
+export function takenChoiceLabel(question: Question, choiceOrder: string[], choiceId: string) {
+  const choice = question.choices.find((item) => item.id === choiceId);
+  const position = choiceOrder.indexOf(choiceId);
+  if (!choice) return '選択肢を表示できません';
+  return position >= 0 ? String.fromCharCode(65 + position) + '．' + choice.text : choice.text;
 }

@@ -57,7 +57,7 @@ test('old backup preflight, new lesson learning, persistence and invalid restore
   page,
 }, info) => {
   await ready(page, '/settings');
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.3');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.4');
   const text = await readFile(
       new URL('../tests/fixtures/legacy-v1-backup.json', import.meta.url),
       'utf8',
@@ -116,7 +116,7 @@ test('old backup preflight, new lesson learning, persistence and invalid restore
     .filter({ hasText: new RegExp(`^\\s*[A-C]\\s*${escape(correct.text)}\\s*$`) })
     .click();
   await page.getByRole('button', { name: '回答を保存', exact: true }).click();
-  await expect(page.locator('.answer-notice')).toContainText('正解です');
+  await expect(page.locator('.answer-notice .exam-verdict')).toHaveText(/○\s*正解/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: '復習に登録', exact: true }).click();
   await page.reload();
@@ -223,7 +223,7 @@ test('all original diagrams and animations render and preserve answers offline',
       })
       .click();
     await page.getByRole('button', { name: '回答を保存', exact: true }).click();
-    await expect(page.locator('.answer-notice')).toContainText('正解です');
+    await expect(page.locator('.answer-notice .exam-verdict')).toHaveText(/○\s*正解/);
     await page.reload();
     await expect(page.locator('.answer-notice')).toBeVisible();
   } finally {

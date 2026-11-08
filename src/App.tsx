@@ -185,7 +185,7 @@ function Shell() {
             <SettingsIcon size={19} />
             設定・バックアップ
           </NavLink>
-          <small className="version">PERSONAL EDITION · v0.6.3</small>
+          <small className="version">PERSONAL EDITION · v0.6.4</small>
         </div>
       </aside>
       <div className="main-shell">

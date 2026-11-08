@@ -28,7 +28,7 @@ import {
 } from '../engines/mock';
 import { partitionAttempts, rate } from '../engines/learning';
 import { Empty, PageTitle, Pill } from '../components/Shared';
-import { ExamVerdict } from '../components/ExamVerdict';
+import { ExamVerdict, takenChoiceLabel } from '../components/ExamVerdict';
 import { Explanation } from './Practice';
 import './mock-review.css';
 
@@ -803,13 +803,6 @@ export function MockExamSession() {
       )}
     </>
   );
-}
-
-function takenChoiceLabel(question: Question, choiceOrder: string[], choiceId: string) {
-  const choice = question.choices.find((item) => item.id === choiceId);
-  const position = choiceOrder.indexOf(choiceId);
-  if (!choice) return '選択肢を表示できません';
-  return position >= 0 ? String.fromCharCode(65 + position) + '．' + choice.text : choice.text;
 }
 
 export function MockExamResults() {
