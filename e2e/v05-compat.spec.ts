@@ -11,7 +11,7 @@ test('v0.4 backup keeps added-unit notes and resumes the old short-exercise draf
   );
   const old = JSON.parse(text);
   await page.goto(`${process.env.E2E_PUBLISHED_URL ?? '/'}#/settings`);
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.4');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.5');
   await page
     .getByLabel('バックアップJSONを選択', { exact: true })
     .setInputFiles({ name: 'v04.json', mimeType: 'application/json', buffer: Buffer.from(text) });

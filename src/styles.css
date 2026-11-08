@@ -2791,6 +2791,25 @@ th {
   color: var(--text);
   background: var(--soft);
 }
+.exam-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.exam-review-actions .button,
+.button.exam-review-filter {
+  min-height: 44px;
+}
+.button.exam-review-filter[aria-pressed='true'] {
+  border-color: #57836c;
+  background: #e5f5eb;
+  color: #205d3e;
+}
+.exam-review-filter[aria-pressed='false'] svg {
+  visibility: hidden;
+}
 .dedicated-grid .button.has-verdict {
   display: grid;
   place-content: center;

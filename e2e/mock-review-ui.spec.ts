@@ -34,7 +34,7 @@ async function chooseShort(page: Page, correct: boolean) {
   const escaped = selected.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   await page
     .locator('button.choice')
-    .filter({ hasText: new RegExp('^\\s*[A-C]\\s*' + escaped + '\\s*$') })
+    .filter({ hasText: new RegExp('^\\s*[A-D]\\s*' + escaped + '\\s*$') })
     .click();
   await expect(page.getByRole('status').filter({ hasText: '下書きを保存しました' })).toBeVisible();
   return { question, selected };
@@ -66,6 +66,28 @@ async function checkReview(
   if (verdict === '未回答') await expect(selected.locator('dd')).toHaveText('未回答');
 }
 
+async function checkFilteredNavigation(page: Page, panel: Locator, total: number) {
+  const filter = panel.getByRole('button', { name: '不正解・未回答のみ', exact: true });
+  const summaryFilter = page
+    .getByRole('button', { name: '不正解・未回答のみ', exact: true })
+    .first();
+  await expect(filter).toHaveAttribute('aria-pressed', 'false');
+  await filter.click();
+  await expect(filter).toHaveAttribute('aria-pressed', 'true');
+  await expect(summaryFilter).toHaveAttribute('aria-pressed', 'true');
+  await expect(
+    page.getByText(new RegExp(`表示対象\\s*${total - 2}\\s*/\\s*${total}\\s*問`)),
+  ).toBeVisible();
+
+  const previous = panel.getByRole('button', { name: '前の解説', exact: true });
+  await expect(previous).toBeDisabled();
+  await panel.getByRole('button', { name: '次の解説', exact: true }).click();
+  await checkReview(panel, 4, '未回答');
+  await previous.click();
+  await checkReview(panel, 2, '不正解');
+  return filter;
+}
+
 test('dedicated exam review jumps to the wrong answer and reveals distant explanations', async ({
   page,
 }) => {
@@ -75,6 +97,9 @@ test('dedicated exam review jumps to the wrong answer and reveals distant explan
   await page.getByRole('button', { name: '次の問題へ', exact: true }).click();
   await expect(page.locator('.dedicated-run .quiz-top .pill')).toContainText('2 / 155');
   const second = await chooseDedicated(page, false);
+  await page.getByRole('button', { name: '次の問題へ', exact: true }).click();
+  await expect(page.locator('.dedicated-run .quiz-top .pill')).toContainText('3 / 155');
+  const third = await chooseDedicated(page, true);
   await expect(page.getByRole('heading', { name: '正答解説', exact: true })).toHaveCount(0);
 
   await page.getByRole('button', { name: '受験を終了する', exact: true }).click();
@@ -95,17 +120,27 @@ test('dedicated exam review jumps to the wrong answer and reveals distant explan
   await expect(page.getByRole('button', { name: '前の解説', exact: true })).toBeDisabled();
   await page.getByRole('button', { name: '次の解説', exact: true }).click();
   await checkReview(panel, 2, '不正解');
-  await page.getByRole('button', { name: '次の解説', exact: true }).click();
-  await checkReview(panel, 3, '未回答');
+  const filter = await checkFilteredNavigation(page, panel, 155);
 
   const navigator = page.locator('.dedicated-navigator');
-  if ((await navigator.getAttribute('open')) === null)
-    await navigator.getByText('解答状況・見直し', { exact: true }).click();
-  await expect(navigator.getByRole('button', { name: /^問題 1、正解/ })).toBeVisible();
+  const questionList = panel.getByRole('button', { name: '問題一覧', exact: true });
+  await questionList.click();
+  await expect(navigator.getByRole('button')).toHaveCount(153);
+  await expect(navigator.getByRole('button', { name: /^問題 (?:1|3)、正解/ })).toHaveCount(0);
   await expect(navigator.getByRole('button', { name: /^問題 2、不正解/ })).toBeVisible();
+  await expect(navigator.getByRole('button', { name: /^問題 4、未回答/ })).toBeVisible();
   await navigator.getByRole('button', { name: /^問題 155、未回答/ }).click();
   await checkReview(panel, 155, '未回答');
   await expect(page.getByRole('button', { name: '次の解説', exact: true })).toBeDisabled();
+
+  await filter.click();
+  await expect(filter).toHaveAttribute('aria-pressed', 'false');
+  await questionList.click();
+  await expect(navigator.getByRole('button')).toHaveCount(155);
+  await navigator.getByRole('button', { name: /^問題 3、正解/ }).click();
+  await checkReview(panel, 3, '正解', third.selected.text);
+  await filter.click();
+  await checkReview(panel, 4, '未回答');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
     await page.evaluate(() => innerWidth),
   );
@@ -121,6 +156,9 @@ test('short mock review jumps to the wrong answer and distinguishes an unanswere
   await page.getByRole('button', { name: '次の問題へ', exact: true }).click();
   await expect(page.locator('.quiz-top .pill')).toContainText('2 / 10');
   const second = await chooseShort(page, false);
+  await page.getByRole('button', { name: '次の問題へ', exact: true }).click();
+  await expect(page.locator('.quiz-top .pill')).toContainText('3 / 10');
+  const third = await chooseShort(page, true);
   await expect(page.getByRole('heading', { name: '正答解説', exact: true })).toHaveCount(0);
 
   await page.getByRole('button', { name: '採点して終了', exact: true }).click();
@@ -139,6 +177,22 @@ test('short mock review jumps to the wrong answer and distinguishes an unanswere
   await checkReview(panel, 1, '正解', first.selected.text);
   await page.getByRole('button', { name: '次の解説', exact: true }).click();
   await checkReview(panel, 2, '不正解');
-  await page.getByRole('button', { name: '次の解説', exact: true }).click();
-  await checkReview(panel, 3, '未回答');
+  const filter = await checkFilteredNavigation(page, panel, 10);
+  const rows = page.locator('.mock-review-row');
+  await expect(rows).toHaveCount(8);
+  await expect(rows.filter({ has: page.getByText(/^第[13]問$/) })).toHaveCount(0);
+  await expect(rows.filter({ has: page.getByText('第2問', { exact: true }) })).toContainText(
+    '不正解',
+  );
+  await expect(rows.filter({ has: page.getByText('第4問', { exact: true }) })).toContainText(
+    '未回答',
+  );
+
+  await filter.click();
+  await expect(filter).toHaveAttribute('aria-pressed', 'false');
+  await expect(rows).toHaveCount(10);
+  await rows.filter({ has: page.getByText('第3問', { exact: true }) }).click();
+  await checkReview(panel, 3, '正解', third.selected.text);
+  await filter.click();
+  await checkReview(panel, 4, '未回答');
 });

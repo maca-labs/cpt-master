@@ -1,4 +1,5 @@
 .mock-review-toolbar,
+.mock-review-summary-actions,
 .mock-review-navigation,
 .mock-review-row-meta {
   display: flex;
@@ -10,6 +11,9 @@
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 15px;
+}
+.mock-review-summary-status {
+  flex-basis: 100%;
 }
 .mock-review-toolbar h2 {
   scroll-margin-top: 18px;

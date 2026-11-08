@@ -1,5 +1,6 @@
 import { liveQuery } from 'dexie';
 import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
+import { ExamReviewFilter } from '../components/ExamReviewFilter';
 import {
   ExamVerdict,
   examVerdictLabels,
@@ -61,6 +62,7 @@ function QuestionNavigator({
   onSelect,
   getVerdict,
   detailsRef,
+  visibleIndices,
 }: {
   session: DedicatedExamSession;
   index: number;
@@ -68,7 +70,9 @@ function QuestionNavigator({
   onSelect: (index: number) => void;
   getVerdict?: (id: string) => ExamVerdictStatus;
   detailsRef?: Ref<HTMLDetailsElement>;
+  visibleIndices?: number[];
 }) {
+  const positions = visibleIndices ?? session.questionIds.map((_, position) => position);
   return (
     <details className="dedicated-navigator" ref={detailsRef}>
       <summary>解答状況・見直し</summary>
@@ -78,7 +82,8 @@ function QuestionNavigator({
           : '● 回答済み　⚑ 見直しフラグ'}
       </p>
       <div className="dedicated-grid">
-        {session.questionIds.map((id, position) => {
+        {positions.map((position) => {
+          const id = session.questionIds[position];
           const answered = Boolean(session.answers[id]);
           const flagged = session.flags.includes(id);
           const verdict = getVerdict?.(id);
@@ -156,11 +161,14 @@ function DedicatedExam({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [review, setReview] = useState<{ sessionId: string; index: number }>();
+  const [filterSessionId, setFilterSessionId] = useState<string>();
   const reviewIndex = review?.sessionId === session?.id ? review?.index : undefined;
+  const onlyMissed = !!session && filterSessionId === session.id;
   const running = useRef(false);
   const quiz = useRef<HTMLElement>(null);
   const reviewHeading = useRef<HTMLHeadingElement>(null);
   const reviewNavigator = useRef<HTMLDetailsElement>(null);
+  const resultFilterButton = useRef<HTMLButtonElement>(null);
   const items = useMemo(() => new Map(pack.items.map((item) => [item.id, item])), [pack]);
 
   useEffect(() => {
@@ -215,15 +223,41 @@ function DedicatedExam({
     return getExamVerdict(session?.answers[id], items.get(id)!.correctChoiceId);
   }
 
-  function startReview() {
+  const reviewQuestionIds = session?.status === 'completed' ? session.questionIds : [];
+  const allReviewIndices = reviewQuestionIds.map((_, index) => index);
+  const missedReviewIndices = allReviewIndices.filter(
+    (index) => verdictFor(reviewQuestionIds[index]) !== 'correct',
+  );
+  const reviewIndices = onlyMissed ? missedReviewIndices : allReviewIndices;
+  const reviewPosition = reviewIndex === undefined ? -1 : reviewIndices.indexOf(reviewIndex);
+
+  function toggleMissed() {
     if (!session) return;
-    if (reviewIndex !== undefined) {
+    setFilterSessionId(onlyMissed ? undefined : session.id);
+    if (onlyMissed || reviewIndex === undefined || missedReviewIndices.includes(reviewIndex))
+      return;
+    const next = missedReviewIndices.find((index) => index > reviewIndex) ?? missedReviewIndices[0];
+    if (next !== undefined) {
+      selectReview(next);
+    } else {
+      setReview(undefined);
+      resultFilterButton.current?.focus();
+    }
+  }
+
+  function startReview() {
+    if (!session || !reviewIndices.length) return;
+    if (reviewIndex !== undefined && reviewPosition >= 0) {
       selectReview(reviewIndex);
       return;
     }
-    const incorrect = session.questionIds.findIndex((id) => verdictFor(id) === 'incorrect');
-    const unanswered = session.questionIds.findIndex((id) => verdictFor(id) === 'unanswered');
-    selectReview(incorrect >= 0 ? incorrect : Math.max(0, unanswered));
+    const incorrect = reviewIndices.find(
+      (index) => verdictFor(session.questionIds[index]) === 'incorrect',
+    );
+    const unanswered = reviewIndices.find(
+      (index) => verdictFor(session.questionIds[index]) === 'unanswered',
+    );
+    selectReview(incorrect ?? unanswered ?? reviewIndices[0]);
   }
 
   const seconds = session?.status === 'active' ? remainingDedicatedSeconds(session, now) : 0;
@@ -268,6 +302,7 @@ function DedicatedExam({
       setTaking(true);
       setConfirming(false);
       setReview(undefined);
+      setFilterSessionId(undefined);
     });
 
   return (
@@ -292,9 +327,26 @@ function DedicatedExam({
         <section className="panel">
           <h1>専用模試の結果</h1>
           <p>{session.finishedReason === 'timeout' ? '制限時間終了' : '提出済み'}</p>
-          <button className="button primary" type="button" onClick={startReview}>
-            解答・解説を見る
-          </button>
+          <div className="exam-review-actions">
+            <button
+              className="button primary"
+              type="button"
+              onClick={startReview}
+              disabled={reviewIndices.length === 0}
+            >
+              解答・解説を見る
+            </button>
+            <ExamReviewFilter
+              onlyMissed={onlyMissed}
+              onToggle={toggleMissed}
+              buttonRef={resultFilterButton}
+            />
+          </div>
+          <p className="muted small-text" role="status">
+            {reviewIndices.length === 0
+              ? '不正解・未回答の問題はありません。'
+              : `表示対象 ${reviewIndices.length} / ${allReviewIndices.length} 問`}
+          </p>
           <div className="result-stats">
             <div>
               <span>採点対象の得点</span>
@@ -315,24 +367,32 @@ function DedicatedExam({
             採点対象外15問の回答は得点に含みません。全155問の回答数は{' '}
             {Object.keys(session.answers).length} 問です。
           </p>
-          <QuestionNavigator
-            session={session}
-            index={reviewIndex ?? -1}
-            onSelect={selectReview}
-            getVerdict={verdictFor}
-            detailsRef={reviewNavigator}
-          />
-          {reviewIndex !== undefined && (
+          {reviewIndices.length > 0 && (
+            <QuestionNavigator
+              session={session}
+              index={reviewIndex ?? -1}
+              onSelect={selectReview}
+              getVerdict={verdictFor}
+              detailsRef={reviewNavigator}
+              visibleIndices={reviewIndices}
+            />
+          )}
+          {reviewIndex !== undefined && reviewPosition >= 0 && (
             <ReviewedItem
               key={session.questionIds[reviewIndex]}
               item={items.get(session.questionIds[reviewIndex])!}
               selected={session.answers[session.questionIds[reviewIndex]]}
               choiceOrder={session.choiceOrders[session.questionIds[reviewIndex]]}
               index={reviewIndex}
-              total={session.questionIds.length}
+              position={reviewPosition}
+              total={reviewIndices.length}
+              previousIndex={reviewIndices[reviewPosition - 1]}
+              nextIndex={reviewIndices[reviewPosition + 1]}
+              onlyMissed={onlyMissed}
               headingRef={reviewHeading}
               onSelect={selectReview}
               onShowQuestionList={showQuestionList}
+              onToggleMissed={toggleMissed}
             />
           )}
           <div className="table-scroll">
@@ -533,19 +593,29 @@ function ReviewedItem({
   selected,
   choiceOrder,
   index,
+  position,
   total,
+  previousIndex,
+  nextIndex,
+  onlyMissed,
   headingRef,
   onSelect,
   onShowQuestionList,
+  onToggleMissed,
 }: {
   item: DedicatedExamItem;
   selected?: string;
   choiceOrder: string[];
   index: number;
+  position: number;
   total: number;
+  previousIndex?: number;
+  nextIndex?: number;
+  onlyMissed: boolean;
   headingRef: Ref<HTMLHeadingElement>;
   onSelect: (index: number) => void;
   onShowQuestionList: () => void;
+  onToggleMissed: () => void;
 }) {
   const choices = choiceOrder.map((id) => item.choices.find((choice) => choice.id === id)!);
   const labels = new Map(
@@ -574,25 +644,27 @@ function ReviewedItem({
         <button
           className="button secondary small"
           type="button"
-          disabled={index === 0}
-          onClick={() => onSelect(index - 1)}
+          disabled={previousIndex === undefined}
+          onClick={() => previousIndex !== undefined && onSelect(previousIndex)}
         >
           前の解説
         </button>
         <span>
-          {index + 1} / {total}
+          {onlyMissed ? '対象 ' : ''}
+          {position + 1} / {total}
         </span>
         <button
           className="button secondary small"
           type="button"
-          disabled={index === total - 1}
-          onClick={() => onSelect(index + 1)}
+          disabled={nextIndex === undefined}
+          onClick={() => nextIndex !== undefined && onSelect(nextIndex)}
         >
           次の解説
         </button>
         <button className="button secondary small" type="button" onClick={onShowQuestionList}>
           問題一覧
         </button>
+        <ExamReviewFilter onlyMissed={onlyMissed} onToggle={onToggleMissed} />
       </div>
       <p className="dedicated-review-prompt">{item.prompt}</p>
       <dl className="dedicated-answer-summary">

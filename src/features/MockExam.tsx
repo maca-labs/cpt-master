@@ -28,6 +28,7 @@ import {
 } from '../engines/mock';
 import { partitionAttempts, rate } from '../engines/learning';
 import { Empty, PageTitle, Pill } from '../components/Shared';
+import { ExamReviewFilter } from '../components/ExamReviewFilter';
 import { ExamVerdict, takenChoiceLabel } from '../components/ExamVerdict';
 import { Explanation } from './Practice';
 import './mock-review.css';
@@ -812,6 +813,8 @@ export function MockExamResults() {
     (s) => s.id === id && s.mode === 'mock' && s.status === 'completed',
   );
   const [opened, setOpened] = useState<{ sessionId: string; questionId: string }>();
+  const [filteredSession, setFilteredSession] = useState<string>();
+  const summaryFilter = useRef<HTMLButtonElement>(null);
   const reviewHeading = useRef<HTMLHeadingElement>(null);
   const reviewPending = useRef(false);
   const [recordedSession, setRecordedSession] = useState('');
@@ -852,22 +855,40 @@ export function MockExamResults() {
   const questionOrder = session.questionIds.map((qid) => allQuestions.find((q) => q.id === qid)!);
   const composition = mockComposition(questionOrder, session.firstSeenByQuestion);
   const records = data.attempts.filter((a) => a.sessionId === session.id);
-  const rows = questionOrder.map((question) => ({
+  const rows = questionOrder.map((question, index) => ({
+    index,
     question,
     answer: records.find((attempt) => attempt.questionId === question.id),
   }));
   const canReview = recordedSession === session.id && displayState.status === 'ready';
   const openedIndex =
     opened?.sessionId === session.id ? session.questionIds.indexOf(opened.questionId) : -1;
-  const current = canReview ? rows[openedIndex] : undefined;
-  const firstIncorrect = rows.findIndex(({ answer }) => answer?.correct === false);
-  const firstReviewIndex =
-    firstIncorrect >= 0
-      ? firstIncorrect
-      : Math.max(
-          0,
-          rows.findIndex(({ answer }) => !answer),
-        );
+  const onlyMissed = filteredSession === session.id;
+  const missedRows = rows.filter(({ answer }) => !answer?.correct);
+  const reviewRows = onlyMissed ? missedRows : rows;
+  const reviewIndex = reviewRows.findIndex(({ index }) => index === openedIndex);
+  const current = canReview ? reviewRows[reviewIndex] : undefined;
+  const previousReview = reviewRows[reviewIndex - 1];
+  const nextReview = reviewRows[reviewIndex + 1];
+  const reviewStart =
+    current ??
+    reviewRows.find(({ answer }) => answer?.correct === false) ??
+    missedRows[0] ??
+    reviewRows[0];
+
+  function toggleReviewFilter() {
+    if (!session || reviewPending.current) return;
+    setFilteredSession(onlyMissed ? undefined : session.id);
+    if (onlyMissed || !current?.answer?.correct) return;
+
+    const replacement = missedRows.find(({ index }) => index > openedIndex) ?? missedRows[0];
+    if (replacement) {
+      openReview(replacement.index);
+    } else {
+      setOpened(undefined);
+      summaryFilter.current?.focus();
+    }
+  }
 
   function openReview(index: number) {
     const row = rows[index];
@@ -918,14 +939,28 @@ export function MockExamResults() {
         description="今回の学習上の正答率です。公式換算スコア・合否・合格確率は算出しません。"
       >
         {canReview && (
-          <button
-            className="button primary"
-            type="button"
-            onClick={() => openReview(openedIndex >= 0 ? openedIndex : firstReviewIndex)}
-          >
-            解答・解説を見る
-            <ArrowRight size={16} aria-hidden="true" />
-          </button>
+          <div className="mock-review-summary-actions">
+            <button
+              className="button primary"
+              type="button"
+              disabled={!reviewStart}
+              onClick={() => reviewStart && openReview(reviewStart.index)}
+            >
+              解答・解説を見る
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+            <ExamReviewFilter
+              onlyMissed={onlyMissed}
+              onToggle={toggleReviewFilter}
+              buttonRef={summaryFilter}
+            />
+            <div className="mock-review-summary-status" role="status">
+              <p>
+                表示対象 {reviewRows.length} / {rows.length} 問
+              </p>
+              {onlyMissed && reviewRows.length === 0 && <p>不正解・未回答の問題はありません。</p>}
+            </div>
+          </div>
         )}
       </PageTitle>
       {session.mock.format === 'focus' && (
@@ -1012,19 +1047,20 @@ export function MockExamResults() {
               <button
                 type="button"
                 className="button secondary"
-                disabled={openedIndex === 0}
-                onClick={() => openReview(openedIndex - 1)}
+                disabled={!previousReview}
+                onClick={() => previousReview && openReview(previousReview.index)}
               >
                 <ArrowLeft size={16} aria-hidden="true" /> 前の解説
               </button>
               <button
                 type="button"
                 className="button secondary"
-                disabled={openedIndex === rows.length - 1}
-                onClick={() => openReview(openedIndex + 1)}
+                disabled={!nextReview}
+                onClick={() => nextReview && openReview(nextReview.index)}
               >
                 次の解説 <ArrowRight size={16} aria-hidden="true" />
               </button>
+              <ExamReviewFilter onlyMissed={onlyMissed} onToggle={toggleReviewFilter} />
             </div>
           </div>
           <dl className="mock-review-answers">
@@ -1099,14 +1135,14 @@ export function MockExamResults() {
           </table>
         </div>
       </section>
-      <section className="panel">
+      <section className="panel" hidden={canReview && reviewRows.length === 0}>
         <h2>解答と次に学ぶ単元</h2>
         {displayState.status === 'reserved' && <ReservedDisplay state={displayState} />}
         {displayState.status === 'stale' && (
           <p role="status">表示履歴を保存して解答一覧を準備しています…</p>
         )}
         {canReview &&
-          rows.map(({ question: q, answer }, index) => (
+          reviewRows.map(({ index, question: q, answer }) => (
             <div className="result-question" key={q.id}>
               <button
                 type="button"
