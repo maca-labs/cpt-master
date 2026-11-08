@@ -753,9 +753,16 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
             bb = promptIndex[j].grams;
           if (!aa.size || !bb.size || (2 * Math.min(aa.size, bb.size)) / (aa.size + bb.size) < 0.78)
             return false;
+          const needed = Math.ceil((78 * (aa.size + bb.size)) / 200);
+          const [smaller, larger] = aa.size <= bb.size ? [aa, bb] : [bb, aa];
           let overlap = 0;
-          for (const gram of aa) if (bb.has(gram)) overlap++;
-          return (2 * overlap) / (aa.size + bb.size) >= 0.78;
+          let remaining = smaller.size;
+          for (const gram of smaller) {
+            remaining--;
+            if (larger.has(gram) && ++overlap >= needed) return true;
+            if (overlap + remaining < needed) return false;
+          }
+          return false;
         })()
       ) {
         warn(

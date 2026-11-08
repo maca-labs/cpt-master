@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 import {
   ArrowUpRight,
   BarChart3,
@@ -30,6 +30,8 @@ import { Empty } from './components/Shared';
 import Analytics from './features/Analytics';
 import MockExamHome, { MockExamSession, MockExamResults } from './features/MockExam';
 import PwaStatus from './components/PwaStatus';
+import DedicatedExamWorkspace from './features/DedicatedExam';
+import { releasedDedicatedExams } from './content/dedicated-exam';
 const navigation = [
   { to: '/', label: 'ダッシュボード', icon: House, end: true },
   { to: '/learn', label: '学習テキスト', icon: BookOpen },
@@ -40,6 +42,32 @@ const navigation = [
   { to: '/exam', label: '模擬試験', icon: Trophy },
   { to: '/analytics', label: '成績・弱点分析', icon: BarChart3 },
 ];
+function DedicatedExamRoute() {
+  const [params, setParams] = useSearchParams();
+  const packs = releasedDedicatedExams();
+  if (!packs.length) return <Exam />;
+  const pack = packs.find((candidate) => candidate.id === params.get('set')) ?? packs[0];
+  return (
+    <>
+      {packs.length > 1 && (
+        <section className="panel">
+          <label className="field-label">
+            専用模試セット
+            <select value={pack.id} onChange={(event) => setParams({ set: event.target.value })}>
+              {packs.map((candidate, index) => (
+                <option key={candidate.id} value={candidate.id}>
+                  セット {index + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
+      )}
+      <DedicatedExamWorkspace key={pack.id} pack={pack} access="released" />
+    </>
+  );
+}
+
 function Shell() {
   const { data, settings, error, clearError, run } = useLearning(),
     location = useLocation();
@@ -129,7 +157,7 @@ function Shell() {
             <SettingsIcon size={19} />
             設定・バックアップ
           </NavLink>
-          <small className="version">PERSONAL EDITION · v0.5.2</small>
+          <small className="version">PERSONAL EDITION · v0.6.0</small>
         </div>
       </aside>
       <div className="main-shell">
@@ -226,7 +254,7 @@ function Shell() {
             <Route path="/videos" element={<Videos />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/exam" element={<MockExamHome />} />
-            <Route path="/exam/full" element={<Exam />} />
+            <Route path="/exam/full" element={<DedicatedExamRoute />} />
             <Route path="/exam/:id" element={<MockExamSession />} />
             <Route path="/exam-results/:id" element={<MockExamResults />} />
             <Route path="/analytics" element={<Analytics />} />

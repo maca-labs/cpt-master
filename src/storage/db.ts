@@ -1,5 +1,6 @@
 import Dexie, { type Table } from 'dexie';
 import { z } from 'zod';
+import { practiceBatchValues } from '../domain/types';
 import type {
   AppSettings,
   Attempt,
@@ -21,9 +22,13 @@ import {
   legacyQuestionIds,
   legacyUnitIds,
 } from '../content';
-import { legacyContentVersion, previousContentVersion } from '../content/release';
+import {
+  legacyContentVersion,
+  previousContentVersion,
+  v052ContentVersion,
+} from '../content/release';
 import { focusMock } from '../content/focus-mock';
-import { expansionQuestionIds } from '../content/batches';
+import { isInPracticeBatch } from '../content/batches';
 export interface Favorite {
   questionId: string;
 }
@@ -183,7 +188,7 @@ const session = z
     firstSeenByQuestion: z.record(id, z.boolean()),
     practice: z
       .object({
-        batch: z.enum(['all', 'expansion-2026-11-04']),
+        batch: z.enum(practiceBatchValues),
         selection: z.enum(['unseen_first', 'strict_unseen', 'review']),
         requestedCount: z.union([z.literal(10), z.literal(20), z.literal(50)]),
       })
@@ -357,7 +362,9 @@ export function validateBackup(text: string): Backup {
     );
   const backup = result.data as Backup;
   const legacy = backup.contentVersion === legacyContentVersion;
-  const previous = backup.contentVersion === previousContentVersion;
+  const previous = [previousContentVersion, v052ContentVersion].some(
+    (version) => backup.contentVersion === version,
+  );
   if (backup.contentVersion !== contentVersion && !legacy && !previous)
     throw new Error(
       '対応していない教材版です。現行版または互換性を検証した旧版のバックアップを使用してください。',
@@ -420,7 +427,7 @@ export function validateBackup(text: string): Backup {
           !q ||
           q.pool === 'exam' ||
           q.pool === 'focus' ||
-          (s.practice.batch === 'expansion-2026-11-04' && !expansionQuestionIds.has(qid))
+          !isInPracticeBatch(q, s.practice.batch)
         )
           throw new Error('演習バッチと問題の対応が不正です。');
         if (s.practice.selection === 'strict_unseen' && s.firstSeenByQuestion[qid] !== true)

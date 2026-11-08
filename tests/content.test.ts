@@ -29,10 +29,10 @@ describe('initial content publishing checks', () => {
     const report = validateContent();
     expect(report.errors).toEqual([]);
     expect(report.summary).toMatchObject({
-      units: 36,
-      questions: 300,
+      units: 40,
+      questions: 600,
       videos: seedContent.videos.length,
-      byDomain: { assessment: 69, planning: 96, technique: 93, safety: 42 },
+      byDomain: { assessment: 138, planning: 192, technique: 186, safety: 84 },
       diagnosticByDomain: { assessment: 12, planning: 16, technique: 15, safety: 7 },
       videoReviewDeclarations: {
         unreviewed: 8 + v051Videos.filter((video) => video.content.status === 'unreviewed').length,
@@ -283,7 +283,7 @@ describe('initial content publishing checks', () => {
     expect(report.warnings.some((issue) => issue.code === 'scope.source-check-declaration')).toBe(
       true,
     );
-    expect(report.summary.reviewDeclarations.source_checked).toBe(300);
+    expect(report.summary.reviewDeclarations.source_checked).toBe(600);
   });
 
   it('returns a nonzero CLI result for errors and a clear success summary otherwise', () => {

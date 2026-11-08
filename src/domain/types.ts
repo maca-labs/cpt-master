@@ -1,4 +1,6 @@
 export type DomainId = 'assessment' | 'planning' | 'technique' | 'safety';
+export const practiceBatchValues = ['all', 'expansion-2026-11-04', 'edition3-2026-11-08'] as const;
+export type PracticeBatch = (typeof practiceBatchValues)[number];
 export type ReviewStatus = 'draft' | 'source_checked' | 'expert_reviewed';
 export interface Source {
   id: string;
@@ -147,7 +149,7 @@ export interface Session {
   completedAt?: string;
   firstSeenByQuestion: Record<string, boolean>;
   practice?: {
-    batch: 'all' | 'expansion-2026-11-04';
+    batch: PracticeBatch;
     selection: 'unseen_first' | 'strict_unseen' | 'review';
     requestedCount: 10 | 20 | 50;
   };

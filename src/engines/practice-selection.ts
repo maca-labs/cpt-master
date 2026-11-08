@@ -1,4 +1,5 @@
 import type { Attempt, DomainId, Exposure, Question, Session } from '../domain/types';
+import { practiceBatchValues } from '../domain/types';
 import { domainIds } from '../content/blueprints';
 import { isInPracticeBatch, type PracticeBatch } from '../content/batches';
 import { eligible, shuffle, uniqueGroups } from './learning';
@@ -168,7 +169,7 @@ export function selectPracticeQuestions(
   rng: () => number = Math.random,
 ): Question[] {
   if (
-    !['all', 'expansion-2026-11-04'].includes(options.batch) ||
+    !practiceBatchValues.includes(options.batch) ||
     !['unseen_first', 'strict_unseen', 'review'].includes(options.selection) ||
     ![10, 20, 50].includes(options.requestedCount)
   )

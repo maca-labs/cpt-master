@@ -292,7 +292,8 @@ export default function MockExamHome() {
         <Pill tone="amber">時間配分の練習用・既出問題を含む</Pill>
         <h2>155問・180分の学習用通し演習</h2>
         <p>
-          既存300問から、セッション内で同じ問題グループを重複せず選びます。本番同等の専用模試や初見専用の評価ではありません。中断・タブを閉じている間も時計が進みます。
+          通常学習の{questions.length}
+          問から、セッション内で同じ問題グループを重複せず選びます。本番同等の専用模試や初見専用の評価ではありません。中断・タブを閉じている間も時計が進みます。
         </p>
         <p>
           学習用配分は面談・評価35問、計画50問、技術48問、安全22問。整数32・45・43・20の比を155問へ最大剰余方式で配分します。
@@ -302,7 +303,12 @@ export default function MockExamHome() {
         <p className="muted small-text">
           AIによる出典照合済みの通常問題を使用し、人間の専門家による審査条件を満たす専用模試とは分けます。公式換算スコア、合格確率、合否判定は算出しません。
         </p>
-        {!unlocked && <p className="notice">初回診断50問は保留し、通常演習用250問から選びます。</p>}
+        {!unlocked && (
+          <p className="notice">
+            初回診断50問は保留し、通常演習用
+            {questions.filter((question) => question.pool === 'practice').length}問から選びます。
+          </p>
+        )}
         {reserved > 0 && (
           <p className="notice">
             厳密な未見演習が予約している{reserved}

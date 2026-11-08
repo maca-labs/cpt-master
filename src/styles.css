@@ -2650,3 +2650,56 @@ th {
   cursor: pointer;
   font-size: 11px;
 }
+.dedicated-workspace {
+  min-width: 0;
+}
+.dedicated-preview {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(12px, 3vw, 32px);
+}
+.dedicated-run h1 {
+  font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+  line-height: 1.6;
+}
+.dedicated-run [role='timer'] {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.dedicated-media {
+  margin: 16px 0;
+}
+.dedicated-media img,
+.dedicated-media video {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin-block: 12px;
+  height: auto;
+}
+.dedicated-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 16px;
+}
+.dedicated-navigator {
+  margin-block: 16px;
+}
+.dedicated-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+}
+.dedicated-grid .button {
+  min-width: 0;
+  min-height: 44px;
+  gap: 2px;
+  padding-inline: 4px;
+}
+.dedicated-grid .button span {
+  font-size: 0.65rem;
+}
+.dedicated-review {
+  margin-block: 20px;
+}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BarChart3, BookOpen, Clock3, History, Target } from 'lucide-react';
 import { useLearning } from '../app/context';
 import { units } from '../content';
+import { practiceBatchShortLabel } from '../content/batches';
 import { domains } from '../content/blueprints';
 import { Empty, PageTitle, Pill } from '../components/Shared';
 import {
@@ -62,7 +63,7 @@ function sessionLabel(session: SessionPerformance) {
       session.mockFormat ?? 'short'
     ];
   if (session.mode === 'practice' && session.practice)
-    return `${session.practice.batch === 'all' ? '全問題' : '追加200問'}・${
+    return `${practiceBatchShortLabel(session.practice.batch)}・${
       session.practice.selection === 'strict_unseen'
         ? '厳密未見'
         : session.practice.selection === 'review'
@@ -204,7 +205,7 @@ export default function Analytics() {
       <section className="panel">
         <h2>分野別の回答と理解の手がかり</h2>
         <p className="muted small-text">
-          回答数には中断中の通常演習で保存した回答も含みます。時間付き学習演習の途中回答は、終了して採点するまで集計しません。「説明可」は自己申告です。初版50問の診断だけで全300問・全学習目標の習熟を判定しません。
+          回答数には中断中の通常演習で保存した回答も含みます。時間付き学習演習の途中回答は、終了して採点するまで集計しません。「説明可」は自己申告です。初版50問の診断だけで全問題・全学習目標の習熟を判定しません。
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="分野別の成績表">
           <table>

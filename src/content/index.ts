@@ -28,6 +28,7 @@ import {
 } from './expansion/safety';
 import { currentContentVersion } from './release';
 import { focusMockQuestions, focusMockSources } from './focus-mock';
+import { edition3Questions, edition3Sources, edition3Units } from './edition3';
 export { seedVideos } from './videos';
 export const legacyQuestionIds = new Set(
   [...foundationQuestions, ...appliedQuestions].map((q) => q.id),
@@ -40,6 +41,7 @@ export const units = [
   ...planningExpansionUnits,
   ...techniqueExpansionUnits,
   ...safetyExpansionUnits,
+  ...edition3Units,
 ];
 export const questions = [
   ...foundationQuestions,
@@ -51,6 +53,7 @@ export const questions = [
     ...(techniqueMediaAssignments[q.id] ? { media: techniqueMediaAssignments[q.id] } : {}),
   })),
   ...safetyExpansionQuestions,
+  ...edition3Questions,
 ];
 export const allQuestions = [...questions, ...focusMockQuestions];
 export const sources = [
@@ -66,5 +69,6 @@ export const sources = [
   ...planningExpansionSources,
   ...techniqueExpansionSources,
   ...safetyExpansionSources,
+  ...edition3Sources,
 ];
 export const contentVersion = currentContentVersion;

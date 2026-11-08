@@ -15,3 +15,5 @@ artifacts/playwright-report/
 **/*transcript*.txt
 artifacts/media-*.png
 artifacts/expansion-*.png
+
+authoring/dedicated-mock/

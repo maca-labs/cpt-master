@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
-test('v0.4 backup keeps added-unit notes and resumes the old short-exercise draft in v0.5', async ({
+test('v0.4 backup keeps added-unit notes and resumes the old short-exercise draft', async ({
   page,
 }) => {
   await page.clock.install({ time: new Date('2026-11-04T12:00:30Z') });
@@ -11,7 +11,7 @@ test('v0.4 backup keeps added-unit notes and resumes the old short-exercise draf
   );
   const old = JSON.parse(text);
   await page.goto(`${process.env.E2E_PUBLISHED_URL ?? '/'}#/settings`);
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.5.2');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.0');
   await page
     .getByLabel('バックアップJSONを選択', { exact: true })
     .setInputFiles({ name: 'v04.json', mimeType: 'application/json', buffer: Buffer.from(text) });

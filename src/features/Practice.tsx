@@ -7,6 +7,7 @@ import {
   useStartLearning,
   type PracticeResultsDisplay,
 } from '../app/actions';
+import { practiceBatchValues } from '../domain/types';
 import { allQuestions, questions, units } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import {
@@ -51,7 +52,7 @@ export function Diagnostic() {
         <Pill tone="green">3択・単一正答 / 中断・再開できます</Pill>
         <h2>経験を活かすための実力診断</h2>
         <p>
-          本番の難易度や合格可能性を示すテストではありません。初版の100問から予約した50問による、学習開始位置の参考値です。追加200問や300問全体の理解度を示す成績ではありません。診断には、設問・正答・解説を根拠資料とAIが照合した問題だけを使用します。人間の専門家レビューは未実施です。
+          本番の難易度や合格可能性を示すテストではありません。初版の100問から予約した50問による、学習開始位置の参考値です。追加問題を含む全範囲の理解度を示す成績ではありません。診断には、設問・正答・解説を根拠資料とAIが照合した問題だけを使用します。人間の専門家レビューは未実施です。
         </p>
         <div className="diagnostic-counts">
           {availability.map((d) => (
@@ -157,7 +158,11 @@ export function Practice() {
               onChange={(event) => setBatch(event.target.value as PracticeBatch)}
             >
               <option value="all">すべての通常学習問題</option>
-              <option value="expansion-2026-11-04">今回追加された200問のみ</option>
+              {practiceBatchValues.slice(1).map((batch) => (
+                <option value={batch} key={batch}>
+                  {practiceBatchLabel(batch)}
+                </option>
+              ))}
             </select>
           </label>
           <label className="field-label">
@@ -834,7 +839,7 @@ export function Results() {
       )}
       {session.mode === 'diagnostic' && (
         <p className="notice">
-          初版100問から予約した診断50問の結果です。追加200問や300問全体の習熟度を示す評価ではありません。
+          初版100問から予約した診断50問の結果です。追加問題を含む全範囲の習熟度を示す評価ではありません。
         </p>
       )}
       <div className="result-stats">

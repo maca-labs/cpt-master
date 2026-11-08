@@ -32,7 +32,7 @@ describe('focus mock', () => {
     expect(one.id).toBe(two.id);
     expect(one.questionIds.toSorted()).toEqual(focusMockQuestions.map((q) => q.id).toSorted());
     expect(await db.sessions.toArray()).toHaveLength(1);
-    expect(questions).toHaveLength(300);
+    expect(questions).toHaveLength(600);
     expect(selectThrough(allQuestions, true).every((q) => q.pool !== 'focus')).toBe(true);
   });
 

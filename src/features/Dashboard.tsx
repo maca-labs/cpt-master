@@ -86,7 +86,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <small>
-            診断は初版50問を用いた学習開始位置の参考です。追加200問を含む全範囲の習熟・合格可能性は判定しません。
+            診断は初版50問を用いた学習開始位置の参考です。追加問題を含む全範囲の習熟・合格可能性は判定しません。
           </small>
         </div>
         <div className="hero-illustration" aria-hidden="true">

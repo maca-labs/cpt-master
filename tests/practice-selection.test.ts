@@ -278,8 +278,8 @@ describe('release catalog and strict stock', () => {
     const history = empty();
     const selected = selectPracticeQuestions(bank, false, history, options);
     expect(selected.every((question) => question.pool === 'practice')).toBe(true);
-    expect(practiceInventory(bank, false, history, options).total).toBe(250);
-    expect(practiceInventory(bank, true, history, options).total).toBe(300);
+    expect(practiceInventory(bank, false, history, options).total).toBe(550);
+    expect(practiceInventory(bank, true, history, options).total).toBe(600);
     expect(() => practiceAllocation(expansion, 201)).toThrow();
     expect(() =>
       selectPracticeQuestions(bank, true, history, { ...options, requestedCount: 155 as 50 }),

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { contentVersion, questions } from '../src/content';
+import { v052ContentVersion } from '../src/content/release';
 import type { Session } from '../src/domain/types';
 import { createSession } from '../src/engines/learning';
 import { createThroughSession, withMockDraft } from '../src/engines/mock';
@@ -54,14 +55,14 @@ describe('v0.5 additive schema compatibility', () => {
       readFileSync(new URL('./fixtures/v04-question-manifest.json', import.meta.url), 'utf8'),
     );
     expect(
-      questions.map((q) => ({
+      questions.slice(0, manifest.length).map((q) => ({
         id: q.id,
         revision: q.revision,
         groupId: q.groupId,
         sha256: createHash('sha256').update(JSON.stringify(q)).digest('hex'),
       })),
     ).toEqual(manifest);
-    expect(contentVersion).toBe('2026-11-08.1');
+    expect(contentVersion).toBe('2026-11-08.2');
   });
   it.each(['v04-backup.json', 'legacy-v1-backup.json'])(
     'restores %s without replacing notes, answers, settings or active drafts',
@@ -78,6 +79,17 @@ describe('v0.5 additive schema compatibility', () => {
       expect(await snapshot(db)).toEqual(old.data);
     },
   );
+  it('restores a v0.5.2 backup with an active strict reservation', async () => {
+    const previous = database(),
+      restored = database();
+    await previous.sessions.add(strictSession());
+    const exported = await exportBackup(previous);
+    const backup = validateBackup(
+      JSON.stringify({ ...exported, contentVersion: v052ContentVersion }),
+    );
+    await restoreBackup(backup, restored);
+    expect(await snapshot(restored)).toEqual(await snapshot(previous));
+  });
   it('round-trips strict reservations and all 155 draft flags without a schema migration', async () => {
     const db = database(),
       restored = database();

@@ -225,7 +225,7 @@ describe('155-question continuous learning format', () => {
       ),
     ).toThrow(/予約|在庫/);
     active.status = 'completed';
-    expect(availableMockBank(questions, [active])).toHaveLength(300);
+    expect(availableMockBank(questions, [active])).toHaveLength(600);
   });
   it('reports unavailable domain stock and never borrows reserved exam-pool or unreviewed items', () => {
     const blocked = reserved(questions.filter((q) => q.domainId === 'assessment').map((q) => q.id));

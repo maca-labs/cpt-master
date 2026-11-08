@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { questions } from '../src/content';
-import { expansionQuestionIds } from '../src/content/batches';
+import { expansionQuestionIds, edition3QuestionIds } from '../src/content/batches';
 import type { Exposure, Session } from '../src/domain/types';
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -315,4 +315,40 @@ test('an old completed practice result preserves groups reserved by a later stri
   expect((await rows<Exposure>(page, 'exposures')).map((exposure) => exposure.sessionId)).toEqual([
     strict.id,
   ]);
+});
+
+test('edition-3 batch selects a new group, and persists its answer and explanation', async ({
+  page,
+}) => {
+  await page.goto('/#/exam/full');
+  await expect(
+    page.getByRole('heading', { name: '155問の本番形式模試は、準備中です。' }),
+  ).toBeVisible();
+  await expect(page.getByRole('button', { name: '155問の模試を始める' })).toHaveCount(0);
+  await page.goto('/#/learn');
+  await expect(page.locator('.unit-card')).toHaveCount(40);
+  await ready(page);
+  await page
+    .getByRole('combobox', { name: '教材の範囲', exact: true })
+    .selectOption('edition3-2026-11-08');
+  await page
+    .getByRole('combobox', { name: '出題と評価の方法', exact: true })
+    .selectOption('strict_unseen');
+  await page.getByRole('button', { name: '問題演習を始める', exact: true }).click();
+  const heading = page.locator('.quiz-card h1');
+  await expect(heading).toBeVisible();
+  const session = (await rows<Session>(page, 'sessions'))[0];
+  expect(session.practice?.batch).toBe('edition3-2026-11-08');
+  expect(session.questionIds).toHaveLength(10);
+  expect(session.questionIds.every((id) => edition3QuestionIds.has(id))).toBe(true);
+  const first = questions.find((question) => question.id === session.questionIds[0])!;
+  expect(await heading.innerText()).toBe(first.prompt);
+  const option = first.choices.find((choice) => choice.id === first.correctChoiceId)!;
+  await page.locator('button.choice').filter({ hasText: option.text }).click();
+  await page.getByRole('button', { name: '回答を保存', exact: true }).click();
+  await expect(page.locator('.explanation')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('.explanation')).toBeVisible();
+  await expect(heading).toHaveText(first.prompt);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
