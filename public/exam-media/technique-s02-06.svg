@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>回転軸に固定した質点模型</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">回転軸に固定した質点模型</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><line x1="107" y1="122" x2="270" y2="122" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="187" cy="122" r="8" fill="#233746"/><circle cx="153" cy="122" r="11" fill="#9a4e32"/><circle cx="221" cy="122" r="11" fill="#9a4e32"/><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><line x1="401" y1="122" x2="564" y2="122" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="481" cy="122" r="8" fill="#233746"/><circle cx="415" cy="122" r="11" fill="#9a4e32"/><circle cx="547" cy="122" r="11" fill="#9a4e32"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A おもりはすべて軸から10 cm</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 同じおもりがすべて軸から20 cm</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">正味の回転トルクは同一</text>
+  </g>
+</svg>

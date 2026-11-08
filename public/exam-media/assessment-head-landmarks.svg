@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 330" role="img" aria-labelledby="title desc">
+  <title id="title">側面から見た頭部と三つの目印</title>
+  <desc id="desc">頭部側面で、Aは耳の穴、Bは眼窩下縁、Cは顎先を指す。</desc>
+  <rect width="530" height="330" fill="#fff"/>
+  <path d="M160 287 L173 226 Q147 196 144 143 Q141 73 203 55 Q260 39 300 63
+           Q327 78 331 118 L333 133 L353 163 Q359 172 343 177 L337 178
+           L340 196 Q342 203 333 208 Q339 225 328 237 Q322 246 292 243
+           L273 251 L275 287 Z"
+        fill="#e6eef2" stroke="#244554" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M224 145 Q210 139 208 155 Q206 176 224 179 Q232 178 230 169
+           M300 129 Q312 123 323 130 M303 139 Q312 143 321 138"
+        fill="none" stroke="#244554" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#a03e20" stroke-width="2" fill="none">
+    <path d="M219 164 H85"/><path d="M313 148 H405"/><path d="M328 235 L370 257 H405"/>
+  </g>
+  <g fill="#a03e20"><circle cx="219" cy="164" r="5"/><circle cx="313" cy="148" r="5"/><circle cx="328" cy="235" r="5"/></g>
+  <g fill="#18232a" font-size="26" font-family="sans-serif">
+    <text x="53" y="173">A</text><text x="416" y="156">B</text><text x="416" y="266">C</text>
+  </g>
+</svg>

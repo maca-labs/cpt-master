@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280" role="img" aria-labelledby="title">
+  <title id="title">ダンベルの位置と上腕を正面から比べる側方挙上の模式図</title>
+  <rect width="520" height="280" rx="12" fill="#f6fafc"/>
+<text x="260" y="33" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">正面から見た挙上の終点</text><path d="M128 246H418" stroke="#506573" stroke-width="3"/><path d="M63 95H457" stroke="#819aa7" stroke-width="2" stroke-dasharray="5 5"/><g fill="none" stroke="#183d52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="260" cy="67" r="16" fill="#fff" stroke-width="4"/>
+    <polyline points="260,87 260,162 223,242 195,242" />
+    <polyline points="260,162 297,242 326,242" />
+    <polyline points="229,95 291,95" />
+    <polyline points="229,95 186,143 137,96" stroke='#236b84'/>
+    <polyline points="291,95 334,143 383,96" stroke='#236b84'/>
+    <polyline points="116,94 157,94" stroke='#a64822' stroke-width='10'/>
+    <polyline points="363,94 404,94" stroke='#a64822' stroke-width='10'/>
+  </g><text x="260" y="266" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">点線＝肩の高さ</text></svg>

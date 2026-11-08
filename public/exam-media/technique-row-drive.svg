@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 226" role="img" aria-labelledby="title">
+  <title id="title">室内ローイングでシートとハンドルが動くタイミングを比較</title>
+  <rect width="640" height="226" rx="12" fill="#f6fafc"/>
+<path d="M320 19v188" stroke="#a6bac5" stroke-width="2"/><text x="160" y="35" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">例A</text><text x="480" y="35" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">例B</text><g transform="translate(0 0)">
+    <rect x="36" y="185" width="239" height="9" rx="4" fill="#5d7c8c"/>
+    <circle cx="277" cy="146" r="25" fill="#e2eef3" stroke="#244f67" stroke-width="3"/>
+    <path d="M233 166l15-27M277 171v19" stroke="#244f67" stroke-width="5"/>
+  </g><g transform="translate(0 0)"><g fill="none" stroke="#183d52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="248" y1="117" x2="277" y2="117" stroke="#a64822" stroke-width="2"><animate attributeName="x1" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="248;248;220;220;248;248" repeatCount="indefinite"/></line>
+    <rect x="166" y="173" width="30" height="9" rx="4" fill="#a64822" stroke="none"><animate attributeName="x" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="166;166;138;138;166;166" repeatCount="indefinite"/></rect>
+    <circle cx="207" cy="70" r="13" fill="#fff" stroke-width="4"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="207;207;180;180;207;207" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="70;70;71;71;70;70" repeatCount="indefinite"/></circle>
+    <polyline points="202,89 181,165 228,122 230,169 243,147" ><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="202,89 181,165 228,122 230,169 243,147;202,89 181,165 228,122 230,169 243,147;175,89 153,165 206,132 230,169 243,147;175,89 153,165 206,132 230,169 243,147;202,89 181,165 228,122 230,169 243,147;202,89 181,165 228,122 230,169 243,147" repeatCount="indefinite"/></polyline>
+    <polyline points="202,89 248,117" stroke="#236b84"><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="202,89 248,117;202,89 248,117;175,89 220,117;175,89 220,117;202,89 248,117;202,89 248,117" repeatCount="indefinite"/></polyline>
+    <circle cx="248" cy="117" r="6" fill="#a64822" stroke="#fff" stroke-width="2"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="248;248;220;220;248;248" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="117;117;117;117;117;117" repeatCount="indefinite"/></circle>
+  </g></g><g transform="translate(320 0)">
+    <rect x="36" y="185" width="239" height="9" rx="4" fill="#5d7c8c"/>
+    <circle cx="277" cy="146" r="25" fill="#e2eef3" stroke="#244f67" stroke-width="3"/>
+    <path d="M233 166l15-27M277 171v19" stroke="#244f67" stroke-width="5"/>
+  </g><g transform="translate(320 0)"><g fill="none" stroke="#183d52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="248" y1="117" x2="277" y2="117" stroke="#a64822" stroke-width="2"><animate attributeName="x1" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="248;248;246;246;248;248" repeatCount="indefinite"/></line>
+    <rect x="166" y="173" width="30" height="9" rx="4" fill="#a64822" stroke="none"><animate attributeName="x" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="166;166;138;138;166;166" repeatCount="indefinite"/></rect>
+    <circle cx="207" cy="70" r="13" fill="#fff" stroke-width="4"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="207;207;200;200;207;207" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="70;70;83;83;70;70" repeatCount="indefinite"/></circle>
+    <polyline points="202,89 181,165 228,122 230,169 243,147" ><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="202,89 181,165 228,122 230,169 243,147;202,89 181,165 228,122 230,169 243,147;195,101 153,165 206,132 230,169 243,147;195,101 153,165 206,132 230,169 243,147;202,89 181,165 228,122 230,169 243,147;202,89 181,165 228,122 230,169 243,147" repeatCount="indefinite"/></polyline>
+    <polyline points="202,89 248,117" stroke="#236b84"><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="202,89 248,117;202,89 248,117;195,101 246,117;195,101 246,117;202,89 248,117;202,89 248,117" repeatCount="indefinite"/></polyline>
+    <circle cx="248" cy="117" r="6" fill="#a64822" stroke="#fff" stroke-width="2"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="248;248;246;246;248;248" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="117;117;117;117;117;117" repeatCount="indefinite"/></circle>
+  </g></g><text x="320" y="214" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">オレンジ＝シートとハンドル</text></svg>
+
+

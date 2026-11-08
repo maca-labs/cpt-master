@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 265" role="img">
+  <title>立位プッシュの接触面</title>
+  <rect width="680" height="265" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">立位プッシュの接触面</text>
+  <circle cx="263" cy="67" r="10" fill="#365b67"/><line x1="263" y1="81" x2="252" y2="117" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="252" y1="117" x2="231" y2="156" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="252" y1="117" x2="275" y2="156" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="257.5" y1="86" x2="282" y2="100" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="492" y1="69" x2="492" y2="157" stroke="#78939a" stroke-width="8" stroke-linecap="round"/><line x1="265" y1="86" x2="489" y2="86" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><line x1="313" y1="116" x2="469" y2="116" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(469 116) rotate(0)"/><text x="360" y="142" font-size="18" fill="#173440">100 N</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">人の両手は壁と接触</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">手が壁を右向きに100 Nで押す</text>
+  </g>
+</svg>

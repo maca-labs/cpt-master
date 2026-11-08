@@ -41,7 +41,7 @@ export interface DedicatedExamPack {
   id: string;
   title?: string;
   revision: number;
-  status: 'preparing' | 'released';
+  status: 'preparing' | 'released_study' | 'released';
   items: DedicatedExamItem[];
 }
 
@@ -116,7 +116,7 @@ function hasUsableMedia(media: NonNullable<DedicatedExamItem['media']>) {
   );
 }
 
-function hasReview(item: DedicatedExamItem, access: DedicatedExamAccess) {
+function hasReview(item: DedicatedExamItem, allowAiReview: boolean) {
   const review = item.review;
   if (
     !review ||
@@ -127,7 +127,7 @@ function hasReview(item: DedicatedExamItem, access: DedicatedExamAccess) {
     return false;
   if (review.status === 'expert_reviewed')
     return review.reviewerType === 'human_expert' && hasText(review.reviewer);
-  return access === 'preview' && review.status === 'source_checked' && review.reviewerType === 'ai';
+  return allowAiReview && review.status === 'source_checked' && review.reviewerType === 'ai';
 }
 
 export function validateDedicatedExamPack(
@@ -138,8 +138,11 @@ export function validateDedicatedExamPack(
   if (!Array.isArray(pack.items) || pack.items.some((item) => !item || typeof item !== 'object'))
     return ['専用模試の問題データを確認できません。'];
   const issues: string[] = [];
-  if (pack.status !== (access === 'released' ? 'released' : 'preparing'))
-    issues.push('このセットは受験を開始できる公開状態ではありません。');
+  const eligibleStatus =
+    access === 'preview'
+      ? pack.status === 'preparing'
+      : pack.status === 'released' || pack.status === 'released_study';
+  if (!eligibleStatus) issues.push('このセットは受験を開始できる公開状態ではありません。');
   if (!safeId(pack.id) || !validRevision(pack.revision))
     issues.push('セットIDまたは改訂番号が不正です。');
   if (pack.items.length !== blueprint.scored + blueprint.unscored)
@@ -189,7 +192,7 @@ export function validateDedicatedExamPack(
         blueprint.choiceCount
     )
       issues.push(item.id + ' の設問または選択肢が不正です。');
-    if (!hasReview(item, access))
+    if (!hasReview(item, pack.status === 'preparing' || pack.status === 'released_study'))
       issues.push(item.id + ' の現在の改訂に必要な審査記録がありません。');
     if (
       !Array.isArray(item.sourceRefs) ||

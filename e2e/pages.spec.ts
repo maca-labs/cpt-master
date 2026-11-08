@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import packageMetadata from '../package.json' with { type: 'json' };
 import { edition3Questions } from '../src/content/edition3';
 import { seedVideos } from '../src/content';
 import { isRecommendedVideo } from '../src/engines/video-review';
@@ -14,7 +15,9 @@ test('published Pages site loads nested routes and reviewed videos on this viewp
   await expect(
     page.getByRole('heading', { name: '理解から、指導できる知識へ。', exact: true }),
   ).toBeVisible();
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.0');
+  await expect(page.locator('.version')).toHaveText(
+    'PERSONAL EDITION · v' + packageMetadata.version,
+  );
   await page.goto(published! + '#/learn');
   await expect(page.locator('.unit-card')).toHaveCount(40);
   await expect(page.getByText(/40単元・600問を収録/)).toBeVisible();
@@ -116,10 +119,7 @@ test('published Pages cache supports offline study and persistence under the pro
   await context.setOffline(false);
 });
 
-test('published edition-3 practice persists and dedicated exams stay in preparation', async ({
-  page,
-  request,
-}) => {
+test('published edition-3 practice persists across reload', async ({ page }) => {
   test.skip(!published, 'GitHub Pages公開後にURLを指定して実行します。');
   const practiceUrl = new URL('#/practice', published);
   await page.goto(practiceUrl.href);
@@ -142,28 +142,4 @@ test('published edition-3 practice persists and dedicated exams stay in preparat
   await expect(heading).toHaveText(prompt);
   await expect(page.locator('.explanation')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-
-  for (const route of ['#/exam/full', '#/exam/full?set=not-released']) {
-    await page.goto(new URL(route, published).href);
-    await expect(
-      page.getByRole('heading', { name: '155問の本番形式模試は、準備中です。', exact: true }),
-    ).toBeVisible();
-    await expect(page.getByRole('button', { name: '155問の模試を始める' })).toHaveCount(0);
-    await expect(page.getByRole('combobox', { name: '専用模試セット' })).toHaveCount(0);
-  }
-
-  const worker = await request.get(new URL('sw.js', published).href);
-  expect(worker.ok()).toBe(true);
-  const workerCode = await worker.text();
-  const unreleasedExamId = /jp-dedicated-0[123]|dm[123]-[apts]-\d+/;
-  expect(unreleasedExamId.test(workerCode)).toBe(false);
-  const scripts = [...workerCode.matchAll(/url:"(assets\/[^"]+\.js)"/g)].map(([, path]) => path);
-  expect(scripts.some((path) => path.startsWith('assets/index-'))).toBe(true);
-  await Promise.all(
-    scripts.map(async (path) => {
-      const asset = await request.get(new URL(path, published).href);
-      expect(asset.ok()).toBe(true);
-      expect(unreleasedExamId.test(await asset.text())).toBe(false);
-    }),
-  );
 });

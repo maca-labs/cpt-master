@@ -169,6 +169,20 @@ export default function MockExamHome() {
         title="問題に向き合い、時間配分も練習する。"
         description="見直しと時間配分を練習し、次に学ぶ単元を見つけましょう。"
       />
+      <section className="panel" id="dedicated-mock">
+        <h2>専用模試 · 155問・180分 × 3セット</h2>
+        <p>
+          通常学習とは別の専用問題です。各セットは採点対象140問と採点対象外15問で、
+          中断中も時計は進みます。
+        </p>
+        <p className="muted small-text">
+          AIによる出典照合済みです。人間の専門家レビューは未実施です。
+        </p>
+        <Link className="button primary" to="/exam/full">
+          専用模試のセットを選ぶ
+          <ArrowRight size={16} />
+        </Link>
+      </section>
       <section className="panel" id="focus-mock">
         <Pill tone="green">学習用の新規ケース問題</Pill>
         <h2>{focusMock.title}</h2>
@@ -183,7 +197,6 @@ export default function MockExamHome() {
         </p>
         <p className="muted small-text">
           AIによる出典照合済みの固定セットです。再挑戦では同じ問題を、問題順と選択肢順を変えて出題します。
-          専用の本番形式模試は設定画面で準備状況を確認できます。
         </p>
         {activeFocus ? (
           <Link className="button primary" to={`/exam/${activeFocus.id}`}>
@@ -293,7 +306,7 @@ export default function MockExamHome() {
         <h2>155問・180分の学習用通し演習</h2>
         <p>
           通常学習の{questions.length}
-          問から、セッション内で同じ問題グループを重複せず選びます。本番同等の専用模試や初見専用の評価ではありません。中断・タブを閉じている間も時計が進みます。
+          問から、セッション内で同じ問題グループを重複せず選びます。専用模試や初見専用の評価ではありません。中断・タブを閉じている間も時計が進みます。
         </p>
         <p>
           学習用配分は面談・評価35問、計画50問、技術48問、安全22問。整数32・45・43・20の比を155問へ最大剰余方式で配分します。
@@ -301,7 +314,7 @@ export default function MockExamHome() {
           本試験の採点対象140問＋採点対象外15問の方式は再現しません。
         </p>
         <p className="muted small-text">
-          AIによる出典照合済みの通常問題を使用し、人間の専門家による審査条件を満たす専用模試とは分けます。公式換算スコア、合格確率、合否判定は算出しません。
+          AIによる出典照合済みの通常問題を使う時間配分練習です。公式換算スコア、合格確率、合否判定は算出しません。
         </p>
         {!unlocked && (
           <p className="notice">
@@ -420,10 +433,6 @@ export default function MockExamHome() {
           <p className="muted">完了した模試と通し演習はここに残ります。</p>
         )}
       </section>
-      <Link className="button secondary" to="/exam/full">
-        155問模試の準備状況
-        <ArrowRight size={16} />
-      </Link>
     </>
   );
 }
@@ -863,7 +872,7 @@ export function MockExamResults() {
       {isThrough && (
         <>
           <p className="notice">
-            時間配分の練習用・既出問題を含む演習です。全155問を採点し、未回答も分母に含めます。本試験の140問採点＋15問採点外の方式や、本番同等の専用模試を再現したものではありません。
+            時間配分の練習用・既出問題を含む演習です。全155問を採点し、未回答も分母に含めます。本試験の140問採点＋15問採点外の方式や、専用模試を再現したものではありません。
           </p>
           <Composition counts={composition} />
           <p className="muted small-text">

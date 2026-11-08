@@ -320,11 +320,6 @@ test('an old completed practice result preserves groups reserved by a later stri
 test('edition-3 batch selects a new group, and persists its answer and explanation', async ({
   page,
 }) => {
-  await page.goto('/#/exam/full');
-  await expect(
-    page.getByRole('heading', { name: '155問の本番形式模試は、準備中です。' }),
-  ).toBeVisible();
-  await expect(page.getByRole('button', { name: '155問の模試を始める' })).toHaveCount(0);
   await page.goto('/#/learn');
   await expect(page.locator('.unit-card')).toHaveCount(40);
   await ready(page);

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 220" role="img" aria-labelledby="title">
+  <title id="title">ダンベルを後方へ動かす二つの時点を横から見た模式図</title>
+  <rect width="530" height="220" fill="#f8fafc"/>
+  <path d="M265 20v180" stroke="#cbd5e1" stroke-width="2"/>
+  <g fill="#172554" font-size="18" font-family="sans-serif" text-anchor="middle">
+    <text x="130" y="31">A　開始</text><text x="395" y="31">B　上げた位置</text>
+  </g>
+  <g fill="none" stroke="#1e293b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="181" cy="74" r="14" stroke-width="4"/>
+    <path d="m169 85-12 6-67 39 10 34-9 34h20m46-107-46 26 26 46"/>
+    <circle cx="446" cy="74" r="14" stroke-width="4"/>
+    <path d="m434 85-12 6-67 39 10 34-9 34h20m46-107-46-20-20 46"/>
+  </g>
+  <g fill="#9a3412" stroke="#f8fafc" stroke-width="3">
+    <circle cx="111" cy="117" r="7"/><circle cx="376" cy="71" r="7"/>
+  </g>
+  <g stroke="#0369a1" stroke-width="8" stroke-linecap="round">
+    <path d="m128 166 18-6m201-40 18-6"/>
+  </g>
+</svg>

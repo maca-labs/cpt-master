@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>同じ球を押す2回の投球</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">同じ球を押す2回の投球</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><rect x="115" y="95" width="67" height="10" rx="6" fill="#1c6975" stroke="#1c6975" stroke-width="2"/><rect x="115" y="127" width="94" height="10" rx="6" fill="#667b83" stroke="#667b83" stroke-width="2"/><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><rect x="409" y="95" width="108" height="10" rx="6" fill="#9a4e32" stroke="#9a4e32" stroke-width="2"/><rect x="409" y="127" width="47" height="10" rx="6" fill="#667b83" stroke="#667b83" stroke-width="2"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 平均25 Nが0.20 s作用</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 平均40 Nが0.10 s作用</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">球はいずれも静止から</text>
+  </g>
+</svg>

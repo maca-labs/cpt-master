@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 570 255" role="img" aria-labelledby="title">
+  <title id="title">二つの条件で測った減速方向の正味力と時間</title>
+  <rect width="570" height="255" fill="#f8fafc"/>
+  <g fill="#172554" font-size="16" font-family="sans-serif">
+    <text x="6" y="24">正味力の大きさ（N）</text>
+    <text x="222" y="27">A</text><text x="487" y="27">B</text>
+    <text x="206" y="235">時間（秒）</text><text x="471" y="235">時間（秒）</text>
+    <text x="28" y="65">300</text><text x="28" y="135">150</text>
+    <text x="52" y="216">0</text><text x="143" y="216">0.20</text><text x="243" y="216">0.40</text>
+    <text x="317" y="216">0</text><text x="408" y="216">0.20</text><text x="508" y="216">0.40</text>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4">
+    <path d="M62 60h200m-200 70h200M327 60h200m-200 70h200"/>
+  </g>
+  <path d="M62 200V60h100v140h100" fill="none" stroke="#075985" stroke-width="4"/>
+  <path d="M327 200v-70h200v70" fill="none" stroke="#9a3412" stroke-width="4"/>
+  <g stroke="#475569" stroke-width="2" fill="none">
+    <path d="M62 46v154h205m60-154v154h205M162 200v5m100-5v5m165-5v5m100-5v5"/>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 350" role="img" aria-labelledby="title">
+  <title id="title">三つの力と速度の計測点</title>
+  <rect width="100%" height="100%" rx="12" fill="#fff"/>
+  <g font-family="Yu Gothic, Meiryo, sans-serif" font-size="22" fill="#18232a">
+    <text x="28" y="36" font-weight="700">試行ごとの計測点</text>
+    <line x1="95" y1="276" x2="512" y2="276" stroke="#46515d" stroke-width="2"/>
+    <line x1="95" y1="71" x2="95" y2="276" stroke="#46515d" stroke-width="2"/>
+    <text x="37" y="79" font-size="16">力（N）</text>
+    <text x="515" y="330" text-anchor="end" font-size="16">速度（m/秒）</text>
+    <line x1="90" y1="116" x2="510" y2="116" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <text x="83" y="122" text-anchor="end" font-size="16">600</text>
+    <line x1="90" y1="183" x2="510" y2="183" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <text x="83" y="189" text-anchor="end" font-size="16">450</text>
+    <line x1="90" y1="228" x2="510" y2="228" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <text x="83" y="234" text-anchor="end" font-size="16">350</text>
+    <line x1="193" y1="116" x2="193" y2="277" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <circle cx="193" cy="116" r="7" fill="#17617a" />
+    <text x="208" y="106" font-weight="700">A</text>
+    <text x="193" y="303" text-anchor="middle" font-size="16">0.40</text>
+    <line x1="339" y1="183" x2="339" y2="277" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <circle cx="339" cy="183" r="7" fill="#17617a" />
+    <text x="354" y="173" font-weight="700">B</text>
+    <text x="339" y="303" text-anchor="middle" font-size="16">0.65</text>
+    <line x1="428" y1="228" x2="428" y2="277" stroke="#b9c7d0" stroke-dasharray="4 4"/>
+    <circle cx="428" cy="228" r="7" fill="#17617a" />
+    <text x="443" y="218" font-weight="700">C</text>
+    <text x="428" y="303" text-anchor="middle" font-size="16">0.80</text>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 238" role="img" aria-labelledby="title">
+  <title id="title">ハング・パワークリーンの引き始めを横から見た動き</title>
+  <rect width="520" height="238" rx="12" fill="#f6fafc"/>
+<text x="260" y="32" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">引き始めを側方から観察</text><path d="M120 204H427" stroke="#506573" stroke-width="3"/><g fill="none" stroke="#183d52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="274" cy="61" r="16" fill="#fff" stroke-width="4"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="274;274;281;281;274;274" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="61;61;55;55;61;61" repeatCount="indefinite"/></circle>
+    <polyline points="266,79 223,126" ><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="266,79 223,126;266,79 223,126;269,74 229,124;269,74 229,124;266,79 223,126;266,79 223,126" repeatCount="indefinite"/></polyline>
+    <polyline points="223,126 274,157 250,201 279,201" ><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="223,126 274,157 250,201 279,201;223,126 274,157 250,201 279,201;229,124 276,156 250,201 279,201;229,124 276,156 250,201 279,201;223,126 274,157 250,201 279,201;223,126 274,157 250,201 279,201" repeatCount="indefinite"/></polyline>
+    <polyline points="266,79 272,116 279,151" stroke="#236b84"><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="266,79 272,116 279,151;266,79 272,116 279,151;269,74 298,102 281,127;269,74 298,102 281,127;266,79 272,116 279,151;266,79 272,116 279,151" repeatCount="indefinite"/></polyline>
+    <circle cx="279" cy="151" r="10" fill="#a64822" stroke="#fff" stroke-width="2"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="279;279;281;281;279;279" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="151;151;127;127;151;151" repeatCount="indefinite"/></circle>
+  </g><text x="260" y="224" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">オレンジの円＝バーの位置</text></svg>
+

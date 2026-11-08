@@ -1,5 +1,8 @@
 import 'fake-indexeddb/auto';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { allQuestions } from '../src/content';
 import { blueprint, domainIds } from '../src/content/blueprints';
 import {
   dedicatedExamLimitMs,
@@ -64,7 +67,7 @@ function createPack(status: DedicatedExamPack['status'] = 'preparing'): Dedicate
 }
 
 describe('専用模試の公開条件', () => {
-  it('現在の人間による専門家レビューが全問そろうまで公開扱いにしない', () => {
+  it('専門家レビュー版の公開には全問の現在の人間によるレビューが必要', () => {
     const preview = createPack();
     expect(validateDedicatedExamPack(preview, 'preview')).toEqual([]);
     expect(validateDedicatedExamPack(preview, 'released')).not.toEqual([]);
@@ -80,8 +83,30 @@ describe('専用模試の公開条件', () => {
     expect(validateDedicatedExamPack(approved, 'released')).toHaveLength(3);
   });
 
+  it('学習用公開版は現在のAI出典照合と人間による専門家レビューを受け付ける', () => {
+    const pack = createPack('released_study');
+    pack.items[1].review = createPack('released').items[1].review;
+    expect(validateDedicatedExamPack(pack, 'released')).toEqual([]);
+    expect(validateDedicatedExamPack(pack, 'preview')).toEqual(
+      expect.arrayContaining([expect.stringContaining('公開状態')]),
+    );
+  });
+
+  it('学習用公開版でも照合前の下書き、古い改訂、審査記録や出典の欠落を拒否する', () => {
+    const pack = createPack('released_study');
+    pack.items[0].review.status = 'draft';
+    pack.items[1].revision += 1;
+    pack.items[2].review.method = '';
+    pack.items[3].review.reviewerType = 'human_expert';
+    pack.items[4].sourceRefs = [];
+    const issues = validateDedicatedExamPack(pack, 'released');
+    expect(issues).toHaveLength(5);
+    expect(issues.slice(0, 4).every((issue) => issue.includes('審査記録'))).toBe(true);
+    expect(issues[4]).toContain('出典');
+  });
+
   it('媒体の数や利用権、問題グループ、採点対象の配分を公開前に検査する', () => {
-    const pack = createPack('released');
+    const pack = createPack('released_study');
     pack.items[0].media!.rights.evidence = '';
     delete pack.items[1].media;
     pack.items[2].groupId = pack.items[3].groupId;
@@ -97,6 +122,41 @@ describe('専用模試の公開条件', () => {
       ]),
     );
   });
+});
+
+it('公開する3セットは一般教材と重複せず、掲載する図版は出典・利用権を記録した原本と一致する', () => {
+  const ids = new Set(allQuestions.map((item) => item.id));
+  const groups = new Set(allQuestions.map((item) => item.groupId));
+  const mediaDigests = new Set<string>();
+  for (const [number, mediaCount] of [
+    ['01', 29],
+    ['02', 28],
+    ['03', 26],
+  ] as const) {
+    const pack = JSON.parse(
+      readFileSync(
+        new URL('../src/content/dedicated-packs/set-' + number + '.json', import.meta.url),
+        'utf8',
+      ),
+    ) as DedicatedExamPack;
+    expect(pack).toMatchObject({ id: 'jp-dedicated-' + number, status: 'released_study' });
+    expect(validateDedicatedExamPack(pack, 'released')).toEqual([]);
+    expect(pack.items.filter((item) => item.media)).toHaveLength(mediaCount);
+    for (const item of pack.items) {
+      expect(ids.has(item.id)).toBe(false);
+      expect(groups.has(item.groupId)).toBe(false);
+      ids.add(item.id);
+      groups.add(item.groupId);
+      expect(item.review).toMatchObject({ status: 'source_checked', reviewerType: 'ai' });
+      if (!item.media) continue;
+      expect(item.media.src).toMatch(/^exam-media\/[a-z0-9-]+\.svg$/);
+      const file = readFileSync(new URL('../public/' + item.media.src, import.meta.url));
+      const digest = createHash('sha256').update(file).digest('hex');
+      expect(item.media.rights.evidence).toContain('SHA-256: ' + digest);
+      expect(mediaDigests.has(digest)).toBe(false);
+      mediaDigests.add(digest);
+    }
+  }
 });
 
 describe('専用模試の保存と採点', () => {
@@ -213,10 +273,25 @@ describe('専用模試の保存と採点', () => {
     expect(newSession.deadlineAt).toBe(now + dedicatedExamLimitMs);
   });
 
-  it('同じデータでも公開側の開始を許可しない', async () => {
+  it('公開側は準備中のセットを拒否し、学習用公開版の受験を保存して採点する', async () => {
     const released = new DedicatedExamDB('released', 'dedicated-released-' + crypto.randomUUID());
     try {
       expect(() => released.start(pack)).toThrow('公開状態');
+
+      const studyPack: DedicatedExamPack = { ...pack, status: 'released_study' };
+      const session = await released.start(studyPack);
+      const scored = studyPack.items.find((item) => item.scored)!;
+      const unscored = studyPack.items.find((item) => !item.scored)!;
+      for (const item of [scored, unscored])
+        await released.update(studyPack, session.id, {
+          type: 'answer',
+          questionId: item.id,
+          choiceId: item.correctChoiceId,
+        });
+      const result = await released.finish(studyPack, session.id, 'submitted');
+      expect(result.result).toMatchObject({ correct: 1, total: 140, answered: 1, unanswered: 139 });
+      expect(await released.sessionFor(studyPack)).toEqual(result);
+      expect(await database.sessionFor(pack)).toBeUndefined();
     } finally {
       await released.delete();
     }

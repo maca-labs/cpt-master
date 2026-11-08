@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 310" role="img" aria-labelledby="title">
+  <title id="title">30秒時点の立ち上がり進行</title>
+  <rect width="100%" height="100%" rx="12" fill="#fff"/>
+  <g font-family="Yu Gothic, Meiryo, sans-serif" font-size="22" fill="#18232a">
+    <text x="32" y="37" font-weight="700">最後の反復の側面観察</text>
+    <line x1="112" y1="89" x2="516" y2="89" stroke="#b9c7d0"/>
+    <line x1="112" y1="165" x2="516" y2="165" stroke="#b9c7d0" stroke-dasharray="6 6"/>
+    <line x1="112" y1="241" x2="516" y2="241" stroke="#b9c7d0"/>
+    <line x1="119" y1="89" x2="119" y2="249" stroke="#46515d" stroke-width="2"/>
+    <text x="100" y="96" text-anchor="end" font-size="16">直立</text>
+    <text x="100" y="172" text-anchor="end" font-size="16">中間</text>
+    <text x="100" y="248" text-anchor="end" font-size="16">着座</text>
+    <path d="M119 241 H185 C272 241 320 201 377 161 S452 139 485 127" fill="none" stroke="#17617a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="485" y1="127" x2="485" y2="249" stroke="#a04421" stroke-width="2" stroke-dasharray="5 5"/>
+    <circle cx="485" cy="127" r="7" fill="#a04421" />
+    <text x="485" y="278" text-anchor="middle" font-size="16">30秒の合図</text>
+    <text x="134" y="282" font-size="16">最終反復の開始</text>
+  </g>
+</svg>

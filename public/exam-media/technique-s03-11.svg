@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>横移動の初動記録</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">横移動の初動記録</text>
+  <circle cx="431" cy="124" r="10" fill="#1c6975"/><circle cx="485" cy="124" r="10" fill="#1c6975"/><circle cx="211" cy="124" r="10" fill="#9a4e32"/><line x1="406" y1="111" x2="230" y2="111" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(230 111) rotate(180)"/><text x="400" y="91" font-size="18" fill="#173440">開始</text><text x="166" y="91" font-size="18" fill="#9a4e32">最初の接地</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">開始時は正面向き</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">進行方向は左</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">最初の接地は左足が左へ開いた位置</text>
+  </g>
+</svg>

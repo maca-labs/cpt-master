@@ -1,0 +1,21 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 235' role='img' aria-labelledby='title'>
+  <title id='title'>乳酸性作業閾値と区間</title>
+  <rect width='520' height='235' rx='12' fill='#fff'/>
+  <rect x='12' y='51' width='496' height='34' rx='5' fill='#dcebf5'/>
+  <g font-family='Yu Gothic, Meiryo, sans-serif' font-size='20' fill='#162b43'>
+    <text x='24' y='35' font-size='24' font-weight='700'>乳酸性作業閾値と区間</text>
+    <text x='24' y='75' font-weight='700'>項目</text>
+    <text x='240' y='75' font-weight='700'>出力（W）</text>
+    <path d='M12 120 H508' stroke='#dce6ee'/>
+    <text x='24' y='110'>閾値の目安</text>
+    <text x='240' y='110'>190</text>
+    <path d='M12 154 H508' stroke='#dce6ee'/>
+    <text x='24' y='144'>連続区間A</text>
+    <text x='240' y='144'>175</text>
+    <path d='M12 188 H508' stroke='#dce6ee'/>
+    <text x='24' y='178'>連続区間B</text>
+    <text x='240' y='178'>190</text>
+    <text x='24' y='212'>連続区間C</text>
+    <text x='240' y='212'>215</text>
+  </g>
+</svg>

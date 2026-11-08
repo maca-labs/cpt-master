@@ -12,9 +12,8 @@ import {
 } from '../storage/db';
 import { blueprint, blueprintSources, domainIds, domains } from '../content/blueprints';
 import { questions, seedVideos, units, contentVersion } from '../content';
-import { examReadiness } from '../engines/learning';
 import { isRecommendedVideo } from '../engines/video-review';
-import { Empty, PageTitle, Pill } from '../components/Shared';
+import { PageTitle, Pill } from '../components/Shared';
 import { finalDevelopmentTargets } from '../content/release';
 export function BlueprintDetails() {
   return (
@@ -51,7 +50,7 @@ export function BlueprintDetails() {
         </table>
       </div>
       <p className="small-text">
-        将来の模試設定：採点対象140問 ＋ 参考の採点対象外15問 ／ 180分 ／ 3択・単一正答。
+        専用模試の配分：採点対象140問 ＋ 参考の採点対象外15問 ／ 180分 ／ 3択・単一正答。
       </p>
       <ul className="plain-list">
         {blueprint.discrepancies.map((d) => (
@@ -126,7 +125,7 @@ export default function Settings() {
           <p className="small-text">
             端末間の自動同期はありません。PCとスマートフォン間はJSONを移してください。ブラウザーのデータ削除や公開先の変更では履歴を引き継げないことがあります。
           </p>
-          <small>教材版 {contentVersion} · アプリ 0.6.0</small>
+          <small>教材版 {contentVersion} · アプリ 0.6.1</small>
         </section>
         <section className="panel">
           <h2>教材の収録状況</h2>
@@ -254,7 +253,7 @@ export default function Settings() {
         <p className="muted small-text">
           通常教材{questions.length}
           問、学習用の集中模試20問、155問180分の通し演習、短縮模試を利用できます。
-          集中模試は特別な対象者と安全管理の事例を扱います。本番形式の準備状況は下記をご覧ください。
+          専用模試3セットも利用できます。専用模試の出典照合はAIによるもので、人間の専門家レビューは未実施です。
           YouTubeの視聴には通信が必要です。
         </p>
         <p className="muted small-text">
@@ -265,54 +264,6 @@ export default function Settings() {
           セット。公式の合格条件ではありません。
         </p>
       </section>
-    </>
-  );
-}
-export function Exam() {
-  const readiness = examReadiness(questions);
-  return (
-    <>
-      <PageTitle
-        eyebrow="MOCK EXAM"
-        title="155問の本番形式模試は、準備中です。"
-        description="品質・問題数・題材の条件がそろってから提供します。"
-      />
-      <Empty
-        title="155問模試の開始条件を満たしていません"
-        body="本番形式の155問模試は準備中です。専用問題・専門家審査・画像映像等の必要条件が揃うまで公開しません。通常問題を使う学習用通し演習は、別の時間配分練習として利用できます。"
-      />
-      <section className="panel">
-        <h2>公開前の確認事項</h2>
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>分野</th>
-                <th>模試専用・専門家レビュー済み</th>
-                <th>採点対象の必要数</th>
-                <th>不足</th>
-              </tr>
-            </thead>
-            <tbody>
-              {readiness.map((r) => (
-                <tr key={r.id}>
-                  <td>{domains[r.id].short}</td>
-                  <td>{r.available}</td>
-                  <td>{r.needed}</td>
-                  <td>{Math.max(0, r.needed - r.available)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <ul className="plain-list">
-          <li>採点対象外の参考15問も別に必要です。</li>
-          <li>画像・映像問題25〜35問の内容検証と利用権確認が必要です。</li>
-          <li>公開用の専用問題は、人間の専門家によるレビューを終えたセットに限ります。</li>
-          <li>正答率から公式換算スコア・合格保証を表示しません。</li>
-        </ul>
-      </section>
-      <BlueprintDetails />
     </>
   );
 }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>サスペンションの左手プレス</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">サスペンションの左手プレス</text>
+  <circle cx="249" cy="68" r="10" fill="#365b67"/><line x1="249" y1="82" x2="229" y2="118" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="229" y1="118" x2="208" y2="157" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="229" y1="118" x2="252" y2="157" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="239" y1="87" x2="259" y2="101" stroke="#365b67" stroke-width="4" stroke-linecap="round"/><line x1="242" y1="92" x2="341" y2="119" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><line x1="341" y1="119" x2="406" y2="104" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><line x1="406" y1="104" x2="439" y2="77" stroke="#9a4e32" stroke-width="6" stroke-linecap="round"/><line x1="439" y1="77" x2="480" y2="59" stroke="#728a8f" stroke-width="2" stroke-linecap="round"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">手は胸の高さ</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">前足は右</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">押す途中で手の甲が前腕側へ曲がる</text>
+  </g>
+</svg>

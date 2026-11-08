@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>固定軸まわりの力の向き</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">固定軸まわりの力の向き</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><circle cx="107" cy="146" r="8" fill="#1c6975"/><line x1="107" y1="146" x2="232" y2="146" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><line x1="232" y1="146" x2="232" y2="69" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(232 69) rotate(-90)"/><text x="206" y="131" font-size="18" fill="#9a4e32">90°</text><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><circle cx="401" cy="146" r="8" fill="#1c6975"/><line x1="401" y1="146" x2="526" y2="146" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><line x1="526" y1="146" x2="606" y2="102" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(606 102) rotate(-28.810793742973058)"/><text x="500" y="131" font-size="18" fill="#9a4e32">30°</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 同じ力がレバーに対して90°で作用</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 同じ力がレバーに対して30°で作用</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">軸から力をかける点までの距離は同じ</text>
+  </g>
+</svg>

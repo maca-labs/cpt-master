@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 265" role="img">
+  <title>垂直動作の同一局面</title>
+  <rect width="680" height="265" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">垂直動作の同一局面</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><rect x="123" y="116" width="81" height="40" rx="6" fill="#e6eeee" stroke="#1c6975" stroke-width="2"/><line x1="158" y1="117" x2="158" y2="85" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(158 85) rotate(-90)"/><text x="171" y="104" font-size="18" fill="#173440">1.2 m/s²</text><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><rect x="417" y="116" width="60" height="40" rx="6" fill="#e6eeee" stroke="#1c6975" stroke-width="2"/><line x1="452" y1="117" x2="452" y2="71" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(452 71) rotate(-90)"/><text x="465" y="104" font-size="18" fill="#173440">1.6 m/s²</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 質量 40 kg、上向き加速度 1.2 m/s²</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 質量 30 kg、上向き加速度 1.6 m/s²</text>
+  </g>
+</svg>

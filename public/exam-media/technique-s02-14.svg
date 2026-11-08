@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>ボールの落下確認</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">ボールの落下確認</text>
+  <text x="69" y="92" font-size="18" fill="#1c6975">A</text><line x1="89" y1="155" x2="219" y2="155" stroke="#80959c" stroke-width="2" stroke-linecap="round"/><circle cx="131" cy="107" r="11" fill="#1c6975"/><line x1="142" y1="143" x2="193" y2="85" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(193 85) rotate(-48.67449952082966)"/><text x="283" y="92" font-size="18" fill="#9a4e32">B</text><line x1="303" y1="155" x2="433" y2="155" stroke="#80959c" stroke-width="2" stroke-linecap="round"/><circle cx="345" cy="107" r="11" fill="#9a4e32"/><line x1="356" y1="143" x2="407" y2="131" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(407 131) rotate(-13.240519915187205)"/><text x="495" y="92" font-size="18" fill="#4e5487">C</text><line x1="515" y1="155" x2="645" y2="155" stroke="#80959c" stroke-width="2" stroke-linecap="round"/><circle cx="557" cy="107" r="11" fill="#4e5487"/><line x1="551" y1="102" x2="565" y2="113" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 床に落とすと大きく跳ね返る</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 床への衝撃に耐える表示があり、ほとんど跳ねない</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">C 耐衝撃表示が読めず、破れがある</text>
+  </g>
+</svg>

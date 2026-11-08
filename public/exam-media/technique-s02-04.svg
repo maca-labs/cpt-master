@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 265" role="img">
+  <title>2回のキャッチの記録</title>
+  <rect width="680" height="265" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">2回のキャッチの記録</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><rect x="115" y="95" width="89" height="10" rx="6" fill="#1c6975" stroke="#1c6975" stroke-width="2"/><rect x="115" y="127" width="48" height="10" rx="6" fill="#667b83" stroke="#667b83" stroke-width="2"/><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><rect x="409" y="95" width="118" height="10" rx="6" fill="#9a4e32" stroke="#9a4e32" stroke-width="2"/><rect x="409" y="127" width="95" height="10" rx="6" fill="#667b83" stroke="#667b83" stroke-width="2"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A ボールの運動量変化 9 N·s、減速 0.15 s</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B ボールの運動量変化 12 N·s、減速 0.30 s</text>
+  </g>
+</svg>

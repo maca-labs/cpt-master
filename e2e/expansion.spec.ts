@@ -57,7 +57,7 @@ test('old backup preflight, new lesson learning, persistence and invalid restore
   page,
 }, info) => {
   await ready(page, '/settings');
-  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.0');
+  await expect(page.locator('.version')).toHaveText('PERSONAL EDITION · v0.6.1');
   const text = await readFile(
       new URL('../tests/fixtures/legacy-v1-backup.json', import.meta.url),
       'utf8',

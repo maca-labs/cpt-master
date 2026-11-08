@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>BikeErgのハンドル上下調整</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">BikeErgのハンドル上下調整</text>
+  <text x="69" y="92" font-size="18" fill="#1c6975">A</text><rect x="107" y="84" width="23" height="69" rx="6" fill="#e6eeee" stroke="#1c6975" stroke-width="2"/><line x1="109" y1="88" x2="189" y2="88" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="140" cy="126" r="8" fill="#1c6975"/><line x1="156" y1="126" x2="171" y2="126" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><text x="283" y="92" font-size="18" fill="#9a4e32">B</text><rect x="321" y="84" width="23" height="69" rx="6" fill="#e6eeee" stroke="#1c6975" stroke-width="2"/><line x1="323" y1="88" x2="403" y2="88" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="354" cy="126" r="8" fill="#9a4e32"/><line x1="379" y1="142" x2="379" y2="104" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(379 104) rotate(-90)"/><text x="495" y="92" font-size="18" fill="#4e5487">C</text><rect x="533" y="84" width="23" height="69" rx="6" fill="#e6eeee" stroke="#1c6975" stroke-width="2"/><line x1="535" y1="88" x2="615" y2="88" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="566" cy="126" r="8" fill="#4e5487"/><line x1="582" y1="126" x2="597" y2="126" stroke="#4e5487" stroke-width="4" stroke-linecap="round"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A ノブを締めたまま高さを変更</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B ノブを緩め、上げてロック後に締め直す</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">C ノブを緩め、上げた後も緩めたまま</text>
+  </g>
+</svg>

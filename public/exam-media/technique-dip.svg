@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 230" role="img" aria-labelledby="title">
+  <title id="title">プッシュジャークの開始とディップを横から比較した模式図</title>
+  <rect width="480" height="230" fill="#f8fafc"/>
+  <path d="M240 20v188" stroke="#cbd5e1" stroke-width="2"/>
+  <g fill="#172554" font-size="18" font-family="sans-serif" text-anchor="middle">
+    <text x="120" y="30">A　開始</text><text x="360" y="30">B　下降中</text>
+  </g>
+  <g stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 6">
+    <path d="M124 50v146M364 50v146"/>
+  </g>
+  <g stroke="#1e293b" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="124" cy="69" r="13" stroke-width="4"/>
+    <path d="M124 85v51l7 29-7 30h23m-23-103 22 21 3-23"/>
+    <circle cx="378" cy="85" r="13" stroke-width="4"/>
+    <path d="m371 100-39 49 33 20-1 26h23m-16-91 23 20 5-23"/>
+  </g>
+  <g fill="#9a3412" stroke="#f8fafc" stroke-width="3">
+    <circle cx="148" cy="91" r="8"/><circle cx="398" cy="102" r="8"/>
+  </g>
+  <path d="M52 203h137m99 0h137" stroke="#475569" stroke-width="3"/>
+</svg>

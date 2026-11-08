@@ -1,0 +1,19 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 201' role='img' aria-labelledby='title'>
+  <title id='title'>軟式球の投球</title>
+  <rect width='520' height='201' rx='12' fill='#fff'/>
+  <rect x='12' y='51' width='496' height='34' rx='5' fill='#dcebf5'/>
+  <g font-family='Yu Gothic, Meiryo, sans-serif' font-size='20' fill='#162b43'>
+    <text x='24' y='35' font-size='24' font-weight='700'>軟式球の投球</text>
+    <text x='24' y='75' font-weight='700'>局面</text>
+    <text x='168' y='75' font-weight='700'>観察した動き</text>
+    <path d='M12 120 H508' stroke='#dce6ee'/>
+    <text x='24' y='110'>準備</text>
+    <text x='168' y='110'>肩を後方へ引く</text>
+    <path d='M12 154 H508' stroke='#dce6ee'/>
+    <text x='24' y='144'>加速</text>
+    <text x='168' y='144'>体幹と肩の回転速度が増す</text>
+    <text x='24' y='178'>リリース後</text>
+    <text x='168' y='178'>上肢の角速度が徐々に低下する</text>
+  </g>
+</svg>
+

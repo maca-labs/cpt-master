@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" role="img" aria-labelledby="title">
+  <title id="title">ノルディックハムストリングスの下降を横から見た動き</title>
+  <rect width="520" height="250" rx="12" fill="#f6fafc"/>
+<text x="260" y="32" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">パートナー補助での下降区間</text><rect x="102" y="190" width="329" height="12" rx="5" fill="#bbd4df"/><g fill="none" stroke="#183d52" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="145" cy="106" r="13" fill="#fff" stroke="#7295a8" stroke-width="4"/>
+    <polyline points="144,121 113,157 143,187 107,187" stroke='#7295a8'/>
+    <polyline points="144,121 169,157 180,183" stroke='#7295a8'/>
+    <circle cx="247" cy="53" r="15" fill="#fff" stroke-width="4"><animate attributeName="cx" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="247;247;293;293;247;247" repeatCount="indefinite"/><animate attributeName="cy" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="53;53;94;94;53;53" repeatCount="indefinite"/></circle>
+    <polyline points="247,70 247,126 246,181 180,181 176,193" ><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="247,70 247,126 246,181 180,181 176,193;247,70 247,126 246,181 180,181 176,193;277,103 227,129 246,181 180,181 176,193;277,103 227,129 246,181 180,181 176,193;247,70 247,126 246,181 180,181 176,193;247,70 247,126 246,181 180,181 176,193" repeatCount="indefinite"/></polyline>
+    <polyline points="247,75 269,95 283,94" stroke="#236b84"><animate attributeName="points" dur="4.8s" keyTimes="0;.21;.69;.94;.941;1" values="247,75 269,95 283,94;247,75 269,95 283,94;278,108 304,126 316,148;278,108 304,126 316,148;247,75 269,95 283,94;247,75 269,95 283,94" repeatCount="indefinite"/></polyline>
+  </g><text x="260" y="228" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">足首はパートナーが支持。下降途中を表示。</text></svg>
+
+

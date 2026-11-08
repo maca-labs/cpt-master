@@ -24,14 +24,15 @@ import { units } from './content';
 import Dashboard from './features/Dashboard';
 import { Catalog, Lesson } from './features/Lessons';
 import { Diagnostic, Practice, Quiz, Results, Review } from './features/Practice';
-import Settings, { Exam } from './features/Settings';
+import Settings from './features/Settings';
 import Videos from './features/Videos';
 import { Empty } from './components/Shared';
 import Analytics from './features/Analytics';
 import MockExamHome, { MockExamSession, MockExamResults } from './features/MockExam';
 import PwaStatus from './components/PwaStatus';
 import DedicatedExamWorkspace from './features/DedicatedExam';
-import { releasedDedicatedExams } from './content/dedicated-exam';
+import { dedicatedExamSets, loadDedicatedExamSet } from './content/dedicated-exam';
+import type { DedicatedExamPack } from './engines/dedicated-exam';
 const navigation = [
   { to: '/', label: 'ダッシュボード', icon: House, end: true },
   { to: '/learn', label: '学習テキスト', icon: BookOpen },
@@ -44,30 +45,57 @@ const navigation = [
 ];
 function DedicatedExamRoute() {
   const [params, setParams] = useSearchParams();
-  const packs = releasedDedicatedExams();
-  if (!packs.length) return <Exam />;
-  const pack = packs.find((candidate) => candidate.id === params.get('set')) ?? packs[0];
+  const selected =
+    dedicatedExamSets.find((set) => set.id === params.get('set')) ?? dedicatedExamSets[0];
+  const [loaded, setLoaded] = useState<{ id: string; pack: DedicatedExamPack | null }>();
+  useEffect(() => {
+    let active = true;
+    void loadDedicatedExamSet(selected).then(
+      (pack) => {
+        if (active) setLoaded({ id: selected.id, pack });
+      },
+      () => {
+        if (active) setLoaded({ id: selected.id, pack: null });
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [selected]);
+  const current = loaded?.id === selected.id ? loaded : undefined;
   return (
     <>
-      {packs.length > 1 && (
-        <section className="panel">
-          <label className="field-label">
-            専用模試セット
-            <select value={pack.id} onChange={(event) => setParams({ set: event.target.value })}>
-              {packs.map((candidate, index) => (
-                <option key={candidate.id} value={candidate.id}>
-                  セット {index + 1}
-                </option>
-              ))}
-            </select>
-          </label>
-        </section>
+      <section className="panel">
+        <label className="field-label">
+          専用模試セット
+          <select
+            aria-label="専用模試セット"
+            value={selected.id}
+            onChange={(event) => setParams({ set: event.target.value })}
+          >
+            {dedicatedExamSets.map((candidate, index) => (
+              <option key={candidate.id} value={candidate.id}>
+                セット {index + 1}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
+      {!current ? (
+        <p className="notice" role="status">
+          模試を読み込んでいます。
+        </p>
+      ) : current.pack ? (
+        <DedicatedExamWorkspace key={current.pack.id} pack={current.pack} access="released" />
+      ) : (
+        <Empty
+          title="模試を読み込めませんでした。"
+          body="通信を確認してページを再読み込みしてください。"
+        />
       )}
-      <DedicatedExamWorkspace key={pack.id} pack={pack} access="released" />
     </>
   );
 }
-
 function Shell() {
   const { data, settings, error, clearError, run } = useLearning(),
     location = useLocation();
@@ -157,7 +185,7 @@ function Shell() {
             <SettingsIcon size={19} />
             設定・バックアップ
           </NavLink>
-          <small className="version">PERSONAL EDITION · v0.6.0</small>
+          <small className="version">PERSONAL EDITION · v0.6.1</small>
         </div>
       </aside>
       <div className="main-shell">

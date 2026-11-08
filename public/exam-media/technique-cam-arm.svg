@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 236" role="img" aria-labelledby="title">
+  <title id="title">同じカムを二つの角度から見た側面の模式図</title>
+  <rect width="640" height="236" rx="12" fill="#f6fafc"/>
+<path d="M320 19v198" stroke="#a6bac5" stroke-width="2"/><text x="160" y="35" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">位置A</text><text x="480" y="35" fill="#183241" font-family="sans-serif" font-size="18" text-anchor="middle">位置B</text><g>
+    <ellipse cx="153" cy="131" rx="65" ry="38" fill="#dcecf2" stroke="#183d52" stroke-width="3"/>
+    <path d="M108 93h135" stroke="#236b84" stroke-width="4"/>
+    <path d="M153 95V131" stroke="#236b84" stroke-width="2.5" stroke-dasharray="4 4"/>
+    <circle cx="153" cy="131" r="7" fill="#a64822" stroke="#fff" stroke-width="2"/>
+    <text x="153" y="216" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">● 回転軸　 ━ ケーブル</text>
+  </g><g>
+    <ellipse cx="473" cy="131" rx="38" ry="65" fill="#dcecf2" stroke="#183d52" stroke-width="3"/>
+    <path d="M428 66h135" stroke="#236b84" stroke-width="4"/>
+    <path d="M473 68V131" stroke="#236b84" stroke-width="2.5" stroke-dasharray="4 4"/>
+    <circle cx="473" cy="131" r="7" fill="#a64822" stroke="#fff" stroke-width="2"/>
+    <text x="473" y="216" fill="#183241" font-family="sans-serif" font-size="14" text-anchor="middle">● 回転軸　 ━ ケーブル</text>
+  </g></svg>

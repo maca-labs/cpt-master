@@ -2,3 +2,5 @@
 *.bat text eol=crlf
 *.ps1 text eol=crlf
 *.png binary
+# Keep the audited SVG bytes and their SHA-256 checksums identical on Pages.
+public/exam-media/*.svg -text !eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

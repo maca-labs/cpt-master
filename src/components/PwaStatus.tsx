@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Check, Download, RefreshCw, X } from 'lucide-react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { useLearning } from '../app/context';
-import { releasedDedicatedExams } from '../content/dedicated-exam';
+
 import {
   canApplyPwaUpdate,
   isPwaUpdateBlocked,
@@ -24,8 +24,7 @@ function ProductionPwaStatus() {
   const activeDiagnostic = data.sessions.some(
     (session) => session.mode === 'diagnostic' && session.status === 'active',
   );
-  const dedicatedExamOpen =
-    /^\/exam\/full\/?$/.test(pathname) && releasedDedicatedExams().length > 0;
+  const dedicatedExamOpen = /^\/exam\/full\/?$/.test(pathname);
   const blocked = dedicatedExamOpen || isPwaUpdateBlocked(pathname, activeDiagnostic);
   const blockedRef = useRef(blocked);
   blockedRef.current = blocked;

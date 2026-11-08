@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 318" role="img" aria-labelledby="title">
+  <title id="title">臀囲を測るテープの位置候補</title>
+  <rect width="100%" height="100%" rx="12" fill="#fff"/>
+  <g font-family="Yu Gothic, Meiryo, sans-serif" font-size="22" fill="#18232a">
+    <text x="29" y="35" font-weight="700">臀部の側面とテープの候補</text>
+    <path d="M221 71 C217 106 199 127 204 162 C207 192 208 224 219 264 L345 264 C341 235 348 221 362 204 C373 190 373 173 359 154 C343 134 337 107 340 71 Z" fill="#e6eff3" stroke="#263b47" stroke-width="3"/>
+    <text x="194" y="276" text-anchor="end" font-size="16">腹側</text>
+    <text x="390" y="276" font-size="16">背側</text>
+    <path d="M206 120 L368 182" fill="none" stroke="#a04421" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="11 7"/>
+    <path d="M205 182 H368" fill="none" stroke="#17617a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M213 96 H341" fill="none" stroke="#46515d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 7"/>
+    <circle cx="368" cy="182" r="4" fill="#18232a" />
+    <circle cx="185" cy="121" r="14" fill="#fff" stroke="#18232a"/>
+    <text x="185" y="126" text-anchor="middle" font-size="16" font-weight="700">A</text>
+    <circle cx="185" cy="186" r="14" fill="#fff" stroke="#18232a"/>
+    <text x="185" y="191" text-anchor="middle" font-size="16" font-weight="700">B</text>
+    <circle cx="188" cy="89" r="14" fill="#fff" stroke="#18232a"/>
+    <text x="188" y="94" text-anchor="middle" font-size="16" font-weight="700">C</text>
+    <text x="28" y="302" font-size="16">●は背面の最も張り出した位置。</text>
+  </g>
+</svg>

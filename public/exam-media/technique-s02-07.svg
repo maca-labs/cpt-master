@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>レバー端で同時に見た二点</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">レバー端で同時に見た二点</text>
+  <circle cx="108" cy="123" r="10" fill="#233746"/><line x1="108" y1="123" x2="567" y2="123" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><circle cx="318" cy="123" r="10" fill="#9a4e32"/><circle cx="476" cy="123" r="10" fill="#4e5487"/><text x="292" y="101" font-size="18" fill="#9a4e32">A 0.20 m</text><text x="450" y="101" font-size="18" fill="#4e5487">B 0.35 m</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">点A 回転軸から0.20 m</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">点B 回転軸から0.35 m</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">両点は同じ剛体レバー上</text>
+  </g>
+</svg>

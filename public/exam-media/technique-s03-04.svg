@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 265" role="img">
+  <title>補助ペダルの回転記録</title>
+  <rect width="680" height="265" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">補助ペダルの回転記録</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><line x1="107" y1="150" x2="261" y2="150" stroke="#a4b6b6" stroke-width="2" stroke-linecap="round"/><line x1="107" y1="150" x2="107" y2="78" stroke="#a4b6b6" stroke-width="2" stroke-linecap="round"/><line x1="123" y1="144" x2="239" y2="108" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(239 108) rotate(-17.241459398939977)"/><text x="149" y="167" font-size="16" fill="#1c6975">2 → 5</text><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><line x1="401" y1="150" x2="555" y2="150" stroke="#a4b6b6" stroke-width="2" stroke-linecap="round"/><line x1="401" y1="150" x2="401" y2="78" stroke="#a4b6b6" stroke-width="2" stroke-linecap="round"/><line x1="417" y1="115" x2="533" y2="87" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(533 87) rotate(-13.570434385161487)"/><text x="443" y="167" font-size="16" fill="#9a4e32">6 → 8</text>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 同じ時間で角速度が2から5 rad/s</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 同じ時間で角速度が6から8 rad/s</text>
+  </g>
+</svg>

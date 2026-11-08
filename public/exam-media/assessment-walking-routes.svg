@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 315" role="img" aria-labelledby="title desc">
+  <title id="title">候補となる三つの歩行経路</title>
+  <desc id="desc">経路Aは片道32メートルの直線、経路Bは片道15メートルの直線、経路Cは途中で直角に曲がる片道合計36メートル。どの経路も両端に目印がある。</desc>
+  <rect width="660" height="315" fill="#fff"/>
+  <g fill="none" stroke="#176381" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M105 61 H425"/>
+    <path d="M105 146 H255"/>
+    <path d="M105 263 H445 V221"/>
+  </g>
+  <g fill="#a03e20" stroke="#fff" stroke-width="2">
+    <circle cx="105" cy="61" r="9"/><circle cx="425" cy="61" r="9"/>
+    <circle cx="105" cy="146" r="9"/><circle cx="255" cy="146" r="9"/>
+    <circle cx="105" cy="263" r="9"/><circle cx="445" cy="221" r="9"/>
+  </g>
+  <g fill="#18232a" font-size="24" font-family="sans-serif">
+    <text x="32" y="70">A</text><text x="457" y="70">32 m</text>
+    <text x="32" y="155">B</text><text x="284" y="155">15 m</text>
+    <text x="32" y="272">C</text><text x="489" y="230">合計 36 m</text>
+  </g>
+  <text x="32" y="304" fill="#394651" font-size="14" font-family="sans-serif">模式図。長さと幅は実寸比を表さない。</text>
+</svg>
+

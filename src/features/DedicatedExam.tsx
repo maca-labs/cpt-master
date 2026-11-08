@@ -204,7 +204,12 @@ function DedicatedExam({
     <div className="dedicated-workspace">
       {access === 'preview' && (
         <p className="notice">
-          非公開の動作検証です。専門家レビュー前のため、公開画面では準備中です。
+          非公開の動作検証です。この画面での受験記録は公開版と別に保存します。
+        </p>
+      )}
+      {access === 'released' && pack.status === 'released_study' && (
+        <p className="notice">
+          AIによる出典照合済みです。人間の専門家レビューは未実施です。非公式の学習用模試で、公式の合否や換算スコアは示しません。
         </p>
       )}
       {error && (

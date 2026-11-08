@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 295" role="img">
+  <title>壁との接触を使う投球の観察</title>
+  <rect width="680" height="295" rx="16" fill="#f8fbfb"/>
+  <g font-family="system-ui,'Yu Gothic',sans-serif">
+  <text x="29" y="43" font-size="23" fill="#173440">壁との接触を使う投球の観察</text>
+  <text x="87" y="92" font-size="18" fill="#1c6975">A</text><line x1="241" y1="80" x2="241" y2="151" stroke="#7c969b" stroke-width="6" stroke-linecap="round"/><circle cx="167" cy="118" r="29" fill="#1c6975"/><line x1="196" y1="118" x2="233" y2="118" stroke="#1c6975" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#1c6975" transform="translate(233 118) rotate(0)"/><text x="381" y="92" font-size="18" fill="#9a4e32">B</text><line x1="535" y1="80" x2="535" y2="151" stroke="#7c969b" stroke-width="6" stroke-linecap="round"/><circle cx="461" cy="118" r="17" fill="#9a4e32"/><line x1="490" y1="118" x2="527" y2="118" stroke="#9a4e32" stroke-width="4" stroke-linecap="round"/><path d="M-12 -6L0 0L-12 6Z" fill="#9a4e32" transform="translate(527 118) rotate(0)"/>
+  <rect x="29" y="171" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="191" font-size="16" fill="#173440">A 受ける球は大きく柔らかい</text>
+<rect x="29" y="201" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="221" font-size="16" fill="#173440">B 受ける球は同重量で小さく硬い</text>
+<rect x="29" y="231" width="622" height="28" rx="6" fill="#f0f6f6" stroke="#d8e6e7" stroke-width="2"/><text x="43" y="251" font-size="16" fill="#173440">実施者は壁パスの捕球を初めて練習</text>
+  </g>
+</svg>

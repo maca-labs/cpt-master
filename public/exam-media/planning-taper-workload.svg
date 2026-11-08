@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 314" role="img" aria-labelledby="title">
+  <title id="title">大会前の週練習量の記録</title>
+  <rect width="100%" height="100%" rx="12" fill="#fff"/>
+  <g font-family="Yu Gothic, Meiryo, sans-serif" font-size="22" fill="#18232a">
+    <text x="29" y="39" font-weight="700">大会に向けた週練習量</text>
+    <text x="29" y="69" font-size="16">通常週を100％とする</text>
+    <line x1="96" y1="238" x2="512" y2="238" stroke="#46515d" stroke-width="2"/>
+    <line x1="96" y1="89" x2="96" y2="238" stroke="#46515d" stroke-width="2"/>
+    <line x1="96" y1="99" x2="512" y2="99" stroke="#b9c7d0"/>
+    <line x1="96" y1="182" x2="512" y2="182" stroke="#b9c7d0"/>
+    <text x="83" y="105" text-anchor="end" font-size="16">100</text>
+    <text x="83" y="188" text-anchor="end" font-size="16">40</text>
+    <path d="M145 99 H204 V182 H475" fill="none" stroke="#17617a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="145" cy="99" r="7" fill="#17617a" />
+    <text x="145" y="270" text-anchor="middle" font-size="16">通常週</text>
+    <circle cx="260" cy="182" r="7" fill="#17617a" />
+    <text x="260" y="270" text-anchor="middle" font-size="16">3週前</text>
+    <circle cx="367" cy="182" r="7" fill="#17617a" />
+    <text x="367" y="270" text-anchor="middle" font-size="16">2週前</text>
+    <circle cx="475" cy="182" r="7" fill="#17617a" />
+    <text x="475" y="270" text-anchor="middle" font-size="16">大会週</text>
+  </g>
+</svg>

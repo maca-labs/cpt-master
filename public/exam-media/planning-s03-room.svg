@@ -1,0 +1,22 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 201' role='img' aria-labelledby='title'>
+  <title id='title'>器具の周囲に確保できる空間</title>
+  <rect width='520' height='201' rx='12' fill='#fff'/>
+  <rect x='12' y='51' width='496' height='34' rx='5' fill='#dcebf5'/>
+  <g font-family='Yu Gothic, Meiryo, sans-serif' font-size='20' fill='#162b43'>
+    <text x='24' y='35' font-size='24' font-weight='700'>器具の周囲に確保できる空間</text>
+    <text x='24' y='75' font-weight='700'>候補</text>
+    <text x='200' y='75' font-weight='700'>前方（cm）</text>
+    <text x='370' y='75' font-weight='700'>側方（cm）</text>
+    <path d='M12 120 H508' stroke='#dce6ee'/>
+    <text x='24' y='110'>A室</text>
+    <text x='200' y='110'>90</text>
+    <text x='370' y='110'>30</text>
+    <path d='M12 154 H508' stroke='#dce6ee'/>
+    <text x='24' y='144'>B室</text>
+    <text x='200' y='144'>120</text>
+    <text x='370' y='144'>80</text>
+    <text x='24' y='178'>C室</text>
+    <text x='200' y='178'>150</text>
+    <text x='370' y='178'>55</text>
+  </g>
+</svg>
