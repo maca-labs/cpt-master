@@ -5,6 +5,7 @@ import { videoReviewSources } from './video-reviews';
 import { videoV05Sources } from './video-additions-v05';
 import { videoV051Sources } from './video-additions-v051';
 import { videoV052Sources } from './video-additions-v052';
+import { videoV062Sources } from './video-additions-v062';
 import {
   assessmentExpansionUnits,
   assessmentExpansionQuestions,
@@ -64,6 +65,7 @@ export const sources = [
   ...videoV05Sources,
   ...videoV051Sources,
   ...videoV052Sources,
+  ...videoV062Sources,
   ...focusMockSources,
   ...assessmentExpansionSources,
   ...planningExpansionSources,

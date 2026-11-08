@@ -2,6 +2,7 @@ import type { Video } from '../domain/types';
 import { videoV05Additions } from './video-additions-v05';
 import { videoV051Additions } from './video-additions-v051';
 import { videoV052Updates } from './video-additions-v052';
+import { videoV062Additions } from './video-additions-v062';
 import {
   videoReviews,
   videoContentSourceRefs,
@@ -175,7 +176,14 @@ export const videoV051Catalog: Video[] = [
 ];
 const updatesById = new Map(videoV052Updates.map((video) => [video.id, video]));
 const previousIds = new Set(videoV051Catalog.map((video) => video.id));
-export const seedVideos: Video[] = [
+const videoV052Catalog: Video[] = [
   ...videoV051Catalog.map((video) => updatesById.get(video.id) ?? video),
   ...videoV052Updates.filter((video) => !previousIds.has(video.id)),
+];
+
+const updatesV062ById = new Map(videoV062Additions.map((video) => [video.id, video]));
+const videoV052Ids = new Set(videoV052Catalog.map((video) => video.id));
+export const seedVideos: Video[] = [
+  ...videoV052Catalog.map((video) => updatesV062ById.get(video.id) ?? video),
+  ...videoV062Additions.filter((video) => !videoV052Ids.has(video.id)),
 ];

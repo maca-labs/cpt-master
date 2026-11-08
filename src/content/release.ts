@@ -12,7 +12,8 @@ export const finalDevelopmentTargets = {
 
   questionsPerMock: 155,
 } as const;
-export const currentContentVersion = '2026-11-08.2';
+export const currentContentVersion = '2026-11-08.3';
+export const v060ContentVersion = '2026-11-08.2';
 export const v052ContentVersion = '2026-11-08.1';
 export const previousContentVersion = '2026-11-04.2';
 export const legacyContentVersion = '2026-11-04.1';

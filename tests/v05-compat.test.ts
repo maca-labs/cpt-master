@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { contentVersion, questions } from '../src/content';
-import { v052ContentVersion } from '../src/content/release';
+import { v052ContentVersion, v060ContentVersion } from '../src/content/release';
 import type { Session } from '../src/domain/types';
 import { createSession } from '../src/engines/learning';
 import { createThroughSession, withMockDraft } from '../src/engines/mock';
@@ -62,7 +62,7 @@ describe('v0.5 additive schema compatibility', () => {
         sha256: createHash('sha256').update(JSON.stringify(q)).digest('hex'),
       })),
     ).toEqual(manifest);
-    expect(contentVersion).toBe('2026-11-08.2');
+    expect(contentVersion).toBe('2026-11-08.3');
   });
   it.each(['v04-backup.json', 'legacy-v1-backup.json'])(
     'restores %s without replacing notes, answers, settings or active drafts',
@@ -79,17 +79,18 @@ describe('v0.5 additive schema compatibility', () => {
       expect(await snapshot(db)).toEqual(old.data);
     },
   );
-  it('restores a v0.5.2 backup with an active strict reservation', async () => {
-    const previous = database(),
-      restored = database();
-    await previous.sessions.add(strictSession());
-    const exported = await exportBackup(previous);
-    const backup = validateBackup(
-      JSON.stringify({ ...exported, contentVersion: v052ContentVersion }),
-    );
-    await restoreBackup(backup, restored);
-    expect(await snapshot(restored)).toEqual(await snapshot(previous));
-  });
+  it.each([v052ContentVersion, v060ContentVersion])(
+    'restores an active strict reservation from content %s',
+    async (version) => {
+      const previous = database(),
+        restored = database();
+      await previous.sessions.add(strictSession());
+      const exported = await exportBackup(previous);
+      const backup = validateBackup(JSON.stringify({ ...exported, contentVersion: version }));
+      await restoreBackup(backup, restored);
+      expect(await snapshot(restored)).toEqual(await snapshot(previous));
+    },
+  );
   it('round-trips strict reservations and all 155 draft flags without a schema migration', async () => {
     const db = database(),
       restored = database();

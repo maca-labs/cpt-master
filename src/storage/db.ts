@@ -26,6 +26,7 @@ import {
   legacyContentVersion,
   previousContentVersion,
   v052ContentVersion,
+  v060ContentVersion,
 } from '../content/release';
 import { focusMock } from '../content/focus-mock';
 import { isInPracticeBatch } from '../content/batches';
@@ -362,7 +363,7 @@ export function validateBackup(text: string): Backup {
     );
   const backup = result.data as Backup;
   const legacy = backup.contentVersion === legacyContentVersion;
-  const previous = [previousContentVersion, v052ContentVersion].some(
+  const previous = [previousContentVersion, v052ContentVersion, v060ContentVersion].some(
     (version) => backup.contentVersion === version,
   );
   if (backup.contentVersion !== contentVersion && !legacy && !previous)
