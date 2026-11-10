@@ -8,8 +8,10 @@ import { blueprint, domainIds } from '../src/content/blueprints';
 import {
   createDedicatedExamSession,
   dedicatedExamLimitMs,
+  dedicatedExamPackKey,
   dedicatedMissedQuestionIds,
   remainingDedicatedSeconds,
+  scoreDedicatedExam,
   validateDedicatedExamPack,
   type DedicatedExamItem,
   type DedicatedExamPack,
@@ -18,6 +20,22 @@ import { DedicatedExamDB } from '../src/storage/dedicated-exam';
 
 const unofficial = { assessment: 3, planning: 5, technique: 5, safety: 2 };
 const startedAt = Date.parse('2026-11-08T00:00:00Z');
+
+// Scoring and IndexedDB identity of the three sets as published in v0.6.7.
+const publishedSets = [
+  ['01', 29, '89b2671ca53f3468f77a92b7ffbd0235ff10c432c86f70e4ec503c2c3f0749dd'],
+  ['02', 28, '43152ad22c9ecec3ec7dd72da71e8772a5daf1d8a3164a949907d661c0521789'],
+  ['03', 26, '637e297512a99cdf6c346b54309f92c00c945e4541187e9cc59b1e000f2bf260'],
+] as const;
+
+function publishedPack(number: string): DedicatedExamPack {
+  return JSON.parse(
+    readFileSync(
+      new URL(`../src/content/dedicated-packs/set-${number}.json`, import.meta.url),
+      'utf8',
+    ),
+  ) as DedicatedExamPack;
+}
 
 function createPack(status: DedicatedExamPack['status'] = 'preparing'): DedicatedExamPack {
   const human = status === 'released';
@@ -131,20 +149,26 @@ it('公開する3セットは一般教材と重複せず、掲載する図版は
   const ids = new Set(allQuestions.map((item) => item.id));
   const groups = new Set(allQuestions.map((item) => item.groupId));
   const mediaDigests = new Set<string>();
-  for (const [number, mediaCount] of [
-    ['01', 29],
-    ['02', 28],
-    ['03', 26],
-  ] as const) {
-    const pack = JSON.parse(
-      readFileSync(
-        new URL('../src/content/dedicated-packs/set-' + number + '.json', import.meta.url),
-        'utf8',
-      ),
-    ) as DedicatedExamPack;
+  for (const [number, mediaCount, gradingDigest] of publishedSets) {
+    const pack = publishedPack(number);
     expect(pack).toMatchObject({ id: 'jp-dedicated-' + number, status: 'released_study' });
     expect(validateDedicatedExamPack(pack, 'released')).toEqual([]);
     expect(pack.items.filter((item) => item.media)).toHaveLength(mediaCount);
+    const gradingIdentity = [
+      pack.id,
+      pack.revision,
+      pack.items.map((item) => [
+        item.id,
+        item.groupId,
+        item.domainId,
+        item.scored,
+        item.choices.map((choice) => choice.id),
+        item.correctChoiceId,
+      ]),
+    ];
+    expect(createHash('sha256').update(JSON.stringify(gradingIdentity)).digest('hex')).toBe(
+      gradingDigest,
+    );
     for (const item of pack.items) {
       expect(ids.has(item.id)).toBe(false);
       expect(groups.has(item.groupId)).toBe(false);
@@ -161,6 +185,51 @@ it('公開する3セットは一般教材と重複せず、掲載する図版は
     }
   }
 });
+
+it.each(publishedSets)(
+  'セット%sの既存の成績と解き直しを保存時の内容で読み出せる',
+  async (number) => {
+    const pack = publishedPack(number);
+    const previous = structuredClone(pack);
+    for (const item of previous.items.filter(({ review }) => review.checkedAt === '2026-11-10')) {
+      item.revision--;
+      item.review.revision = item.revision;
+      item.review.checkedAt = '2026-11-08';
+    }
+    const db = new DedicatedExamDB(
+      'released',
+      `dedicated-revision-${number}-${crypto.randomUUID()}`,
+      () => startedAt,
+    );
+    try {
+      const draft = await db.start(previous);
+      const item = pack.items.find(
+        (item) => item.scored && item.review.checkedAt === '2026-11-10',
+      )!;
+      const answered = await db.update(previous, draft.id, {
+        type: 'answer',
+        questionId: item.id,
+        choiceId: item.correctChoiceId,
+      });
+      const previousResult = scoreDedicatedExam(previous, answered.answers);
+      const original = await db.finish(previous, draft.id, 'submitted');
+      const retake = await db.startMissedRetake(previous, original.id);
+      const retakeResult = await db.finish(previous, retake.id, 'submitted');
+      const nextDraft = await db.start(previous);
+      const paused = await db.pause(previous, nextDraft.id);
+      db.close();
+      await db.open();
+      expect(original.packKey).toBe(dedicatedExamPackKey(pack));
+      expect(original.result).toEqual(previousResult);
+      expect(await db.sessionFor(pack)).toEqual(paused);
+      expect(await db.sessionById(pack, original.id)).toEqual(original);
+      expect(await db.missedRetakesFor(pack, original.id)).toEqual([retakeResult]);
+      expect(retake.questionIds).not.toContain(item.id);
+    } finally {
+      await db.delete();
+    }
+  },
+);
 
 describe('専用模試の保存と採点', () => {
   let now: number;

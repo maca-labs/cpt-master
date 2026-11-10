@@ -128,6 +128,7 @@ for (const [setIndex, pack] of packs.entries()) {
     const scored = questions.filter(({ item }) => item.scored);
     expect(unscored).toHaveLength(15);
     expect(scored).toHaveLength(140);
+    const revised = scored.find(({ item }) => item.review.checkedAt === '2026-11-10')!;
     const [draft, ...remainingUnscored] = unscored;
     await goToQuestion(page, draft.index, draft.item);
     const draftOption = correctOption(page, draft.item);
@@ -159,7 +160,7 @@ for (const [setIndex, pack] of packs.entries()) {
       session.startedAt + 45_000,
     );
 
-    for (const { index, item } of [...remainingUnscored, scored[0]]) {
+    for (const { index, item } of [...remainingUnscored, revised]) {
       await goToQuestion(page, index, item);
       const option = correctOption(page, item);
       await option.click();
@@ -190,6 +191,14 @@ for (const [setIndex, pack] of packs.entries()) {
     await expect(
       page.getByRole('link', { name: source.title, exact: true }).first(),
     ).toHaveAttribute('href', source.url);
+    await page.getByRole('button', { name: '問題一覧', exact: true }).click();
+    await page
+      .getByRole('button', { name: new RegExp(`^問題 ${revised.index + 1}、正解`) })
+      .click();
+    const review = page.locator('.dedicated-review');
+    await expect(review.locator('.dedicated-review-prompt')).toHaveText(revised.item.prompt);
+    await expect(review.locator('.explanation p')).toHaveText(revised.item.explanation);
+    await expect(review.locator('.exam-verdict')).toHaveText(/^○\s*正解$/);
     await page.reload();
     await expect(page.getByText('1 / 140 問', { exact: true })).toBeVisible();
     expect(failures).toEqual([]);

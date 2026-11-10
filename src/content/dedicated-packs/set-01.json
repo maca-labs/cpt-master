@@ -258,10 +258,10 @@
     },
     {
       "id": "dm1-a-07",
-      "revision": 2,
+      "revision": 3,
       "groupId": "dm1-a-07",
       "domainId": "assessment",
-      "prompt": "ACSM 2015の図を使う。2型糖尿病があり無症状で状態は変わらず、16か月前に運動の医学的許可を得た人が中強度の運動を続けている。新たに高強度の計画を希望する。次の面談で確認すべきことはどれか。",
+      "prompt": "ACSM 2015の図を使う。2型糖尿病がある人が、直近4か月間、計画した中強度の有酸素運動を週3日、毎回35分続けている。16か月前に医学的許可を得て以降、無症状で状態は変わらない。高強度へ進む前に何を確認するか。",
       "scored": true,
       "choices": [
         {
@@ -281,21 +281,21 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "定期的に活動する既知疾患・無症状の枝でも、新たな高強度には医学的許可を確認する。過去の許可が図の12か月以内の条件を満たさない事例である。個別の医療指示は優先する。",
+      "explanation": "この運動歴は図の定期運動の条件を満たす。既知疾患があり無症状の場合、図は高強度へ進む前の医学的許可を勧める。状態が変わらない場合に参照できる過去の許可は12か月以内で、この例の許可は16か月前である。",
       "sourceRefs": [
         {
           "title": "Riebe et al.: Updating ACSM’s Recommendations for Exercise Preparticipation Health Screening",
-          "url": "https://aike.smu.edu.cn/pluginfile.php/289129/mod_resource/content/1/Updating%20ACSM_s%20Recommendations%20for%20Exercise%20Preparticipation%20Health%20Screening.pdf",
+          "url": "https://doi.org/10.1249/MSS.0000000000000664",
           "edition": "2015, MSSE 47(11):2473–2479",
-          "locator": "p.2477, Figure 2, regular exercise / known disease / asymptomatic branch and adjacent text"
+          "locator": "印刷pp.2477–2478 Figure 2と本文：定期運動・既知疾患・無症状・高強度への移行"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 2
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 3
       }
     },
     {
@@ -1182,7 +1182,7 @@
     },
     {
       "id": "dm1-a-27",
-      "revision": 2,
+      "revision": 3,
       "groupId": "dm1-a-27",
       "domainId": "assessment",
       "prompt": "昨夜の運動前後に何をいつ、どれだけ食べたかを本人と振り返りたい。当日の記録はない。利用できる調査はどれか。",
@@ -1200,12 +1200,12 @@
         },
         {
           "id": "c",
-          "text": "直近24時間を思い出してもらい、運動を含む時間軸に食品・飲料と量を並べる",
+          "text": "前日1日分を思い出してもらい、昨夜の運動前後の食品や飲料、摂った時刻と量を詳しく聞く",
           "explanation": "決めた日の内容、時刻、量を同時に把握できる。"
         }
       ],
       "correctChoiceId": "c",
-      "explanation": "具体的な一日の食事を再構成する目的では、食品名に加えて時刻と摂取量を尋ねる24時間思い出し法が適する。得られる量は本人の思い出しに基づく。",
+      "explanation": "24時間思い出し法では、前日の0時から24時までを対象にする方法がよく使われる。対象とする食事が期間に入るよう設定し、品目・摂取時刻・量を確認する。",
       "sourceRefs": [
         {
           "title": "NCI Dietary Assessment Primer: 24-hour Dietary Recall At a Glance",
@@ -1223,9 +1223,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 2
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 3
       }
     },
     {
@@ -2916,7 +2916,7 @@
     },
     {
       "id": "dm1-p-32",
-      "revision": 2,
+      "revision": 3,
       "groupId": "dm1-p-32",
       "domainId": "planning",
       "prompt": "中学生は中強度の自転車移動で活動時間を確保し、別に高強度の有酸素活動も週3日行っている。筋肉と骨を強化する活動はほとんどない。厚労省こども版の参考推奨で次に補う要素はどれか。",
@@ -2934,7 +2934,7 @@
         },
         {
           "id": "c",
-          "text": "能力に合った跳ぶ遊びなど、筋肉と骨に刺激を与える活動を週の複数日に加える",
+          "text": "能力に合った跳ぶ遊びなど、筋肉と骨に刺激を与える活動を週3日以上行う計画にする",
           "explanation": "有酸素活動の時間とは別に、筋肉と骨への刺激を週3日以上確保する目安がある。"
         }
       ],
@@ -2951,9 +2951,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 2
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 3
       }
     },
     {

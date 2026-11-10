@@ -77,3 +77,20 @@ CPT Masterは初版100問と追加200問の集合を使用した。各分野で 
 救命と暑熱対応には日本の一次資料を参照した。海外の血圧指針や体力テストの数値は、該当する手順や対象を設問で明示した。ACSMのパワーに関する設問では、抄録の「24以下」と本文の「24未満」を区別した。問題ID・グループ・選択肢ID・正答キーを維持し、旧版の履歴は保存された判定とともに復元できる。出典照合はAIが行った。 [日本救急医療財団の市民向け指針](https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf)・[JFA掲載の脳振盪プロトコル](https://www.jfa.jp/medical/pdf/medical_concussion.pdf)・[環境省の暑さ指数](https://www.wbgt.env.go.jp/wbgt.php)・[スポーツ庁の新体力テスト実施要項](https://www.mext.go.jp/sports/b_menu/sports/mcatetop03/list/detail/1408001.htm)・[ACSMの2026年声明](https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/)
 
 同じ旧URLが使われていた専用模試第2セットの7件は、現行のスポーツ庁PDFの該当ページを確認してリンクを更新した。設問の改訂件数には含めない。 [65〜79歳の新体力テスト実施要項](https://www.mext.go.jp/sports/content/20240301-kensport01-300000765_4.pdf)
+
+## 専用模試3セットの重点点検（v0.6.8）
+
+2026-11-10に3セット計465問の設問と正答を通覧した。安全・救命の手順、数値と計算の前提、条件によって正答が曖昧になる設問を優先し、該当する選択肢・解説と一次資料を照合した。前提・出典箇所の訂正を含む30問を更新した。
+
+| セット | 面談・評価 | 計画 | 技術 | 安全 | 改訂計（うち採点対象外） |
+| ------ | ---------: | ---: | ---: | ---: | -----------------------: |
+| 01     |          2 |    1 |    0 |    0 |                   3（0） |
+| 02     |          2 |    2 |    2 |    6 |                  12（1） |
+| 03     |          1 |    4 |    4 |    6 |                  15（2） |
+| 合計   |          5 |    7 |    6 |   12 |                  30（3） |
+
+- 安全と救命では、広範囲のやけどで冷却を避ける条件、乳児へのAEDパッドの配置、呼吸を判断できないときの胸骨圧迫、妊娠中に突然片脚の力が入らなくなった場合の救急要請を明記した。 [日本救急医療財団の市民向け指針](https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf)・[厚生労働省の救急要請の目安](https://kakarikata.mhlw.go.jp/kakaritsuke/urgency.html)
+- 数値と判定では、ACSMの運動歴の定義、遠隔TUGの10フィートの歩行経路、こどもの筋・骨を強化する活動の頻度、動画のフレーム間隔を明記した。技術問題では肩の回旋方向、力積に含める力、角運動量を考える系の範囲を明確にした。 [ACSM 2015](https://doi.org/10.1249/MSS.0000000000000664)・[CDC遠隔STEADI](https://www.cdc.gov/steadi/media/pdfs/2024/08/Telesteadi-Guide_H_WEB.pdf)・[厚生労働省のこども向け運動ガイド](https://kennet.mhlw.go.jp/information/information/exercise/s-00-003)・[NSCAの動作分析手順](https://www.nsca.com/education/articles/kinetic-select/biomechanical-analysis-in-practice/)
+- 屋外用固定具に関する設問は、メーカーの販売ページと製品安全案内の記載が異なる場合に、該当型式の確認が済むまで屋外設置を見送る判断にした。 [TRXの製品安全案内](https://commercial.trxtraining.com/pages/product-safety)・[TRXの製品ページ](https://commercial.trxtraining.com/products/trx-xmount-commercial-partners)
+
+設問ごとの版番号と出典照合日を更新した。セットID・版番号、問題ID・グループ、選択肢ID、採点区分、採点キーはv0.6.7と同じで、保存済みの得点と解き直し記録は保存時の結果を表示する。結果画面で開く解説は現行の記述を使う。出典照合はAIによるもので、人間の専門家による全問レビューは未実施。

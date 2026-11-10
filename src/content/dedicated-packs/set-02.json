@@ -186,10 +186,10 @@
     },
     {
       "id": "dm2-a-05",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-a-05",
       "domainId": "assessment",
-      "prompt": "片側のYバランスの記録を図で読む。Laiらの規格化式で合成値は何%か。",
+      "prompt": "図は右脚を支持脚にしたYバランステストの記録で、脚長は右脚の値である。Laiらの規格化式で合成値は何%か。",
       "scored": true,
       "choices": [
         {
@@ -214,16 +214,16 @@
         {
           "title": "Lai et al.: Lower Quarter Y-Balance Test Scores and Lower Extremity Injury in NCAA Division I Athletes",
           "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5555509/",
-          "locator": "Methods: The YBT-LQ Protocol、合成値の分母と脚長",
+          "locator": "Methods: The YBT-LQ Protocol／3方向の最大到達距離と、支持脚長による規格化",
           "edition": "Orthop J Sports Med 2017;5(8):2325967117723666"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       },
       "media": {
         "kind": "diagram",
@@ -1416,10 +1416,10 @@
     },
     {
       "id": "dm2-a-32",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-a-32",
       "domainId": "assessment",
-      "prompt": "医療者の遠隔TUGの準備図で、動線が十分で椅子を安定させている配置は？",
+      "prompt": "医療者が遠隔TUGを準備する。図の3案はいずれも椅子の前方に10フィートの直線距離を取れる。椅子を壁で安定させ、その経路に障害物がない配置はどれか。",
       "scored": true,
       "choices": [
         {
@@ -1430,7 +1430,7 @@
         {
           "id": "b",
           "text": "配置B",
-          "explanation": "椅子が壁に接し、歩行方向は壁から離れる。"
+          "explanation": "椅子の背が壁に接し、前方の歩行経路に障害物がない。"
         },
         {
           "id": "c",
@@ -1439,21 +1439,21 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "椅子を安定させた上で、立ち上がりから戻るまでの経路を確保する。",
+      "explanation": "遠隔TUGでは椅子の背を壁につけて滑りを防ぎ、前方に障害物のない10フィートの経路を確保する。",
       "sourceRefs": [
         {
           "title": "CDC STEADI Coordinated Care Plan: Tele-Med Adaptation",
           "url": "https://www.cdc.gov/steadi/media/pdfs/2024/08/Telesteadi-Guide_H_WEB.pdf",
-          "locator": "pp.12–13 §7 Timed Up and Go",
+          "locator": "PDF pp.8–9 Preparation／Step 2 (1)、p.13 Step 2 (7) II Timed Up & Go",
           "edition": "2024"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       },
       "media": {
         "kind": "diagram",
@@ -2316,10 +2316,10 @@
     },
     {
       "id": "dm2-p-17",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-p-17",
       "domainId": "planning",
-      "prompt": "高強度の反復で、後半は速度が大きく落ちる。目標は高い速度の累積で、運動時間自体は変えたくない。試す調整はどれか。",
+      "prompt": "高強度の反復で、後半は速度が大きく落ちる。目標は設定速度で動ける時間を積み上げること。1回の運動時間と反復数は維持し、セッション全体は延長できる。試す調整はどれか。",
       "scored": true,
       "choices": [
         {
@@ -2335,7 +2335,7 @@
         {
           "id": "c",
           "text": "後半だけ仕事時間を延ばし、回復は変えない",
-          "explanation": "疲労で速度が落ちる時間を増やし、条件の仕事時間も変える。"
+          "explanation": "後半の運動時間を延ばすと、1回の運動時間を保つ条件から外れる。"
         }
       ],
       "correctChoiceId": "b",
@@ -2344,16 +2344,16 @@
         {
           "title": "NSCA: Aerobic Endurance Training Strategies",
           "url": "https://www.nsca.com/education/articles/kinetic-select/aerobic-endurance-training-strategies/",
-          "locator": "Short-Duration Training：work-to-rest arrangement。",
+          "locator": "Short-Duration, High-Intensity Training／運動と回復の組み合わせ",
           "edition": "NSCA Kinetic Select 2017"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -2484,7 +2484,7 @@
     },
     {
       "id": "dm2-p-21",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-p-21",
       "domainId": "planning",
       "prompt": "若年者向けの基礎クラスで12回の予定だが、8回目から監督者の合図に沿った姿勢を再現できなくなった。休息で回復する。今回のセットはどうするか。",
@@ -2502,26 +2502,26 @@
         },
         {
           "id": "c",
-          "text": "8回前後で切り上げ、休息後の動きを見て負荷や回数を選ぶ",
-          "explanation": "基礎練習では技術を保てる範囲が反復目標より重要。"
+          "text": "姿勢が崩れた時点でセットを終了し、休息後に姿勢を保てる負荷と回数を選ぶ",
+          "explanation": "技術を維持できなくなった時点で安全にセットを終える。12回は予定の回数である。"
         }
       ],
       "correctChoiceId": "c",
-      "explanation": "繰り返す回数は習得状況に合わせて設定する。",
+      "explanation": "若年者の基礎練習では、技術と動作の制御を保てる範囲で回数や負荷を設定する。",
       "sourceRefs": [
         {
           "title": "NSCA: Youth Resistance Training Position Statement",
           "url": "https://www.nsca.com/globalassets/about/position-statements/position_stand_youth_resistance_training---2009.pdf",
-          "locator": "印刷S70 Table 1：proper exercise technique。",
+          "locator": "印刷p.S70 Table 1：proper exercise technique、同頁本文の反復の制御",
           "edition": "JSCR 23 Suppl 5, 2009"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5256,10 +5256,10 @@
     },
     {
       "id": "dm2-t-33",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-t-33",
       "domainId": "technique",
-      "prompt": "箱を同じ水平距離だけ動かす。Aは力を水平に、Bは同じ大きさで斜め上に加える。押す力自体が箱にする仕事の比較はどれか。",
+      "prompt": "箱を同じ距離だけ水平に動かす。Aは進行方向へ、Bは進行方向から斜め上へ、同じ大きさの一定の力を加える。この力が箱にする仕事の比較はどれか。",
       "scored": true,
       "choices": [
         {
@@ -5283,17 +5283,17 @@
       "sourceRefs": [
         {
           "title": "OpenStax: College Physics 2e, work and energy",
-          "url": "https://openstax.org/books/college-physics-2e/pages/7-section-summary",
-          "locator": "§7.1 Work: The Scientific Definition",
+          "url": "https://openstax.org/books/college-physics-2e/pages/7-1-work-the-scientific-definition",
+          "locator": "§7.1 Work: The Scientific Definition／変位方向の力成分と仕事",
           "edition": "公開版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5718,10 +5718,10 @@
     },
     {
       "id": "dm2-t-44",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-t-44",
       "domainId": "technique",
-      "prompt": "後方にボールを放すとき、投げる前から真上を見ようとして首を反らす。どの指示が適切か。",
+      "prompt": "壁を背にしてボールを後方へ投げる練習で、球を放した直後も真上を見ようとして首が反る。まだ戻り球を安定して受けられない。ACEの手順に沿う指示はどれか。",
       "scored": false,
       "choices": [
         {
@@ -5753,9 +5753,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5928,10 +5928,10 @@
     },
     {
       "id": "dm2-s-01",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-01",
       "domainId": "safety",
-      "prompt": "一人で救助しています。119番の通信指令員が胸骨圧迫を始めるよう案内しました。スマートフォンでの通話をどのように扱いますか？",
+      "prompt": "成人を一人で救助しています。119番の通信指令員が胸骨圧迫を始めるよう案内しました。スマートフォンでの通話をどのように扱いますか？",
       "scored": true,
       "choices": [
         {
@@ -5963,17 +5963,17 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
       "id": "dm2-s-02",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-02",
       "domainId": "safety",
-      "prompt": "反応を確認し、別の職員が119番に通報しています。普段どおりの呼吸を確認する方法として適切なのはどれですか？",
+      "prompt": "呼びかけと肩への刺激に反応がなく、別の職員が119番に通報しています。普段どおりの呼吸を確認する方法として適切なのはどれですか？",
       "scored": true,
       "choices": [
         {
@@ -5993,7 +5993,7 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "市民は胸と腹の動きから通常の呼吸か短時間で判断します。不明なら心停止と考えて胸骨圧迫へ移ります。",
+      "explanation": "反応がなく、普段どおりの呼吸がない場合や、普段どおりか判断できない場合は、ただちに胸骨圧迫を開始します。",
       "sourceRefs": [
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
@@ -6005,9 +6005,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6222,7 +6222,7 @@
     },
     {
       "id": "dm2-s-08",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-08",
       "domainId": "safety",
       "prompt": "事故で広い範囲にやけどを負った参加者がいます。救急要請済みです。局所のやけどの場合との違いとして、指針に沿う対応はどれですか？",
@@ -6235,8 +6235,8 @@
         },
         {
           "id": "b",
-          "text": "広範囲を一度に冷やすことは避け、速やかな診察につなぐ",
-          "explanation": "広い範囲を冷却すると全身の体温が下がる危険があります。"
+          "text": "広い範囲のやけどは冷却を避け、速やかに救急隊へ引き継ぐ",
+          "explanation": "広い範囲を冷やすと、全身の体温が下がる危険があります。"
         },
         {
           "id": "c",
@@ -6245,7 +6245,7 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "やけどの範囲が応急処置の判断を変えます。広範囲の例では体温低下を避けながら医療につなぎます。",
+      "explanation": "局所のやけどと広い範囲のやけどでは対応が異なります。広い範囲に及ぶ場合は体温低下を防ぎ、速やかに救急隊へ引き継ぎます。",
       "sourceRefs": [
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
@@ -6257,9 +6257,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6306,7 +6306,7 @@
     },
     {
       "id": "dm2-s-10",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-10",
       "domainId": "safety",
       "prompt": "器具清掃用の強いアルカリ性洗剤が、職員の目に飛び入りました。水道がすぐ使えるとき、応急処置としてまず行うのはどれですか？",
@@ -6329,21 +6329,27 @@
         }
       ],
       "correctChoiceId": "a",
-      "explanation": "酸やアルカリが目に入ったら、洗浄開始の早さが重要です。施設の安全手順に従って医療へつなぎます。",
+      "explanation": "直ちに流水で洗浄を始めます。強いアルカリ性洗剤が目に入った場合は、洗浄後すみやかに眼科を受診します。",
       "sourceRefs": [
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
           "locator": "本文p.55 Ⅵ 17 2）毒物が付着したとき",
           "edition": "2026年7月刊・2026年9月10日訂正版"
+        },
+        {
+          "title": "日本中毒情報センター：家庭用品による中毒事故",
+          "url": "https://www.j-poison-ic.jp/general-public/response-to-a-poisoning-accident/chemical-products/",
+          "locator": "酸性またはアルカリ性洗浄剤／応急手当／目に入った場合",
+          "edition": "公開Web版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6390,10 +6396,10 @@
     },
     {
       "id": "dm2-s-12",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-12",
       "domainId": "safety",
-      "prompt": "妊娠後期の参加者が食べ物を喉に詰まらせ、声が出ません。反応はあり、同僚が119番へ通報しています。市民用指針に沿う処置はどれですか？",
+      "prompt": "妊娠後期の参加者が食べ物を喉に詰まらせ、声が出ず、強い咳もできません。反応はあり、同僚が119番へ通報しています。市民用指針に沿う処置はどれですか？",
       "scored": true,
       "choices": [
         {
@@ -6418,21 +6424,21 @@
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
-          "locator": "本文pp.39–40 Ⅴ 4 1）反応がある場合",
+          "locator": "本文pp.39–40 Ⅴ 4 3）(1)「反応がある場合」②腹部突き上げ法の末尾",
           "edition": "2026年7月刊・2026年9月10日訂正版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
       "id": "dm2-s-13",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm2-s-13",
       "domainId": "safety",
       "prompt": "反応のある成人に腹部突き上げを行い、異物が取れました。現在は話せており、救急隊を待っています。申し送るべき事項はどれですか？",
@@ -6460,16 +6466,16 @@
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
-          "locator": "本文p.40 Ⅴ 4 1）（2）腹部突き上げ",
+          "locator": "本文p.40 Ⅴ 4 3）(1)「反応がある場合」②腹部突き上げ法／実施後の診察",
           "edition": "2026年7月刊・2026年9月10日訂正版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {

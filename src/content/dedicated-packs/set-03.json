@@ -1362,15 +1362,15 @@
     },
     {
       "id": "dm3-a-31",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-a-31",
       "domainId": "assessment",
-      "prompt": "定期的に中強度の有酸素運動を行う利用者が、4か月前に医療者から運動許可を得ました。今回は「最近、横になると息苦しく座ると楽になる」と伝えています。今は息苦しさはありません。ACSMの運動前確認ではどうしますか？",
+      "prompt": "定期的に中強度の有酸素運動を行う利用者が、4か月前に医療者から運動許可を得ました。今回は「最近、横になると息苦しく座ると楽になる」と伝えています。今は息苦しさはありません。ACSM 2015の運動前スクリーニングではどう対応しますか？",
       "scored": true,
       "choices": [
         {
           "id": "a",
-          "text": "新しい症状を記録し、運動を中止して再開前に医療者の確認を求める",
+          "text": "今回は運動を見合わせ、新しい症状を伝えて再開前に医療者の確認を求める",
           "explanation": "以前の許可があっても、臥位での息苦しさのような新たな徴候が出た場合は判断を更新します。"
         },
         {
@@ -1397,9 +1397,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -2922,7 +2922,7 @@
     },
     {
       "id": "dm3-p-32",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-p-32",
       "domainId": "planning",
       "prompt": "専門家が条件付きである競技の参加を認めたが、その後に新しい発作が起きたと本人が申し出た。次の競技練習はどうするか。",
@@ -2935,8 +2935,8 @@
         },
         {
           "id": "b",
-          "text": "以前の参加条件が今も有効か、医療者に再確認する",
-          "explanation": "参加判断には発作が起きる可能性や現在の条件が関係する。"
+          "text": "今回の競技練習は見合わせ、新しい発作を担当医療者に共有して参加条件を再確認する",
+          "explanation": "新しい発作は条件付き参加を判断する材料を変えるため、練習前に再評価を受ける。"
         },
         {
           "id": "c",
@@ -2945,21 +2945,21 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "種目の分類と本人の発作条件は別々に更新される。",
+      "explanation": "競技の危険度に加え、本人の発作の状態に応じて参加条件を判断する。発作の状況が変わった場合は医療者に再確認する。",
       "sourceRefs": [
         {
           "title": "ILAE Task Force: Epilepsy, seizures, physical exercise, and sports",
           "url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/epi.13261",
-          "locator": "Table 2：probability and timing of seizures。",
+          "locator": "Table 2／Clinical Aspects：発作の起こり方と競技の危険度",
           "edition": "Epilepsia 2016;57:6–12"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -3048,44 +3048,50 @@
     },
     {
       "id": "dm3-p-35",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-p-35",
       "domainId": "planning",
-      "prompt": "妊娠中の利用者が活動中に、急に脚へ力が入りにくくふらつくと訴える。運動許可は共有済み。対応はどれか。",
+      "prompt": "妊娠中の利用者が活動中に、突然、片脚に力が入らず立てないと訴えた。事前に運動許可は得ている。施設での対応はどれか。",
       "scored": true,
       "choices": [
         {
           "id": "a",
           "text": "負荷の軽い種目に変更し、症状が続くか確認する",
-          "explanation": "警告徴候を運動の継続で確かめている。"
+          "explanation": "突然の片脚の脱力があり、軽い運動で様子を見ると救急対応が遅れる。"
         },
         {
           "id": "b",
-          "text": "運動を中止して安全を確保し、医療者の評価を優先する",
-          "explanation": "バランスに影響する筋力低下は中止の警告徴候に含まれる。"
+          "text": "運動を中止し、安全を確保して施設の緊急時手順に沿い119番通報する",
+          "explanation": "突然の片脚の脱力は救急車を要請する目安である。"
         },
         {
           "id": "c",
           "text": "支えを増やして予定量を終える",
-          "explanation": "ふらつきへの支えだけでは新しい症状の評価にならない。"
+          "explanation": "支えを増やしても、突然の片脚の脱力には救急対応が必要である。"
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "平常の許可は急に出た警告徴候の継続を許す条件ではない。",
+      "explanation": "妊娠中のバランスに影響する筋力低下は運動を中止する徴候である。この例では突然の片脚の脱力があるため、119番を要請する。",
       "sourceRefs": [
         {
           "title": "ACOG Committee Opinion 804: Physical Activity and Exercise During Pregnancy and the Postpartum Period",
           "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2020/04/physical-activity-and-exercise-during-pregnancy-and-the-postpartum-period",
           "locator": "Box 3：muscle weakness affecting balance。",
           "edition": "2020年公開本文"
+        },
+        {
+          "title": "厚生労働省：こんな時は迷わず119へ",
+          "url": "https://kakarikata.mhlw.go.jp/kakaritsuke/urgency.html",
+          "locator": "おとな：手・足／突然、片方の腕や足に力が入らない",
+          "edition": "公開Web版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -3342,30 +3348,30 @@
     },
     {
       "id": "dm3-p-42",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-p-42",
       "domainId": "planning",
-      "prompt": "同じ役割の二人で、甲は最大重量が大きいが中等度負荷の速度が遅く、乙は最大重量が小さいが同じ中等度重量を速く動かす。最大筋力より高速出力が課題なのはどちらか。",
+      "prompt": "同じ役割の選手2人は、最大筋力の基準をともに満たす。同じ絶対重量を同じ可動域・計測条件で動かす課題では、甲は目標速度に届かず、乙は目標速度を満たす。まずこの課題の速度改善を検討するのはどちらか。",
       "scored": true,
       "choices": [
         {
           "id": "a",
-          "text": "乙だけを候補とする。最大重量が小さいほど必ず速さが不足する",
-          "explanation": "最大重量の順位と中等度負荷の速度の順位を混同する。"
+          "text": "乙。目標速度を満たした記録だけで、速度を最優先に伸ばすべきだと判断する",
+          "explanation": "この課題で目標速度に届いていないのは甲である。"
         },
         {
           "id": "b",
           "text": "同じ役割なので二人の強化課題は共通と決める",
-          "explanation": "同じ役割内の個人差を無視している。"
+          "explanation": "同じ役割でも、同じ課題で目標に届いているかは個人ごとに評価する。"
         },
         {
           "id": "c",
-          "text": "甲を候補とし、速度側の課題を本人の記録から検討する",
-          "explanation": "最大筋力が高くても中等度負荷で速さが不足する場合がある。"
+          "text": "甲。共通条件で目標速度に届かなかったため、速度の改善計画を検討する",
+          "explanation": "最大筋力の基準とは別に、同じ計測条件での課題速度を評価している。"
         }
       ],
       "correctChoiceId": "c",
-      "explanation": "同じ役割でも、負荷と速度の関係から優先する練習が変わる。",
+      "explanation": "目標動作に合わせて負荷と測定条件をそろえ、その課題の速度を最大筋力とは別に評価する。",
       "sourceRefs": [
         {
           "title": "NSCA Coach: Practical Application of Velocity-Based Training in College Football",
@@ -3377,9 +3383,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -3594,7 +3600,7 @@
     },
     {
       "id": "dm3-p-48",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-p-48",
       "domainId": "planning",
       "prompt": "同じ関節が30度動く間、映像Aでは5フレーム、Bでは10フレーム進んだ。二つの映像の撮影フレームレートは異なる。動作の速度を比べるにはどれか。",
@@ -3613,7 +3619,7 @@
         {
           "id": "c",
           "text": "フレーム間隔を確認し、各30度の経過時間で比較する",
-          "explanation": "枚数にフレーム間隔を掛けると経過時間を求められる。"
+          "explanation": "撮影レートが一定なら、開始と終了のフレーム番号の差を撮影レートで割ると経過時間を求められる。"
         }
       ],
       "correctChoiceId": "c",
@@ -3629,9 +3635,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5232,10 +5238,10 @@
     },
     {
       "id": "dm3-t-33",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-t-33",
       "domainId": "technique",
-      "prompt": "肘を90°に曲げ体側へ置いたまま、肘を中心に見える前腕全体が横へ移る。手のひらは回さず、上腕骨が長軸まわりに回転した。どの運動か。",
+      "prompt": "肘を90°に曲げ、上腕を体側につけたまま前腕を正面へ向ける。手のひらをひねらず、上腕骨を長軸まわりに回して手を身体の中心から外側へ遠ざける。肩関節の運動はどれか。",
       "scored": true,
       "choices": [
         {
@@ -5251,7 +5257,7 @@
         {
           "id": "c",
           "text": "肩関節の外旋",
-          "explanation": "上腕が長軸まわりに外側へ回った。"
+          "explanation": "上腕を体側に保ったまま、上腕骨を身体の正中から外へ向けて回す運動である。"
         }
       ],
       "correctChoiceId": "c",
@@ -5267,9 +5273,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5316,44 +5322,44 @@
     },
     {
       "id": "dm3-t-35",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-t-35",
       "domainId": "technique",
-      "prompt": "重りを持ち上げる二つの練習台で始点と終点の高さが等しく、どちらも静止から静止へ移動した。片方だけ重りを台の面にこすりながら上げた。重りの位置エネルギーと外からの仕事について何が言えるか。",
+      "prompt": "同じ重りを同じ高さだけ持ち上げる。Aでは接触による摩擦がなく、Bでは重りを台の面にこすりながら上げる。どちらも静止から始めて静止で終わる。重力位置エネルギーの増加と、持ち上げる力がした仕事の比較はどれか。",
       "scored": true,
       "choices": [
         {
           "id": "a",
-          "text": "こする条件だけ重力位置エネルギーが小さい",
-          "explanation": "同じ高さと質量なら増加量は等しい。"
+          "text": "Bでは重力位置エネルギーの増加が小さい",
+          "explanation": "重りの質量と高さの変化が同じなので、増加量は等しい。"
         },
         {
           "id": "b",
-          "text": "位置エネルギーの増加は等しく、こする条件では摩擦に対する追加の仕事が要る",
-          "explanation": "同じ高さでも、摩擦で移るエネルギーを供給する必要がある。"
+          "text": "重力位置エネルギーの増加は等しく、持ち上げる力の仕事はBで大きい",
+          "explanation": "Bでは位置エネルギーの増加に加え、摩擦に逆らって仕事をする必要がある。"
         },
         {
           "id": "c",
-          "text": "静止で終わるので、摩擦の有無に関係なく外からの仕事はゼロ",
-          "explanation": "運動エネルギーの変化がゼロでも位置エネルギーは増える。"
+          "text": "静止で終わるので、持ち上げる力の仕事はどちらもゼロ",
+          "explanation": "運動エネルギーの変化はゼロだが、持ち上げる力は重力に逆らって仕事をしている。"
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "高さの変化と非保存力によるエネルギー移動を分けて考える。",
+      "explanation": "同じ重りを同じ高さだけ上げると、重力位置エネルギーの増加は等しい。摩擦が重りに負の仕事をするBでは、持ち上げる力がその分だけ多くの仕事をする。",
       "sourceRefs": [
         {
           "title": "OpenStax: College Physics 2e, work and energy",
-          "url": "https://openstax.org/books/college-physics-2e/pages/7-section-summary",
-          "locator": "§7.3 Gravitational Potential Energy／§7.5 Nonconservative Forces",
+          "url": "https://openstax.org/books/college-physics-2e/pages/7-5-nonconservative-forces",
+          "locator": "§7.5 Nonconservative Forces／仕事と力学的エネルギーの変化",
           "edition": "公開版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5400,10 +5406,10 @@
     },
     {
       "id": "dm3-t-37",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-t-37",
       "domainId": "technique",
-      "prompt": "同じ球を二人が同時に支えて止める仮想モデルを考える。球への正味の水平力積は −12 N·s。うち一人の力積は −5 N·sだった。もう一人の力積はどれか。",
+      "prompt": "球を二人が同時に支えて止める仮想モデルを考える。水平に働くのは二人が加える力だけで、その合力による力積は −12 N·s。一人が加えた水平力の力積は −5 N·s だった。もう一人が加えた水平力の力積はどれか。",
       "scored": true,
       "choices": [
         {
@@ -5427,17 +5433,17 @@
       "sourceRefs": [
         {
           "title": "OpenStax: College Physics 2e—Linear Momentum",
-          "url": "https://openstax.org/books/college-physics-2e/pages/8-section-summary",
-          "locator": "§8.2 Impulse／Net Force",
+          "url": "https://openstax.org/books/college-physics-2e/pages/8-2-impulse",
+          "locator": "§8.2 Impulse／正味の外力による力積と運動量変化",
           "edition": "公開資料"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5820,10 +5826,10 @@
     },
     {
       "id": "dm3-t-47",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-t-47",
       "domainId": "technique",
-      "prompt": "低摩擦の回転台に乗った人が腕を中心に引いた。台に働く外部トルクを無視できる短い区間で、角速度はどう変化するか。",
+      "prompt": "低摩擦の回転台と一緒に回っている人が、足の位置を保ったまま腕を回転軸に近づけた。人と台を一つの系とし、軸まわりの外力のトルクを無視すると、台と人が一緒に回る角速度の大きさはどう変化するか。",
       "scored": false,
       "choices": [
         {
@@ -5843,21 +5849,21 @@
         }
       ],
       "correctChoiceId": "b",
-      "explanation": "角運動量を同じに保ったまま、質量分布を軸へ寄せると回る速さが大きくなる。",
+      "explanation": "人と台の系に働く軸まわりの外力のトルクがほぼゼロなら、その系の角運動量はほぼ保たれる。腕を軸に寄せて系の慣性モーメントが小さくなると、角速度の大きさが増す。",
       "sourceRefs": [
         {
           "title": "OpenStax: College Physics 2e—Rotational Motion",
-          "url": "https://openstax.org/books/college-physics-2e/pages/10-section-summary",
-          "locator": "§10.5 Angular Momentum and Its Conservation",
+          "url": "https://openstax.org/books/college-physics-2e/pages/10-5-angular-momentum-and-its-conservation",
+          "locator": "§10.5 Conservation of Angular Momentum／Figure 10.21（腕を引く回転の例）",
           "edition": "公開資料"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -5904,7 +5910,7 @@
     },
     {
       "id": "dm3-s-01",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-01",
       "domainId": "safety",
       "prompt": "二人で心停止に対応しています。一人が圧迫を行い、もう一人がAEDパッドを貼る準備をしています。まだ解析の指示はありません。圧迫担当者はどうしますか？",
@@ -5912,7 +5918,7 @@
       "choices": [
         {
           "id": "a",
-          "text": "パッドの貼り付けに協力しながら、できる限り圧迫を続ける",
+          "text": "別の救助者がパッドを貼る間も、解析の指示が出るまではできる限り圧迫を続ける",
           "explanation": "貼り付け自体では圧迫を止める必要がなく、解析の指示が出てから離れます。"
         },
         {
@@ -5939,17 +5945,17 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
       "id": "dm3-s-02",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-02",
       "domainId": "safety",
-      "prompt": "乳児の心停止でAEDを準備しましたが、未就学児用のパッドがなく、小学生～大人用だけがあります。市民用指針に沿った装着はどれですか？",
+      "prompt": "乳児の心停止でAEDを準備しました。小学生～大人用のパッドだけがあり、AEDに未就学児用モードはありません。市民用指針に沿った装着はどれですか？",
       "scored": true,
       "choices": [
         {
@@ -5974,16 +5980,16 @@
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
-          "locator": "本文p.44 参考「乳児に対する一次救命処置」4 AEDの使い方",
+          "locator": "本文p.35 Ⅴ 3 3）未就学児用パッドとモード、p.44 参考「乳児に対する一次救命処置」4 AEDの使い方",
           "edition": "2026年7月刊・2026年9月10日訂正版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6114,10 +6120,10 @@
     },
     {
       "id": "dm3-s-06",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-06",
       "domainId": "safety",
-      "prompt": "蒸し暑い体育館で運動を止めた参加者が、頭痛と吐き気を訴えています。受け答えは明瞭で、体温が極端に高い様子はありません。市民用指針に沿うのはどれですか？",
+      "prompt": "蒸し暑い体育館で運動を止めた参加者が、頭痛と吐き気を訴えています。受け答えは明瞭で自分で水分を飲め、体温が極端に高い様子はありません。市民用指針に沿うのはどれですか？",
       "scored": true,
       "choices": [
         {
@@ -6137,26 +6143,32 @@
         }
       ],
       "correctChoiceId": "c",
-      "explanation": "受け答えの明瞭さだけで軽い状態とみなしません。症状が悪化し意識がもうろうとすれば119番を要請し、冷却を続けます。",
+      "explanation": "受け答えが明瞭でも、頭痛や吐き気があれば冷却と受診につなげます。自力で水分を飲めない、意識に異常がある、体温が極端に高い場合は119番を要請し、冷却を続けます。",
       "sourceRefs": [
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
           "locator": "本文p.50 Ⅵ 7「熱中症」",
           "edition": "2026年7月刊・2026年9月10日訂正版"
+        },
+        {
+          "title": "厚生労働省：熱中症が疑われる人を見かけたら",
+          "url": "https://www.mhlw.go.jp/seisakunitsuite/bunya/kenkou_iryou/kenkou/nettyuu/nettyuu_taisaku/happen.html",
+          "locator": "応急処置の図：自力で飲水できない、または意識がない場合",
+          "edition": "公開Web版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
       "id": "dm3-s-07",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-07",
       "domainId": "safety",
       "prompt": "清掃用の薬品を飲料と誤認して飲んだ職員がいます。薬品の種類はまだ確認中です。応急対応の原則はどれですか？",
@@ -6164,8 +6176,8 @@
       "choices": [
         {
           "id": "a",
-          "text": "自己判断で飲ませたり吐かせたりせず、容器と量・時刻を確認し救急や中毒の相談先へつなぐ",
-          "explanation": "処置は物質によって異なり、何をどの程度摂ったかが専門側の判断に役立ちます。"
+          "text": "自己判断で飲ませたり吐かせたりせず、重い症状なら119番し、判断に迷えば中毒110番に相談する",
+          "explanation": "意識や呼吸の異常などがあれば救急要請を優先し、摂取した物質によって異なる処置は専門の指示を受けます。"
         },
         {
           "id": "b",
@@ -6179,21 +6191,27 @@
         }
       ],
       "correctChoiceId": "a",
-      "explanation": "誤飲では自己判断で中和や希釈を行わず、何をいつどれだけ飲んだかの情報を確認して専門的な指示を受けます。",
+      "explanation": "自己判断で水などを飲ませたり吐かせたりしません。意識や呼吸の異常、けいれんなど重い症状があれば直ちに119番します。対応に迷えば速やかに中毒110番へ相談し、容器・摂取時刻・量を分かる範囲で伝えます。",
       "sourceRefs": [
         {
           "title": "日本救急医療財団「改訂7版 救急蘇生法の指針2025 市民用」",
           "url": "https://qqzaidan.jp/wp-content/uploads/2026/09/shishin2025_shimin_teisei_0910.pdf",
           "locator": "本文p.55 Ⅵ 17 1）毒物を飲んだとき",
           "edition": "2026年7月刊・2026年9月10日訂正版"
+        },
+        {
+          "title": "日本中毒情報センター：中毒事故が起こったら",
+          "url": "https://www.j-poison-ic.jp/general-public/response-to-a-poisoning-accident/at-home/",
+          "locator": "応急手当／救急車を呼ぶ場合と誤飲した物質の確認",
+          "edition": "公開Web版"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6282,15 +6300,15 @@
     },
     {
       "id": "dm3-s-10",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-10",
       "domainId": "safety",
-      "prompt": "乳児が食べ物を詰まらせ、泣き声が出ません。反応はあり、別の人に119番を依頼しました。実技訓練を受けた救助者が、背部叩打で取れないときに組み合わせる手技はどれですか？",
+      "prompt": "食事中の乳児が突然苦しそうになり、顔色が悪く、泣き声も強い咳も出ません。反応はあり、別の人に119番を依頼しました。実技訓練を受けた救助者が、背部叩打で取れないときに組み合わせる手技はどれですか？",
       "scored": true,
       "choices": [
         {
           "id": "a",
-          "text": "頭側を下げて支えながら行う胸部突き上げ",
+          "text": "乳児の頭側を低くして仰向けに支え、胸部突き上げを行う",
           "explanation": "反応のある乳児では背部叩打と胸部突き上げを交互に行います。"
         },
         {
@@ -6317,9 +6335,9 @@
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
@@ -6366,44 +6384,50 @@
     },
     {
       "id": "dm3-s-12",
-      "revision": 1,
+      "revision": 2,
       "groupId": "dm3-s-12",
       "domainId": "safety",
-      "prompt": "施設の屋外テラスは屋根付きです。スタッフが屋内で使用しているものと同じTRX XMountを、このテラスの梁に設置する案を出しました。製品の安全案内に沿う判断はどれですか？",
+      "prompt": "屋根付きの屋外テラスに、施設がTRX XMountを設置する案を出しました。同社の販売ページには屋外対応の表記があり、業務用の製品安全案内には異なる指示があります。該当型式の設置条件を確認するまで、施設はどう判断しますか？",
       "scored": true,
       "choices": [
         {
           "id": "a",
           "text": "屋根で直射日光が遮られていれば、通常の屋内設置として扱う",
-          "explanation": "屋根があることだけで、屋外設置の扱いは変わりません。"
+          "explanation": "屋根だけでは設置場所が屋内になるわけではなく、製品の条件を確かめる必要があります。"
         },
         {
           "id": "b",
           "text": "点検を毎回実施すれば、屋内設置の条件は適用しなくてよい",
-          "explanation": "使用前点検は屋外設置を認める代替条件ではありません。"
+          "explanation": "使用前の点検は、機器に適用される設置条件の確認に代わりません。"
         },
         {
           "id": "c",
-          "text": "XMountの屋外設置を見送り、使用環境に適合する構成を選ぶ",
-          "explanation": "メーカーはXMountを屋外に設置しないよう示しています。"
+          "text": "屋外設置を見送り、該当型式と取付先に適用される条件をメーカーに確認する",
+          "explanation": "業務用の安全案内のXMount欄は屋外設置を禁じています。販売ページの表記だけで判断せず、該当型式に適用される条件を確かめます。"
         }
       ],
       "correctChoiceId": "c",
-      "explanation": "同じメーカーの器具でも、使用環境の条件は製品ごとに確認します。",
+      "explanation": "販売ページと製品安全案内で記載が異なります。使用環境と取付先に適用される条件をメーカーに確認し、確認できるまで屋外への設置を見送ります。",
       "sourceRefs": [
         {
           "title": "TRX Commercial Product Safety & Use Guides",
           "url": "https://commercial.trxtraining.com/pages/product-safety",
-          "locator": "XMount／English、熱・湿気・腐食性環境と屋外設置に関する段落",
+          "locator": "XMount／English／Before each use, always：使用環境と屋外設置の指示",
           "edition": "業務用向け現行公開Web"
+        },
+        {
+          "title": "TRX Commercial：TRX XMount 製品ページ",
+          "url": "https://commercial.trxtraining.com/products/trx-xmount-commercial-partners",
+          "locator": "製品概要：屋内・屋外での使用に関する記載",
+          "edition": "業務用販売ページ"
         }
       ],
       "review": {
         "status": "source_checked",
         "reviewerType": "ai",
-        "method": "AIが設問条件・正答・各選択肢の理由を記録した資料の該当箇所と照合",
-        "checkedAt": "2026-11-08",
-        "revision": 1
+        "method": "AIが設問条件・正答・各選択肢の理由を参照資料の該当箇所と再照合し、修正箇所を確認",
+        "checkedAt": "2026-11-10",
+        "revision": 2
       }
     },
     {
