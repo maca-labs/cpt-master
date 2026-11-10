@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useLearning } from './context';
 import { createSession, selectDiagnostic, prioritizeReview, eligible } from '../engines/learning';
-import { allQuestions, questions } from '../content';
+import { allQuestions, practiceQuestions, questions } from '../content';
 import { db, defaultSettings, recordExposure, type LearningDB } from '../storage/db';
 import type { Session } from '../domain/types';
 import {
@@ -86,7 +86,7 @@ export async function startPracticeSession(
         sessions: await database.sessions.toArray(),
       };
       const selected = selectPracticeQuestions(
-        questions,
+        practiceQuestions,
         ['completed', 'skipped'].includes(settings.diagnosticStatus),
         history,
         {
@@ -180,7 +180,7 @@ export function useStartLearning() {
           [db.sessions, db.settings, db.reviews, db.attempts, db.exposures],
           async () => {
             const sessions = await db.sessions.toArray(),
-              reserved = reservedStrictGroups(sessions, questions);
+              reserved = reservedStrictGroups(sessions, practiceQuestions);
             const settings = (await db.settings.get('main')) ?? defaultSettings;
             const unlocked = ['completed', 'skipped'].includes(settings.diagnosticStatus);
             const due = (await db.reviews.toArray()).filter(
@@ -188,11 +188,13 @@ export function useStartLearning() {
             );
             const attempts = await db.attempts.toArray(),
               exposures = await db.exposures.toArray();
+            const answered = new Set(attempts.map((attempt) => attempt.questionId));
             const selected = prioritizeReview(
               allQuestions.filter(
                 (question) =>
                   eligible(question) &&
                   question.pool !== 'exam' &&
+                  (question.pool !== 'advanced' || answered.has(question.id)) &&
                   (unlocked || question.pool !== 'diagnostic') &&
                   !reserved.has(question.groupId),
               ),

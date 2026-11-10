@@ -1,4 +1,5 @@
 import type { PracticeBatch, Question } from '../domain/types';
+import { advancedPracticeBatch } from '../domain/types';
 import { foundationQuestions } from './foundations';
 import { appliedQuestions } from './applied';
 import { assessmentExpansionQuestions } from './expansion/assessment';
@@ -47,6 +48,7 @@ export const practiceBatchLabel = (batch: PracticeBatch) =>
     all: 'すべての通常学習問題',
     'expansion-2026-11-04': '0.4で追加された200問のみ',
     'edition3-2026-11-08': '第3版を優先した追加問題のみ',
+    [advancedPracticeBatch]: '応用・分析50問（未見演習）',
   })[batch];
 
 export const practiceBatchShortLabel = (batch: PracticeBatch) =>
@@ -54,9 +56,12 @@ export const practiceBatchShortLabel = (batch: PracticeBatch) =>
     all: '全問題',
     'expansion-2026-11-04': '追加200問',
     'edition3-2026-11-08': '第3版追加問題',
+    [advancedPracticeBatch]: '応用・分析50問',
   })[batch];
 
 export function isInPracticeBatch(question: Question, batch: PracticeBatch): boolean {
+  if (question.pool === 'advanced' || batch === advancedPracticeBatch)
+    return question.pool === 'advanced' && batch === advancedPracticeBatch;
   if (batch === 'all') return true;
   const ids = batch === 'expansion-2026-11-04' ? expansionQuestionIds : edition3QuestionIds;
   return ids.has(question.id);

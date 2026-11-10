@@ -1,5 +1,5 @@
 import type { Attempt, DomainId, Exposure, Question, Session } from '../domain/types';
-import { practiceBatchValues } from '../domain/types';
+import { advancedPracticeBatch, practiceBatchValues } from '../domain/types';
 import { domainIds } from '../content/blueprints';
 import { isInPracticeBatch, type PracticeBatch } from '../content/batches';
 import { eligible, shuffle, uniqueGroups } from './learning';
@@ -10,6 +10,11 @@ export interface PracticeOptions {
   selection: PracticeSelection;
   requestedCount: 10 | 20 | 50;
 }
+export const advancedPracticeOptions: PracticeOptions = {
+  batch: advancedPracticeBatch,
+  selection: 'strict_unseen',
+  requestedCount: 50,
+};
 export interface PracticeRequest extends PracticeOptions {
   unitId?: string;
   onlyFavorites?: boolean;
@@ -174,6 +179,11 @@ export function selectPracticeQuestions(
     ![10, 20, 50].includes(options.requestedCount)
   )
     throw new Error('演習条件が不正です。');
+  if (
+    options.batch === advancedPracticeBatch &&
+    (options.selection !== 'strict_unseen' || options.requestedCount !== 50)
+  )
+    throw new Error('応用・分析50問は厳密な未見演習として利用してください。');
   const seen = observedGroups(history.exposures, history.attempts),
     reserved = reservedStrictGroups(history.sessions, bank);
   const pool = uniqueGroups(

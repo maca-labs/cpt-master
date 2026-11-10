@@ -1,11 +1,13 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it } from 'vitest';
-import { questions } from '../src/content';
+import { practiceQuestions, questions } from '../src/content';
+import { advancedTargets, v062ContentVersion } from '../src/content/release';
 import { expansionQuestionIds, initialQuestionIds } from '../src/content/batches';
 import type { Attempt, Exposure, Question, Session } from '../src/domain/types';
 import { createSession, isFirstSeen, partitionAttempts } from '../src/engines/learning';
 import {
   practiceAllocation,
+  advancedPracticeOptions,
   practiceInventory,
   reservedStrictGroups,
   selectPracticeQuestions,
@@ -13,7 +15,13 @@ import {
   type PracticeOptions,
 } from '../src/engines/practice-selection';
 import { recordPracticeResultsDisplay, startPracticeSession } from '../src/app/actions';
-import { LearningDB, defaultSettings, exportBackup, validateBackup } from '../src/storage/db';
+import {
+  LearningDB,
+  defaultSettings,
+  exportBackup,
+  restoreBackup,
+  validateBackup,
+} from '../src/storage/db';
 
 const empty = (): PracticeHistory => ({ attempts: [], exposures: [], sessions: [] });
 const strict: PracticeOptions = {
@@ -78,6 +86,57 @@ const database = () => {
 };
 
 describe('release catalog and strict stock', () => {
+  it('isolates all 50 advanced questions from ordinary practice and requires unseen selection', () => {
+    const advanced = selectPracticeQuestions(
+      practiceQuestions,
+      false,
+      empty(),
+      advancedPracticeOptions,
+    );
+    expect(advanced).toHaveLength(50);
+    expect(byDomain(advanced)).toEqual(advancedTargets);
+    expect(new Set(advanced.map((question) => question.groupId)).size).toBe(50);
+    const ordinary = { ...advancedPracticeOptions, batch: 'all' as const };
+    expect(practiceInventory(practiceQuestions, true, empty(), ordinary).total).toBe(
+      questions.length,
+    );
+    expect(() =>
+      selectPracticeQuestions(practiceQuestions, true, empty(), {
+        ...advancedPracticeOptions,
+        selection: 'review',
+      }),
+    ).toThrow(/厳密な未見演習/);
+    const history = { ...empty(), exposures: [exposure(advanced[0], 'explanation')] };
+    expect(
+      practiceInventory(practiceQuestions, false, history, advancedPracticeOptions),
+    ).toMatchObject({
+      available: 49,
+      missing: 1,
+    });
+    expect(() =>
+      selectPracticeQuestions(practiceQuestions, false, history, advancedPracticeOptions),
+    ).toThrow(/既出問題で補充しません/);
+  });
+
+  it('restores a pre-advanced backup and preserves both active reservations through export and restore', async () => {
+    const original = database();
+    const prior = await startPracticeSession(strict, original);
+    const upgraded = database();
+    const oldBackup = { ...(await exportBackup(original)), contentVersion: v062ContentVersion };
+    await restoreBackup(oldBackup, upgraded);
+    const fresh = await startPracticeSession(advancedPracticeOptions, upgraded);
+    expect(fresh.questionIds).toHaveLength(50);
+    expect(Object.values(fresh.firstSeenByQuestion).every(Boolean)).toBe(true);
+    expect(await upgraded.sessions.get(prior.id)).toEqual(prior);
+    await expect(startPracticeSession(advancedPracticeOptions, upgraded)).rejects.toThrow(
+      /50問不足/,
+    );
+    const transferred = database();
+    await restoreBackup(await exportBackup(upgraded), transferred);
+    expect(await transferred.sessions.get(fresh.id)).toEqual(fresh);
+    expect(await transferred.sessions.get(prior.id)).toEqual(prior);
+  });
+
   it('identifies the actual additional 200 independently of the initial 100', () => {
     expect(initialQuestionIds.size).toBe(100);
     expect(expansionQuestionIds.size).toBe(200);

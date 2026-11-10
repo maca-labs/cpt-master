@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it } from 'vitest';
 import { questions, units, contentVersion, legacyQuestionIds } from '../src/content';
-import { legacyContentVersion } from '../src/content/release';
+import { advancedContentVersion, legacyContentVersion } from '../src/content/release';
+import { previousReviewedRevisions } from '../src/content/question-quality-review';
 import {
   LearningDB,
   exportBackup,
@@ -13,7 +14,7 @@ import {
   type Backup,
 } from '../src/storage/db';
 import { mediaAssets } from '../src/content/media';
-import { eligible, selectPractice } from '../src/engines/learning';
+import { createSession, eligible, isFirstSeen, selectPractice } from '../src/engines/learning';
 import { normalizeChoice } from '../scripts/validate-content';
 const legacyText = readFileSync(
   new URL('./fixtures/legacy-v1-backup.json', import.meta.url),
@@ -37,14 +38,26 @@ describe('curriculum expansion compatibility', () => {
     expect(normalizeChoice('−100 J')).toBe(normalizeChoice('-100J'));
     expect(normalizeChoice('同じ。')).toBe(normalizeChoice(' 同じ '));
   });
-  it('preserves all original question bytes, revisions, choice identities and groups', () => {
+  it('preserves original question bytes outside the explicitly reviewed revisions', () => {
     const rows = Array.isArray(manifest) ? manifest : manifest.questions;
     expect(rows).toHaveLength(100);
     expect(legacyQuestionIds.size).toBe(100);
     for (const old of rows) {
       const q = questions.find((q) => q.id === old.id)!;
       expect(q).toBeDefined();
-      expect(createHash('sha256').update(JSON.stringify(q)).digest('hex')).toBe(old.sha256);
+      const previous = previousReviewedRevisions.get(q.id);
+      if (previous === undefined) {
+        expect(createHash('sha256').update(JSON.stringify(q)).digest('hex')).toBe(old.sha256);
+      } else {
+        expect(previous).toBe(old.revision);
+        expect(q.revision).toBe(previous + 1);
+        expect(q.review.revision).toBe(q.revision);
+        expect(q.groupId).toBe(old.groupId);
+        expect(q.unitId).toBe(old.unitId);
+        expect(q.domainId).toBe(old.domainId);
+        expect(q.choices.map((choice) => choice.id)).toEqual(old.choiceIds);
+        expect(q.correctChoiceId).toBe(old.correctChoiceId);
+      }
     }
   });
   it('migrates a backup exported by the actual old code without losing any record', async () => {
@@ -78,6 +91,42 @@ describe('curriculum expansion compatibility', () => {
     expect(await snapshot(db)).toEqual(raw.data);
     expect(units.length).toBeGreaterThan(8);
     expect(questions.length).toBeGreaterThan(100);
+  });
+  it('restores a reviewed question’s previous grading revision without resetting first-seen history', async () => {
+    const q = questions.find((q) => q.id === 'professional-02')!;
+    const saved = database();
+    const session = createSession('diagnostic', [q], [], []);
+    const record = {
+      id: `${session.id}:${q.id}`,
+      sessionId: session.id,
+      questionId: q.id,
+      questionRevision: 2,
+      groupId: q.groupId,
+      domainId: q.domainId,
+      unitId: q.unitId,
+      selectedChoiceId: q.choices.find((choice) => choice.id !== q.correctChoiceId)!.id,
+      correctChoiceId: q.correctChoiceId,
+      correct: false,
+      firstSeen: true,
+      canExplain: false,
+      elapsedMs: 2000,
+      choiceOrder: session.choiceOrders[q.id],
+      at: session.startedAt,
+    };
+    expect(q.revision).toBe(3);
+    await saved.sessions.add(session);
+    await saved.attempts.add(record);
+    const backup = { ...(await exportBackup(saved)), contentVersion: advancedContentVersion };
+    const restored = database();
+    await restoreBackup(backup, restored);
+    const data = await snapshot(restored);
+    expect(data.attempts).toEqual([record]);
+    expect(validateBackup(JSON.stringify(await exportBackup(restored))).data).toEqual(data);
+    const next = createSession('practice', [q], data.exposures, data.attempts);
+    expect(isFirstSeen(q, next, data.exposures, data.attempts)).toBe(false);
+    backup.data.attempts[0].questionRevision = 1;
+    await expect(restoreBackup(backup, restored)).rejects.toThrow();
+    expect(await snapshot(restored)).toEqual(data);
   });
   it.each(['new-question', 'new-unit', 'bad-revision', 'future-version'])(
     'rejects %s in an old backup without changing the database',

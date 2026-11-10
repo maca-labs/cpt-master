@@ -4,7 +4,7 @@ import { units, allQuestions, sources, seedVideos } from '../src/content';
 import { focusMock } from '../src/content/focus-mock';
 import { blueprint, domainIds, domains } from '../src/content/blueprints';
 import { isRecommendedVideo } from '../src/engines/video-review';
-import { releaseTargets } from '../src/content/release';
+import { advancedTargets, releaseTargets } from '../src/content/release';
 import { mediaAssets } from '../src/content/media';
 import { eligible } from '../src/engines/learning';
 import type { DomainId, Question, Source, Unit, Video } from '../src/domain/types';
@@ -27,6 +27,8 @@ export interface ValidationReport {
     units: number;
     questions: number;
     focusQuestions: number;
+    advancedQuestions: number;
+    advancedAnalysis: number;
     sources: number;
     videos: number;
     byDomain: Record<DomainId, number>;
@@ -113,7 +115,8 @@ const questionSchema = z.object({
   format: z.enum(['single_choice', 'true_false']),
   context: z.enum(['text', 'case', 'image', 'video']),
   difficulty: z.union([z.literal(1), z.literal(2), z.literal(3)]),
-  pool: z.enum(['diagnostic', 'practice', 'focus', 'exam']),
+  cognitiveLevel: z.enum(['application', 'analysis']).optional(),
+  pool: z.enum(['diagnostic', 'practice', 'focus', 'exam', 'advanced']),
   prompt: text,
   choices: z.array(z.object({ id: text, text, explanation: text })).min(1),
   correctChoiceId: text,
@@ -270,6 +273,8 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       units: 0,
       questions: 0,
       focusQuestions: 0,
+      advancedQuestions: 0,
+      advancedAnalysis: 0,
       sources: 0,
       videos: 0,
       byDomain: zeroCounts(),
@@ -297,9 +302,12 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
   const data = parsed.data;
   report.summary.units = data.units.length;
   const focused = data.questions.filter((q) => q.pool === 'focus');
-  const regular = data.questions.filter((q) => q.pool !== 'focus');
+  const advanced = data.questions.filter((q) => q.pool === 'advanced');
+  const regular = data.questions.filter((q) => q.pool !== 'focus' && q.pool !== 'advanced');
   report.summary.questions = regular.length;
   report.summary.focusQuestions = focused.length;
+  report.summary.advancedQuestions = advanced.length;
+  report.summary.advancedAnalysis = advanced.filter((q) => q.cognitiveLevel === 'analysis').length;
   report.summary.sources = data.sources.length;
   report.summary.videos = data.videos.length;
   if (data.units.length !== releaseTargets.units)
@@ -324,6 +332,20 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
       'counts.focus',
       'questions',
       '集中模試は出典照合済みの計画10問・安全管理10問の事例問題です。',
+    );
+  if (
+    domainIds.some(
+      (id) => advanced.filter((q) => q.domainId === id).length !== advancedTargets[id],
+    ) ||
+    advanced.some(
+      (q) => !eligible(q) || q.difficulty !== 3 || !q.cognitiveLevel || q.context === 'text',
+    ) ||
+    report.summary.advancedAnalysis < 30
+  )
+    error(
+      'counts.advanced',
+      'questions',
+      '専用未見演習は分野別に12・16・15・7問の出典照合済み応用問題で、分析問題を30問以上含めます。',
     );
   if (data.videos.length < 10)
     error(
@@ -422,11 +444,12 @@ export function validateContent(input: unknown = seedContent): ValidationReport 
   const groups = new Map<string, Question[]>();
   for (const [index, q] of data.questions.entries()) {
     const path = `questions.${index}`;
-    if (q.pool !== 'focus') report.summary.byDomain[q.domainId]++;
+    const isRegular = q.pool !== 'focus' && q.pool !== 'advanced';
+    if (isRegular) report.summary.byDomain[q.domainId]++;
     if (q.pool === 'diagnostic') report.summary.diagnosticByDomain[q.domainId]++;
-    if (q.pool !== 'focus') report.summary.reviewDeclarations[q.review.status]++;
+    if (isRegular) report.summary.reviewDeclarations[q.review.status]++;
     if (canUseInExam(q)) report.summary.examEligible++;
-    if (q.pool !== 'focus' && eligible(q)) report.summary.usableQuestions++;
+    if (isRegular && eligible(q)) report.summary.usableQuestions++;
     if (q.media) report.summary.mediaQuestions++;
     if (q.context === 'image' || q.context === 'video') {
       const asset = q.media && mediaAssets[q.media.assetId as keyof typeof mediaAssets];

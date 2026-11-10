@@ -136,7 +136,10 @@ export const planningBatch01Questions = reviewedPlanningItems(
       options: [
         ['880 kg', '300＋300＋280＝880 kg。各セットの条件を個別に掛ける。'],
         ['900 kg', '平均重量30 kg×合計30回では、回数の違いを重み付けできない。'],
-        ['30 kg', 'これは3つの重量の単純平均で、volume loadの合計ではない。'],
+        [
+          '840 kg',
+          '最後のセットの35 kg×8回を3セットすべてに当てはめると840 kgになるが、最初の2セットの条件が違う。',
+        ],
       ],
       explanation:
         '重量と回数が変わる場合は、各セットの積を先に求めて足す。ここでのkgは負荷量の記録であり、力学的仕事のジュールを直接計算したものではない。',
@@ -144,7 +147,7 @@ export const planningBatch01Questions = reviewedPlanningItems(
         ref('ex-plan-load-quantifying', '抵抗運動のsets × repetitions × weight liftedを扱う段落'),
       ],
       verification:
-        '25×12＋30×10＋35×8＝880を再計算。単純平均を使う誤答と単位・指標を取り違える誤答を照合。',
+        'NSCAの挙上重量・反復・セット数の段落を再確認。各セットの積の合計880と、平均重量を使う900、最終セットを外挿する840を検算。',
     },
     {
       number: 3,

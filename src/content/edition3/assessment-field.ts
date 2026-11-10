@@ -5,10 +5,11 @@ import { testMethodsUnit } from './assessment-fitness';
 export const alpha: Source = {
   id: 'ed3-alpha-fitness',
   title: 'ALPHA Fitness Test Battery for Children and Adolescents',
-  url: 'https://www.ugr.es/~cts262/ES/documents/ALPHA-FitnessTestManualforChildren-Adolescents.pdf',
+  url: 'https://wiredspace.wits.ac.za/bitstreams/ff001834-b6e0-4a28-a174-4d1b7ebb51f8/download',
   edition: 'ALPHA公開マニュアル',
   checkedAt: '2026-11-08',
   locator: '§5 体力テスト実施方法',
+  note: '旧配布URLが404となったため、2026-11-10に大学リポジトリ掲載の原手順書抜粋（印刷pp.13–24）へ変更。',
 };
 export const agility: Source = {
   id: 'ed3-nsca-agility-assessment',
@@ -67,15 +68,21 @@ export const assessmentField = [
     [
       3,
       '皮下脂肪厚でつまみを保ったまま読む',
-      'ALPHAの上腕三頭筋部で、キャリパーを当てる直前に指でつまんだ組織を離した。再試技での修正は？',
+      'ALPHAの上腕三頭筋部を測る。検者は正しい位置と方向でひだをつまみ、キャリパーのあごを当てた時点で指を離して値を読んだ。再試技で使う手順はどれか。',
       [
-        '皮膚のひだを保持したままキャリパーを当て、指定時間で読む',
-        'ひだの保持と読み取り時間を両方そろえる。',
+        'ひだを指で保持したまま、あごの圧が掛かってから約2秒で読む',
+        '手順書ではひだを保持し、あごの圧を加えてから2秒後に読む。',
       ],
-      ['圧を最大にして即座に読む', '圧の与え方と待ち時間の条件が違う。'],
-      ['衣服の上からひだを取り直す', '衣服を含めた値は皮下脂肪厚を表さない。'],
-      '測定部位だけでなく、つまみ方と読み取り時点を固定する。',
-      '§5.2.3 Performance・Measurement',
+      [
+        'ひだを指で保持したまま、あごの圧が掛かった直後に読む',
+        '指の保持は適切だが、規定の2秒を経ていない。',
+      ],
+      [
+        'あごの圧が掛かったら指を離し、約2秒経ってから読む',
+        '時点は合っているが、読み取るまで指でひだを保持する条件を外している。',
+      ],
+      '位置や方向が正しくても、指による保持と読み取り時点が揃わなければ、同じ測定手順にならない。',
+      '印刷p.15 §5.2.3 Performance：指の保持と、あごの圧を加えてから2秒後の読取り',
     ],
     [
       2,

@@ -30,6 +30,8 @@ import {
 import { currentContentVersion } from './release';
 import { focusMockQuestions, focusMockSources } from './focus-mock';
 import { edition3Questions, edition3Sources, edition3Units } from './edition3';
+import { advancedQuestions, advancedSources } from './advanced';
+import { applyQuestionQualityReview } from './question-quality-review';
 export { seedVideos } from './videos';
 export const legacyQuestionIds = new Set(
   [...foundationQuestions, ...appliedQuestions].map((q) => q.id),
@@ -55,8 +57,9 @@ export const questions = [
   })),
   ...safetyExpansionQuestions,
   ...edition3Questions,
-];
-export const allQuestions = [...questions, ...focusMockQuestions];
+].map(applyQuestionQualityReview);
+export const practiceQuestions = [...questions, ...advancedQuestions];
+export const allQuestions = [...practiceQuestions, ...focusMockQuestions];
 export const sources = [
   ...blueprintSources,
   ...foundationSources,
@@ -72,5 +75,6 @@ export const sources = [
   ...techniqueExpansionSources,
   ...safetyExpansionSources,
   ...edition3Sources,
+  ...advancedSources,
 ];
 export const contentVersion = currentContentVersion;

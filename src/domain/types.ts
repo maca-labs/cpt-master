@@ -1,5 +1,11 @@
 export type DomainId = 'assessment' | 'planning' | 'technique' | 'safety';
-export const practiceBatchValues = ['all', 'expansion-2026-11-04', 'edition3-2026-11-08'] as const;
+export const advancedPracticeBatch = 'advanced-2026-11-09';
+export const practiceBatchValues = [
+  'all',
+  'expansion-2026-11-04',
+  'edition3-2026-11-08',
+  advancedPracticeBatch,
+] as const;
 export type PracticeBatch = (typeof practiceBatchValues)[number];
 export type ReviewStatus = 'draft' | 'source_checked' | 'expert_reviewed';
 export interface Source {
@@ -39,7 +45,8 @@ export interface Question {
   format: 'single_choice' | 'true_false';
   context: 'text' | 'case' | 'image' | 'video';
   difficulty: 1 | 2 | 3;
-  pool: 'diagnostic' | 'practice' | 'focus' | 'exam';
+  cognitiveLevel?: 'application' | 'analysis';
+  pool: 'diagnostic' | 'practice' | 'focus' | 'exam' | 'advanced';
   prompt: string;
   choices: { id: string; text: string; explanation: string }[];
   correctChoiceId: string;

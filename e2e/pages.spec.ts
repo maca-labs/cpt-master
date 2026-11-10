@@ -1,10 +1,51 @@
 import { test, expect } from '@playwright/test';
 import packageMetadata from '../package.json' with { type: 'json' };
 import { edition3Questions } from '../src/content/edition3';
-import { seedVideos } from '../src/content';
+import { questions, seedVideos } from '../src/content';
 import { isRecommendedVideo } from '../src/engines/video-review';
 const recommendedCount = seedVideos.filter((video) => isRecommendedVideo(video)).length;
 const published = process.env.E2E_PUBLISHED_URL;
+
+test('revised safety lesson and question show current guidance and save an answer', async ({
+  page,
+}) => {
+  const lessonUrl = `${published ?? '/'}#/learn/ex-safe-conditions`;
+  await page.goto(lessonUrl);
+  await expect(page.getByText(/緊急の医療評価と搬送を要する兆候/)).toBeVisible();
+  const question = questions.find(({ id }) => id === 'ex-safe-016')!;
+  const card = page.locator('.quiz-card');
+  const heading = card.getByRole('heading', { level: 1 });
+  let found = false;
+  for (let session = 0; session < 2 && !found; session++) {
+    await page.getByRole('button', { name: /^確認問題を解く（10問）/ }).click();
+    for (let position = 0; position < 10; position++) {
+      await expect(heading).toBeVisible();
+      found = (await heading.innerText()) === question.prompt;
+      if (found) break;
+      await card.locator('button.choice').first().click();
+      await card.getByRole('button', { name: '回答を保存', exact: true }).click();
+      await expect(card.locator('.exam-verdict')).toBeVisible();
+      if (position < 9) await card.getByRole('button', { name: '次の問題へ', exact: true }).click();
+    }
+    if (!found) await page.goto(lessonUrl);
+  }
+  await expect(heading).toHaveText(question.prompt);
+  await card
+    .getByRole('button', { name: /活動を直ちに中止し、緊急の医療評価と搬送を手配する/ })
+    .click();
+  await card.getByRole('button', { name: '回答を保存', exact: true }).click();
+  await expect(card.locator('.exam-verdict')).toHaveText(/^○\s*正解$/);
+  await expect(card.getByRole('heading', { name: '正答解説', exact: true })).toBeInViewport();
+  await card.getByText('根拠資料と該当箇所', { exact: true }).click();
+  await expect(card.getByRole('link', { name: /JFA掲載/ })).toHaveAttribute(
+    'href',
+    /medical_concussion\.pdf$/,
+  );
+  await page.reload();
+  await expect(card.locator('.exam-verdict')).toHaveText(/^○\s*正解$/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test('published Pages site loads nested routes and reviewed videos on this viewport', async ({
   page,
 }, testInfo) => {

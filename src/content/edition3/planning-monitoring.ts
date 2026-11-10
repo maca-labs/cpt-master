@@ -8,6 +8,16 @@ export const velocity = planningSource(
   '公開実践記事',
   'Using Barbell Velocity, Velocity Loss Thresholds, Individualizing Training Intensities',
 );
+const benchVelocity = {
+  ...planningSource(
+    'bench-rom-velocity',
+    'Martínez-Cava et al. Range of Motion and Sticking Region Effects on the Bench Press Load-Velocity Relationship',
+    'https://jssm.org/volume18/iss4/cap/jssm-18-645.pdf',
+    'J Sports Sci Med 18(4):645–652、2019',
+    'Methods：可動範囲とMV/MPVの測定。Discussion：可動範囲別の負荷と速度の関係。',
+  ),
+  checkedAt: '2026-11-10',
+};
 export const agility = planningSource(
   'agility',
   'NSCA: Transfer of Training for Agility',
@@ -22,24 +32,24 @@ export const preparation = planningSource(
   'NSCA Essentials of Strength Training and Conditioning・公開抜粋',
   'Preparatory Period and its phases',
 );
-export const monitoringSources = [velocity, agility, preparation];
+export const monitoringSources = [velocity, benchVelocity, agility, preparation];
 
 const monitor: EditionItem[] = [
   [
     3,
     'セットの平均速度を目標帯と比較して次の負荷を下げる',
-    '動作が安定した選手の挙上で、セット平均の目標帯は0.55〜0.65 m/s。二つのセットで平均0.48、0.50 m/sだった。次のセットをどう調整するか。',
+    'ある選手の挙上で、4反復の平均速度の目標帯を0.55〜0.65 m/sとした。休息は予定どおりで、動作範囲、計測方法、速く挙げる指示は同じだった。同じ重量の2セットは平均0.48、0.50 m/s。次も4反復とすると、目標帯に近づける調整はどれか。',
     [
       '設定重量を下げ、次のセット平均を再確認する',
-      '平均が目標帯より低いので、負荷を下げる候補になる。',
+      '条件をそろえた2セットの平均がともに下限を下回った。重量を下げ、次も同じ方法で効果を確かめる。',
     ],
     [
-      '速度が低いのでさらに重くする',
-      '重量を増やすと目標帯を上回る方向に調整できるとは考えにくい。',
+      '2セット目の平均が上がったので、目標帯に達したとみなして重量を維持する',
+      '0.02 m/s上がっても0.50 m/sであり、下限の0.55 m/sには達していない。',
     ],
     ['最大速度の一回が帯に入れば同じ負荷にする', 'この条件で比較する指標はセット平均である。'],
-    '運用前に決めた速度指標で次の負荷を調整する。',
-    '1. Estimating Training Intensity：Tables 1–2。',
+    '同じ反復数、休息、動作条件でセット全体の平均を比べる。目標帯を下回ったときは重量を下げて再測定する。この目標帯は設問の条件である。',
+    '1. Estimating Training Intensity：セット平均が目標帯を下回る場合の重量調整例。',
   ],
   [
     3,
@@ -64,13 +74,22 @@ const monitor: EditionItem[] = [
   ],
   [
     3,
-    'フォームをそろえた反復同士だけで速度を比べる',
-    '先週より挙上速度が高いが、今週の映像では可動範囲を明らかに狭くしていた。速度をどう使うか。',
-    ['可動範囲と測定方法をそろえ直して比較する', '速度差の解釈には実施条件の一貫性が必要。'],
-    ['速度が上がったので筋力向上として負荷を増やす', '種目条件が変わり、同じ能力を比較できない。'],
-    ['違う種目の速度を追加して平均する', '比較条件の不一致を解決しない。'],
-    '速度は実行条件を保ったときに進捗の判断材料になる。',
-    'Introduction／1. Estimating Training Intensity：種目別の速度と負荷。',
+    '可動範囲と速度指標の両方をそろえて進捗を比べる',
+    '同じ選手のベンチプレス60 kgを比較する。先週は通常の可動範囲で上昇全体の平均速度0.55 m/s、今週はボードで下降を浅くし、上昇の推進局面の平均速度0.65 m/sだった。通常の可動範囲での進捗を評価するにはどうするか。',
+    [
+      '今週も通常の可動範囲で測り直し、先週と同じ上昇全体の平均速度を比べる',
+      '負荷に加え、可動範囲と速度の集計範囲をそろえて比較できる。',
+    ],
+    [
+      '両週とも上昇全体の平均速度で再集計し、今週の浅い反復はそのまま比較に使う',
+      '速度の集計範囲はそろうが、可動範囲による負荷と速度の関係の違いが残る。',
+    ],
+    [
+      '今週も通常の可動範囲で測るが、今週は推進局面の平均速度を使って先週と比較する',
+      '可動範囲はそろうが、上昇全体と推進局面のみの平均は同じ速度指標ではない。',
+    ],
+    '可動範囲の違いは負荷と速度の関係に影響し、測定の局面が異なれば平均値の意味も変わる。進捗を評価するには両方をそろえる。',
+    'Methodsの測定方法、Discussionの可動範囲別の負荷・速度関係。',
   ],
   [
     3,
@@ -164,22 +183,22 @@ const transfer: EditionItem[] = [
   ],
   [
     1,
-    '実験条件ごとの方向転換の変化を分けて読む',
-    '同じ方向転換テストを使った比較で、甲の計画はジャンプスクワット、乙は直線走だけだった。甲はテストが改善し、乙は変わらなかった。計画を決める際に妥当な説明はどれか。',
+    '方向転換の変化の観察と、練習法の効果の判定を区別する',
+    '練習記録で、甲はジャンプスクワット、乙は直線走を主に追加した。同じ方向転換テストで前後を比べると、甲のタイムは短縮し、乙はほぼ変わらなかった。ほかの練習内容や開始時の能力はそろっていない。次の計画に使う解釈はどれか。',
     [
-      'この比較では変化が異なる。自分の対象にも方向転換の評価を置き、方法を選ぶ',
-      '選んだ対象で練習の転用を確認できる。',
+      '記録された変化は別々に扱い、練習法の優劣は保留する。次の計画でも方向転換を直接測る',
+      '開始時の能力や併用した練習の影響を分離できない。目標の変化は方向転換テストで確認できる。',
     ],
     [
-      '直線走はあらゆる参加者の方向転換を悪化させるとする',
-      '変化なしは悪化と異なり、一般化もできない。',
+      '測定手順が共通なので、甲のタイム短縮をジャンプスクワット単独の効果と判断する',
+      '測定手順をそろえても、開始時の能力やほかの練習の違いは残る。',
     ],
     [
-      'ジャンプスクワットの負荷と方法は、対象が異なっても同じにすれば必ず改善するとする',
-      '参加者の違いや計画の内容を越えて結論づけている。',
+      '乙のタイムがほぼ同じだったので、直線走は方向転換の補助として効果がないと判断する',
+      '一人の記録から、直線走が他の条件でも役立たないと結論づけることはできない。',
     ],
-    '競技に必要な能力への転用は、比較した方法と測定課題の範囲で読む。',
-    'Transfer of Training for Agility：jump training、straight sprinting、change-of-direction outcomes。',
+    'この設問の記録は仮想例である。NSCAの資料は跳躍練習と直線走の別々の研究を紹介し、直線走から方向転換への転用について研究結果が一貫しないと述べている。',
+    'Transfer of Training for Agility：jump training、straight-sprint training、change-of-direction drillsの各段落。',
   ],
   [
     1,
@@ -258,7 +277,9 @@ const weeks: EditionItem[] = [
 ];
 
 export const planningMonitoringQuestions = [
-  ...editionPractice('planning', 81, 'ex-plan-load', velocity, monitor),
+  ...editionPractice('planning', 81, 'ex-plan-load', velocity, monitor.slice(0, 3)),
+  ...editionPractice('planning', 84, 'ex-plan-load', benchVelocity, monitor.slice(3, 4)),
+  ...editionPractice('planning', 85, 'ex-plan-load', velocity, monitor.slice(4)),
   ...editionPractice('planning', 89, 'ex-plan-power', agility, transfer),
   ...editionPractice('planning', 93, 'ex-plan-progression', preparation, weeks),
 ];

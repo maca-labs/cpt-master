@@ -7,8 +7,8 @@ import {
   useStartLearning,
   type PracticeResultsDisplay,
 } from '../app/actions';
-import { practiceBatchValues } from '../domain/types';
-import { allQuestions, questions, units } from '../content';
+import { advancedPracticeBatch, practiceBatchValues } from '../domain/types';
+import { allQuestions, practiceQuestions, questions, units } from '../content';
 import { domainIds, domains } from '../content/blueprints';
 import {
   diagnosticAvailability,
@@ -26,6 +26,7 @@ import { QuestionMedia } from '../components/QuestionMedia';
 import { practiceBatchLabel, type PracticeBatch } from '../content/batches';
 import {
   practiceInventory,
+  advancedPracticeOptions,
   practiceSelectionLabel,
   type PracticeSelection,
   type PracticeOptions,
@@ -125,14 +126,24 @@ export function Practice() {
     data,
     { ...options, unitId: unit || undefined },
   );
-  const startSelected = async (allowSmaller = false) => {
+  const advancedInventory = practiceInventory(
+    practiceQuestions,
+    false,
+    data,
+    advancedPracticeOptions,
+  );
+  const startSelected = async (
+    request: PracticeOptions,
+    unitId?: string,
+    availableCount?: number,
+  ) => {
     if (starting) return;
     setStarting(true);
     try {
-      await start.practice(unit || undefined, false, {
-        ...options,
-        allowSmaller,
-        ...(allowSmaller ? { expectedAvailableCount: inventory.available } : {}),
+      await start.practice(unitId, false, {
+        ...request,
+        allowSmaller: availableCount !== undefined,
+        expectedAvailableCount: availableCount,
       });
     } finally {
       setStarting(false);
@@ -147,6 +158,38 @@ export function Practice() {
         title="答えより、根拠を身につける。"
         description="正答と誤答の理由を比べて、指導の判断につなげましょう。"
       />
+      <section className="panel" aria-labelledby="advanced-practice-heading">
+        <Pill tone="amber">専用の未見演習</Pill>
+        <h2 id="advanced-practice-heading">応用・分析50問</h2>
+        <p>
+          計算結果の解釈や、複数の条件を比べて指導を選ぶ3択の演習です。独自の学習用問題で、公式試験と同等の難易度を保証するものではありません。
+        </p>
+        <p className="muted small-text">
+          未見で利用可能な問題は{advancedInventory.available}
+          問です。表示・回答済みの問題と、中断中の演習で予約した問題を除きます。
+        </p>
+        {advancedInventory.available > 0 && (
+          <button
+            className="button primary"
+            disabled={starting}
+            onClick={() =>
+              void startSelected(
+                advancedPracticeOptions,
+                undefined,
+                advancedInventory.missing ? advancedInventory.available : undefined,
+              )
+            }
+          >
+            {advancedInventory.missing
+              ? `未見の${advancedInventory.available}問を始める`
+              : '未見の50問を始める'}
+            <ArrowRight size={17} />
+          </button>
+        )}
+        {advancedInventory.reserved > 0 && (
+          <p className="muted small-text">中断中の演習は下の「中断中の学習」から再開できます。</p>
+        )}
+      </section>
       <div className="two-columns">
         <section className="panel">
           <Pill>3択・単一正答</Pill>
@@ -159,11 +202,13 @@ export function Practice() {
               onChange={(event) => setBatch(event.target.value as PracticeBatch)}
             >
               <option value="all">すべての通常学習問題</option>
-              {practiceBatchValues.slice(1).map((batch) => (
-                <option value={batch} key={batch}>
-                  {practiceBatchLabel(batch)}
-                </option>
-              ))}
+              {practiceBatchValues
+                .filter((batch) => batch !== 'all' && batch !== advancedPracticeBatch)
+                .map((batch) => (
+                  <option value={batch} key={batch}>
+                    {practiceBatchLabel(batch)}
+                  </option>
+                ))}
             </select>
           </label>
           <label className="field-label">
@@ -234,7 +279,7 @@ export function Practice() {
           <button
             className="button primary"
             disabled={starting || inventory.missing > 0}
-            onClick={() => void startSelected()}
+            onClick={() => void startSelected(options, unit || undefined)}
           >
             問題演習を始める
             <ArrowRight size={17} />
@@ -243,7 +288,7 @@ export function Practice() {
             <button
               className="button secondary"
               disabled={starting}
-              onClick={() => void startSelected(true)}
+              onClick={() => void startSelected(options, unit || undefined, inventory.available)}
             >
               利用可能な{inventory.available}問で始める
             </button>
@@ -470,6 +515,7 @@ export function Quiz() {
       </div>
     );
   const diag = session.mode === 'diagnostic';
+  const advanced = session.practice?.batch === advancedPracticeBatch;
   const answer = async () => {
     if (!selected || busy) return;
     setBusy(true);
@@ -598,7 +644,7 @@ export function Quiz() {
         <div className="question-meta">
           <Pill>{domains[q.domainId].short}</Pill>
           <span>難易度 {['基礎', '標準', '応用'][q.difficulty - 1]}</span>
-          <FavoriteButton questionId={q.id} />
+          {!advanced && <FavoriteButton questionId={q.id} />}
         </div>
         <small className="eyebrow">QUESTION {String(session.index + 1).padStart(2, '0')}</small>
         <h1 ref={questionHeading} tabIndex={-1}>
@@ -653,7 +699,7 @@ export function Quiz() {
               {busy ? '保存中…' : '回答を保存'}
               <ArrowRight size={17} />
             </button>
-            {!diag && (
+            {!diag && !advanced && (
               <button className="text-button" onClick={() => void preview()}>
                 先に解説を見る（初見評価から除外）
               </button>
@@ -905,11 +951,13 @@ export function Results() {
       <PageTitle
         eyebrow="YOUR LEARNING INSIGHTS"
         title={
-          session.mockRetakeOf
-            ? '模試の解き直し結果'
-            : session.mode === 'diagnostic'
-              ? '学ぶ場所が、見えてきました。'
-              : 'ひとつ、理解が深まりました。'
+          session.practice?.batch === advancedPracticeBatch
+            ? '応用・分析の未見演習結果'
+            : session.mockRetakeOf
+              ? '模試の解き直し結果'
+              : session.mode === 'diagnostic'
+                ? '学ぶ場所が、見えてきました。'
+                : 'ひとつ、理解が深まりました。'
         }
         description={
           session.mockRetakeOf

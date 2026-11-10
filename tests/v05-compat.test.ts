@@ -3,7 +3,13 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { contentVersion, questions } from '../src/content';
-import { v052ContentVersion, v060ContentVersion } from '../src/content/release';
+import {
+  advancedContentVersion,
+  qualityReviewContentVersion,
+  v052ContentVersion,
+  v060ContentVersion,
+} from '../src/content/release';
+import { previousReviewedRevisions } from '../src/content/question-quality-review';
 import type { Session } from '../src/domain/types';
 import { createSession } from '../src/engines/learning';
 import { createThroughSession, withMockDraft } from '../src/engines/mock';
@@ -50,19 +56,24 @@ function strictSession(): Session {
 }
 
 describe('v0.5 additive schema compatibility', () => {
-  it('preserves every serialized v0.4 question, revision and independent group', () => {
+  it('preserves all v0.4 identities and the original bytes of questions outside the quality review', () => {
     const manifest = JSON.parse(
       readFileSync(new URL('./fixtures/v04-question-manifest.json', import.meta.url), 'utf8'),
     );
-    expect(
-      questions.slice(0, manifest.length).map((q) => ({
-        id: q.id,
-        revision: q.revision,
-        groupId: q.groupId,
-        sha256: createHash('sha256').update(JSON.stringify(q)).digest('hex'),
-      })),
-    ).toEqual(manifest);
-    expect(contentVersion).toBe('2026-11-08.3');
+    for (const [index, old] of manifest.entries()) {
+      const q = questions[index];
+      expect(q.id).toBe(old.id);
+      expect(q.groupId).toBe(old.groupId);
+      const previous = previousReviewedRevisions.get(q.id);
+      if (previous === undefined) {
+        expect(q.revision).toBe(old.revision);
+        expect(createHash('sha256').update(JSON.stringify(q)).digest('hex')).toBe(old.sha256);
+      } else {
+        expect(previous).toBe(old.revision);
+        expect(q.revision).toBe(previous + 1);
+      }
+    }
+    expect(contentVersion).toBe('2026-11-10.2');
   });
   it.each(['v04-backup.json', 'legacy-v1-backup.json'])(
     'restores %s without replacing notes, answers, settings or active drafts',
@@ -79,18 +90,20 @@ describe('v0.5 additive schema compatibility', () => {
       expect(await snapshot(db)).toEqual(old.data);
     },
   );
-  it.each([v052ContentVersion, v060ContentVersion])(
-    'restores an active strict reservation from content %s',
-    async (version) => {
-      const previous = database(),
-        restored = database();
-      await previous.sessions.add(strictSession());
-      const exported = await exportBackup(previous);
-      const backup = validateBackup(JSON.stringify({ ...exported, contentVersion: version }));
-      await restoreBackup(backup, restored);
-      expect(await snapshot(restored)).toEqual(await snapshot(previous));
-    },
-  );
+  it.each([
+    v052ContentVersion,
+    v060ContentVersion,
+    advancedContentVersion,
+    qualityReviewContentVersion,
+  ])('restores an active strict reservation from content %s', async (version) => {
+    const previous = database(),
+      restored = database();
+    await previous.sessions.add(strictSession());
+    const exported = await exportBackup(previous);
+    const backup = validateBackup(JSON.stringify({ ...exported, contentVersion: version }));
+    await restoreBackup(backup, restored);
+    expect(await snapshot(restored)).toEqual(await snapshot(previous));
+  });
   it('round-trips strict reservations and all 155 draft flags without a schema migration', async () => {
     const db = database(),
       restored = database();

@@ -1,6 +1,6 @@
 import Dexie, { type Table } from 'dexie';
 import { z } from 'zod';
-import { practiceBatchValues } from '../domain/types';
+import { advancedPracticeBatch, practiceBatchValues } from '../domain/types';
 import type {
   AppSettings,
   Attempt,
@@ -23,11 +23,15 @@ import {
   legacyUnitIds,
 } from '../content';
 import {
+  advancedContentVersion,
   legacyContentVersion,
   previousContentVersion,
+  qualityReviewContentVersion,
   v052ContentVersion,
   v060ContentVersion,
+  v062ContentVersion,
 } from '../content/release';
+import { previousReviewedRevisions } from '../content/question-quality-review';
 import { focusMock } from '../content/focus-mock';
 import { isInPracticeBatch } from '../content/batches';
 import { mockRetakeQuestionIds } from '../engines/learning';
@@ -369,15 +373,20 @@ export function validateBackup(text: string): Backup {
     );
   const backup = result.data as Backup;
   const legacy = backup.contentVersion === legacyContentVersion;
-  const previous = [previousContentVersion, v052ContentVersion, v060ContentVersion].some(
-    (version) => backup.contentVersion === version,
-  );
+  const previous = [
+    qualityReviewContentVersion,
+    advancedContentVersion,
+    previousContentVersion,
+    v052ContentVersion,
+    v060ContentVersion,
+    v062ContentVersion,
+  ].some((version) => backup.contentVersion === version);
   if (backup.contentVersion !== contentVersion && !legacy && !previous)
     throw new Error(
       '対応していない教材版です。現行版または互換性を検証した旧版のバックアップを使用してください。',
     );
-  // The original 100 questions remain byte-for-byte unchanged. A legacy-labelled
-  // file must still reference only that bank; it cannot smuggle new identifiers.
+  // A legacy-labelled file may only reference the original bank, including
+  // supported revisions of questions that keep their grading key.
   // An older open tab can export shared records with its previous version label.
   // Validate the known IDs and their revisions even in this mixed-tab backup.
   const compatibleQuestions = legacy
@@ -407,7 +416,8 @@ export function validateBackup(text: string): Backup {
     answeredPairs.add(pair);
     if (
       !q ||
-      q.revision !== a.questionRevision ||
+      (q.revision !== a.questionRevision &&
+        previousReviewedRevisions.get(a.questionId) !== a.questionRevision) ||
       q.groupId !== a.groupId ||
       q.unitId !== a.unitId ||
       q.domainId !== a.domainId ||
@@ -444,6 +454,11 @@ export function validateBackup(text: string): Backup {
     if (s.practice) {
       if (s.mode !== 'practice' || s.questionIds.length > s.practice.requestedCount)
         throw new Error('演習条件とセッションの形式・件数が一致しません。');
+      if (
+        s.practice.batch === advancedPracticeBatch &&
+        (s.practice.selection !== 'strict_unseen' || s.practice.requestedCount !== 50)
+      )
+        throw new Error('応用・分析50問の未見演習条件が不正です。');
       for (const qid of s.questionIds) {
         const q = qMap.get(qid);
         if (
@@ -575,6 +590,12 @@ export function validateBackup(text: string): Backup {
       const order = s.choiceOrders[qid];
       if (q && s.mode !== 'review' && (q.pool === 'focus') !== (s.mock?.format === 'focus'))
         throw new Error('集中模試の形式と問題の出題枠が一致しません。');
+      if (
+        q?.pool === 'advanced' &&
+        s.mode !== 'review' &&
+        s.practice?.batch !== advancedPracticeBatch
+      )
+        throw new Error('応用・分析問題の出題枠が一致しません。');
       if (
         s.mock &&
         q &&
